@@ -61,11 +61,20 @@
 
   <article class="product">
     <div class="gallery" data-gallery>
-      <figure class="gallery-main"><img id="gMain" src="assets/img/tree-autumn.jpg" alt="Картина „Дърво на плодородието“ в платинена дървена рамка" width="1258" height="1600"></figure>
-      <div class="thumbs" role="group" aria-label="Снимки на продукта">
-        <button type="button" class="on" data-src="assets/img/tree-autumn.jpg" data-alt="Картина „Дърво на плодородието“ в платинена рамка" aria-label="Цялата картина"><img src="assets/img/tree-autumn-sm.jpg" alt="" loading="lazy"></button>
-        <button type="button" data-src="assets/img/light-poster.jpg" data-alt="Цветните стъкла на светлина" aria-label="Стъклата на светлина"><img src="assets/img/light-poster.jpg" alt="" loading="lazy"></button>
-        <button type="button" data-video aria-label="Видео как се създава"><img src="assets/img/making-poster.jpg" alt="" loading="lazy"><span class="play">▶</span></button>
+      <div class="frame-pick" role="radiogroup" aria-label="Избор на рамка">
+        <span class="fp-label">Рамка</span>
+        <button type="button" role="radio" aria-checked="true" class="on" data-frame="platinum" data-name="Платина" title="Платина"><img src="assets/img/swatch-platinum.jpg" alt="Платина"></button>
+        <button type="button" role="radio" aria-checked="false" data-frame="walnut" data-name="Тъмен орех" title="Тъмен орех"><img src="assets/img/swatch-walnut.jpg" alt="Тъмен орех"></button>
+        <button type="button" role="radio" aria-checked="false" data-frame="black" data-name="Черно и сребро" title="Черно и сребро"><img src="assets/img/swatch-black.jpg" alt="Черно и сребро"></button>
+      </div>
+      <div class="gallery-stage">
+        <figure class="gallery-main"><img id="gMain" src="assets/img/framed-platinum.jpg" alt="Картина „Дърво на плодородието“ в платинена рамка" width="1000" height="1314"></figure>
+        <p class="frame-name">Рамка: <strong id="frameName">Платина</strong></p>
+        <div class="thumbs" role="group" aria-label="Още снимки">
+          <button type="button" data-src="assets/img/tree-autumn.jpg" data-alt="Оригиналната снимка на картината" aria-label="Оригинална снимка"><img src="assets/img/tree-autumn-sm.jpg" alt="" loading="lazy"></button>
+          <button type="button" data-src="assets/img/light-poster.jpg" data-alt="Цветните стъкла на светлина" aria-label="Стъклата на светлина"><img src="assets/img/light-poster.jpg" alt="" loading="lazy"></button>
+          <button type="button" data-video aria-label="Видео как се създава"><img src="assets/img/making-poster.jpg" alt="" loading="lazy"><span class="play">▶</span></button>
+        </div>
       </div>
     </div>
 
@@ -118,12 +127,12 @@
   <header class="section-head">
     <p class="eyebrow">Рамки</p>
     <h2>Три рамки, три настроения</h2>
-    <p class="sub">Рамката е част от картината. Изберете тази, която пасва на дома ви.</p>
+    <p class="sub">Рамката е част от картината. Изберете тази, която пасва на дома ви — важи и за сватбените дървета.</p>
   </header>
   <div class="frame-grid">
-    <figure><img src="assets/img/tree-autumn-sm.jpg" alt="Платинена рамка" loading="lazy"><figcaption><strong>Платина</strong>Топла, антична. Стандартна за картината.</figcaption></figure>
-    <figure><img src="assets/img/frame-walnut-sm.jpg" alt="Рамка тъмен орех" loading="lazy"><figcaption><strong>Тъмен орех</strong>Дървесна шарка, уютна и класическа.</figcaption></figure>
-    <figure><img src="assets/img/frame-black-sm.jpg" alt="Черна рамка със сребърен кант" loading="lazy"><figcaption><strong>Черно и сребро</strong>Строга и съвременна.</figcaption></figure>
+    <button type="button" data-pick="platinum"><img src="assets/img/swatch-platinum.jpg" alt="" loading="lazy"><strong>Платина</strong><span>Топла и антична. Стандартна за картината.</span></button>
+    <button type="button" data-pick="walnut"><img src="assets/img/swatch-walnut.jpg" alt="" loading="lazy"><strong>Тъмен орех</strong><span>Дървесна шарка, уютна и класическа.</span></button>
+    <button type="button" data-pick="black"><img src="assets/img/swatch-black.jpg" alt="" loading="lazy"><strong>Черно и сребро</strong><span>Строга и съвременна.</span></button>
   </div>
 </section>
 
@@ -182,8 +191,8 @@
       </select>
     </label>
     <label>Рамка
-      <select name="frame">
-        <option>Платина (стандартна)</option><option>Тъмен орех</option><option>Черно и сребро</option>
+      <select name="frame" id="frameSel">
+        <option>Платина</option><option>Тъмен орех</option><option>Черно и сребро</option>
       </select>
     </label>
     <label class="wed" hidden>Имена на младоженците

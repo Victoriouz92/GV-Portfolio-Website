@@ -54,9 +54,15 @@ em{font-style:italic;color:var(--ember)}
 
 /* product */
 .product{display:grid;grid-template-columns:1fr 1fr;gap:clamp(28px,6vw,90px);align-items:start}
-.gallery{position:sticky;top:96px}
-.gallery-main{background:var(--bg2);border-radius:6px;overflow:hidden;aspect-ratio:1258/1600;box-shadow:0 30px 60px -30px rgba(42,28,20,.4)}
-.gallery-main img,.gallery-main video{width:100%;height:100%;object-fit:cover}
+.gallery{position:sticky;top:96px;display:grid;grid-template-columns:76px 1fr;gap:18px;align-items:start}
+.frame-pick{display:grid;gap:12px;justify-items:center}
+.fp-label{font-size:.65rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.frame-pick button{width:64px;height:64px;padding:0;border:2px solid transparent;border-radius:50%;overflow:hidden;cursor:pointer;background:none;outline:2px solid var(--line);outline-offset:2px;transition:outline-color .2s}
+.frame-pick button img{width:100%;height:100%;object-fit:cover}
+.frame-pick button.on{outline-color:var(--ember)}
+.frame-name{font-size:.85rem;color:var(--muted);margin-top:12px}.frame-name strong{color:var(--ink)}
+.gallery-main{background:var(--bg2);border-radius:6px;overflow:hidden;box-shadow:0 30px 60px -30px rgba(42,28,20,.4)}
+.gallery-main img{width:100%}.gallery-main video{width:100%;aspect-ratio:3/4;object-fit:cover}
 .thumbs{display:flex;gap:10px;margin-top:14px}
 .thumbs button{position:relative;flex:0 0 72px;height:72px;border:2px solid transparent;border-radius:6px;padding:0;overflow:hidden;cursor:pointer;background:none;opacity:.7}
 .thumbs button.on,.thumbs button:hover{border-color:var(--ember);opacity:1}
@@ -85,9 +91,10 @@ em{font-style:italic;color:var(--ember)}
 
 /* frames */
 .frame-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(14px,3vw,36px)}
-.frame-grid figure img{aspect-ratio:4/5;width:100%;object-fit:cover;border-radius:6px}
-.frame-grid figcaption{margin-top:14px;font-size:.92rem;color:var(--muted)}
-.frame-grid strong{display:block;font:500 1.5rem var(--serif);color:var(--ink)}
+.frame-grid button{all:unset;cursor:pointer;display:block;font-size:.92rem;color:var(--muted)}
+.frame-grid img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:6px;transition:transform .3s}
+.frame-grid button:hover img{transform:translateY(-4px)}
+.frame-grid strong{display:block;margin-top:14px;font:500 1.5rem var(--serif);color:var(--ink)}
 
 /* process */
 .process{display:grid;grid-template-columns:1.1fr 1fr;gap:clamp(28px,6vw,80px);align-items:center;border-top:1px solid var(--line)}
@@ -126,10 +133,12 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--ember);border-co
   .nav nav a:not(.btn){display:none}
   .hero,.product,.wedding,.process{grid-template-columns:1fr}
   .hero-media{order:-1;max-width:360px;margin-inline:auto;aspect-ratio:3/4}
-  .gallery{position:static}
+  .gallery{position:static;grid-template-columns:1fr}
+  .frame-pick{grid-auto-flow:column;justify-content:start;align-items:center;order:2}
+  .frame-pick button{width:52px;height:52px}
   form{grid-template-columns:1fr}
   .frame-grid{grid-template-columns:1fr 1fr 1fr;gap:10px}
-  .frame-grid figcaption{font-size:.78rem}
-  .frame-grid strong{font-size:1.15rem}
+  .frame-grid span{display:none}
+  .frame-grid strong{font-size:1.1rem}
 }
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}

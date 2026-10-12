@@ -3,17 +3,38 @@ const ORDER_EMAIL = "info@artgifts.bg";
 
 const $ = (s, r = document) => r.querySelector(s);
 
-// product gallery
+// product gallery + frame picker
 const main = $(".gallery-main");
 const thumbs = document.querySelectorAll(".thumbs button");
+const swatches = document.querySelectorAll(".frame-pick button");
+const frameSel = $("#frameSel");
+let frame = swatches[0];
+const showFramed = () => {
+  main.innerHTML = `<img id="gMain" src="assets/img/framed-${frame.dataset.frame}.jpg" alt="Картината в рамка ${frame.dataset.name}" width="1000" height="1314">`;
+  thumbs.forEach(t => t.classList.remove("on"));
+};
+function pickFrame(key) {
+  frame = [...swatches].find(s => s.dataset.frame === key) || frame;
+  swatches.forEach(s => { s.classList.toggle("on", s === frame); s.setAttribute("aria-checked", s === frame); });
+  $("#frameName").textContent = frame.dataset.name;
+  if (frameSel) frameSel.value = frame.dataset.name;
+  showFramed();
+}
+swatches.forEach(s => s.addEventListener("click", () => pickFrame(s.dataset.frame)));
+document.querySelectorAll("[data-pick]").forEach(b => b.addEventListener("click", () => {
+  pickFrame(b.dataset.pick);
+  $("#kolekcia").scrollIntoView({ behavior: "smooth" });
+}));
 thumbs.forEach(b => b.addEventListener("click", () => {
   thumbs.forEach(t => t.classList.toggle("on", t === b));
-  if (b.hasAttribute("data-video")) {
-    main.innerHTML = '<video src="assets/video/making.mp4" poster="assets/img/making-poster.jpg" autoplay muted loop playsinline controls></video>';
-  } else {
-    main.innerHTML = `<img src="${b.dataset.src}" alt="${b.dataset.alt}">`;
-  }
+  main.innerHTML = b.hasAttribute("data-video")
+    ? '<video src="assets/video/making.mp4" poster="assets/img/making-poster.jpg" autoplay muted loop playsinline controls></video>'
+    : `<img src="${b.dataset.src}" alt="${b.dataset.alt}">`;
 }));
+frameSel && frameSel.addEventListener("change", () => {
+  const s = [...swatches].find(x => x.dataset.name === frameSel.value);
+  if (s) pickFrame(s.dataset.frame);
+});
 
 // "Order" buttons preselect the item
 const item = $("#item"), wed = $(".wed");
