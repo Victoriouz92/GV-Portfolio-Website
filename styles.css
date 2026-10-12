@@ -60,6 +60,8 @@ em{font-style:italic;color:var(--ember)}
 .frame-pick button{width:64px;height:64px;padding:0;border:2px solid transparent;border-radius:50%;overflow:hidden;cursor:pointer;background:none;outline:2px solid var(--line);outline-offset:2px;transition:outline-color .2s}
 .frame-pick button img{width:100%;height:100%;object-fit:cover}
 .frame-pick button.on{outline-color:var(--ember)}
+.frame-pick-row{grid-auto-flow:column;justify-content:center;align-items:center;margin-top:22px}
+.wedding .fp-label{color:#cdbfae}.wedding .frame-pick button{outline-color:rgba(255,255,255,.25)}.wedding .frame-pick button.on{outline-color:#d3a85f}
 .frame-name{font-size:.85rem;color:var(--muted);margin-top:12px}.frame-name strong{color:var(--ink)}
 .gallery-main{background:var(--bg2);border-radius:6px;overflow:hidden;box-shadow:0 30px 60px -30px rgba(42,28,20,.4)}
 .gallery-main img{width:100%}.gallery-main video{width:100%;aspect-ratio:3/4;object-fit:cover}

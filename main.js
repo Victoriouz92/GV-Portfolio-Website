@@ -6,7 +6,8 @@ const $ = (s, r = document) => r.querySelector(s);
 // product gallery + frame picker
 const main = $(".gallery-main");
 const thumbs = document.querySelectorAll(".thumbs button");
-const swatches = document.querySelectorAll(".frame-pick button");
+const swatches = document.querySelectorAll(".gallery .frame-pick button");
+const allSwatches = document.querySelectorAll(".frame-pick button");
 const frameSel = $("#frameSel");
 let frame = swatches[0];
 const showFramed = () => {
@@ -15,12 +16,13 @@ const showFramed = () => {
 };
 function pickFrame(key) {
   frame = [...swatches].find(s => s.dataset.frame === key) || frame;
-  swatches.forEach(s => { s.classList.toggle("on", s === frame); s.setAttribute("aria-checked", s === frame); });
+  allSwatches.forEach(s => { const on = s.dataset.frame === frame.dataset.frame; s.classList.toggle("on", on); s.setAttribute("aria-checked", on); });
+  $("#wedImg").src = `assets/img/framed-wedding-${frame.dataset.frame}.jpg`;
   $("#frameName").textContent = frame.dataset.name;
   if (frameSel) frameSel.value = frame.dataset.name;
   showFramed();
 }
-swatches.forEach(s => s.addEventListener("click", () => pickFrame(s.dataset.frame)));
+allSwatches.forEach(s => s.addEventListener("click", () => pickFrame(s.dataset.frame)));
 document.querySelectorAll("[data-pick]").forEach(b => b.addEventListener("click", () => {
   pickFrame(b.dataset.pick);
   $("#kolekcia").scrollIntoView({ behavior: "smooth" });
