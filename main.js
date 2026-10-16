@@ -25,7 +25,7 @@ function pickFrame(key) {
 allSwatches.forEach(s => s.addEventListener("click", () => pickFrame(s.dataset.frame)));
 document.querySelectorAll("[data-pick]").forEach(b => b.addEventListener("click", () => {
   pickFrame(b.dataset.pick);
-  $("#kolekcia").scrollIntoView({ behavior: "smooth" });
+  $("#kartini").scrollIntoView({ behavior: "smooth" });
 }));
 thumbs.forEach(b => b.addEventListener("click", () => {
   thumbs.forEach(t => t.classList.toggle("on", t === b));
@@ -39,13 +39,13 @@ frameSel && frameSel.addEventListener("change", () => {
 });
 
 // "Order" buttons preselect the item
-const item = $("#item"), wed = $(".wed");
-const syncWed = () => { wed.hidden = !/Сватбено/.test(item.value); };
-item.addEventListener("change", syncWed);
+const item = $("#item"), wed = $(".wed"), frm = $(".frm");
+const syncForm = () => { wed.hidden = !/Сватбено/.test(item.value); frm.hidden = /^Пано/.test(item.value); };
+item.addEventListener("change", syncForm);
 document.querySelectorAll("[data-order]").forEach(a => a.addEventListener("click", () => {
   const opt = [...item.options].find(o => o.text.startsWith(a.dataset.order.split(" (")[0]));
   if (opt) item.value = opt.value;
-  syncWed();
+  syncForm();
 }));
 
 // form -> opens email with the order text
@@ -55,7 +55,7 @@ $("#orderForm").addEventListener("submit", e => {
   const note = $("#formNote");
   if (!d.name.trim() || !d.phone.trim()) { note.textContent = "Моля, въведете име и телефон."; return; }
   const body = [
-    `Избор: ${d.item}`, `Рамка: ${d.frame}`,
+    `Избор: ${d.item}`, /^Пано/.test(d.item) ? "" : `Рамка: ${d.frame}`,
     d.names ? `Имена: ${d.names}` : "", `Име: ${d.name}`, `Телефон: ${d.phone}`, d.msg ? `Съобщение: ${d.msg}` : ""
   ].filter(Boolean).join("\n");
   location.href = `mailto:${ORDER_EMAIL}?subject=${encodeURIComponent("Поръчка — " + d.item)}&body=${encodeURIComponent(body)}`;
