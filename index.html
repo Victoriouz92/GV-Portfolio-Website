@@ -4,428 +4,237 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Лъки Михайлова — Картини от стъкло</title>
-<meta name="description" content="Авторски картини от цветно стъкло — Дърво на живота и сватбени дървета по поръчка. Ръчна изработка от Лъки Михайлова, 28 години опит.">
+<meta name="description" content="Авторски пана и картини от цветно стъкло на Лъки Михайлова. Дърво на живота, сватбени дървета по поръчка. 28 години опит.">
 <meta property="og:title" content="Лъки Михайлова — Картини от стъкло">
-<meta property="og:description" content="Авторски Дървета на живота от цветно стъкло, темперирано в пещ.">
+<meta property="og:description" content="Пана и картини от цветно стъкло, нарисувани и сплавени на ръка.">
 <meta property="og:image" content="assets/img/tree-autumn.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@400;500;600&display=swap&subset=cyrillic" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Onest:wght@400;500;600&family=Yeseva+One&display=swap&subset=cyrillic" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <a class="skip" href="#main">Към съдържанието</a>
 
-<header class="nav" id="top">
-  <a class="brand" href="#top" aria-label="Лъки Михайлова — начало">Лъки Михайлова<small>картини от стъкло</small></a>
+<header class="bar" id="top">
+  <a class="mark" href="#top">Лъки Михайлова</a>
   <nav aria-label="Основна навигация">
     <a href="#pana">Пана</a>
     <a href="#kartini">Картини</a>
     <a href="#plastiki">Пластики</a>
     <a href="#bijuta">Бижута</a>
     <a href="#avtor">Авторът</a>
-    <a class="btn btn-sm" href="#porachka">Поръчай</a>
   </nav>
+  <a class="btn btn-ghost" href="#porachka">Поръчай</a>
 </header>
 
 <main id="main">
 
 <!-- HERO -->
 <section class="hero">
-  <div class="hero-text">
-    <p class="eyebrow">Авторски картини от цветно стъкло</p>
-    <h1>Светлина, уловена<br>в <em>стъкло</em>.</h1>
-    <p class="lead">Всяко Дърво на живота е изработено на ръка, стъкълце по стъкълце — с мисъл за здраве, любов и благополучие в дома ви.</p>
+  <div class="hero-copy">
+    <h1>Светлина,<br>уловена<br>в&nbsp;стъкло.</h1>
+    <p class="lead">Пана и картини, нарисувани с бои за стъкло и сплавени с цветни стъкълца. Всяко е направено на ръка и носи пожелание за дома, в който ще живее.</p>
     <div class="actions">
-      <a class="btn" href="#pana">Разгледай колекцията</a>
-      <a class="link" href="#avtor">Запознай се с авторката →</a>
+      <a class="btn" href="#pana">Разгледай работите</a>
+      <a class="textlink" href="#avtor">За авторката</a>
     </div>
-    <ul class="facts">
-      <li><strong>28</strong> години опит</li>
-      <li><strong>100%</strong> ръчна изработка</li>
-      <li><strong>Пещ</strong> двойно темперирано</li>
-    </ul>
   </div>
-  <figure class="hero-media">
-    <video autoplay muted loop playsinline preload="metadata" poster="assets/img/light-poster.jpg" aria-label="Светлина минава през цветните стъкла на картината">
+  <figure class="hero-fig">
+    <video autoplay muted loop playsinline preload="metadata" poster="assets/img/light-poster.jpg" aria-label="Светлина минава през цветните стъкла на картина">
       <source src="assets/video/light.mp4" type="video/mp4">
     </video>
+    <figcaption class="label">Фиг. 1 — светлина през цветно стъкло</figcaption>
   </figure>
+  <dl class="facts">
+    <div><dt>28</dt><dd>години опит</dd></div>
+    <div><dt>100%</dt><dd>ръчна изработка</dd></div>
+    <div><dt>2×</dt><dd>темперирано в пещ</dd></div>
+  </dl>
 </section>
 
-<!-- CATEGORIES -->
-<section class="cats" aria-label="Категории">
-  <a href="#pana"><span>Стъклени пана</span><small>без рамка · от 20 €</small></a>
-  <a href="#kartini"><span>Стъклени картини</span><small>с рамка · от 80 €</small></a>
-  <a href="#plastiki" class="cat-soon"><span>Пластики</span><small>скоро</small></a>
-  <a href="#bijuta" class="cat-soon"><span>Бижута</span><small>скоро</small></a>
-</section>
+<!-- INDEX -->
+<nav class="index" aria-label="Раздели">
+  <a href="#pana"><b>Пана</b><span class="label">без рамка</span><span class="label" data-count="pana"></span><i aria-hidden="true">→</i></a>
+  <a href="#kartini"><b>Картини</b><span class="label">с рамка</span><span class="label" data-count="kartina"></span><i aria-hidden="true">→</i></a>
+  <a href="#plastiki" class="soon-row"><b>Пластики</b><span class="label">скоро</span><span class="label"></span><i aria-hidden="true">→</i></a>
+  <a href="#bijuta" class="soon-row"><b>Бижута</b><span class="label">скоро</span><span class="label"></span><i aria-hidden="true">→</i></a>
+</nav>
 
 <!-- PANELS -->
-<section class="section" id="pana">
-  <header class="section-head">
-    <p class="eyebrow">Без рамка</p>
+<section class="block" id="pana">
+  <header class="head">
     <h2>Стъклени пана</h2>
-    <p class="sub">Рисувани стъклени пана с професионални бои за стъкло и начупени цветни стъклца. Всяко е с размер 12 × 12 см и цена 20 €.</p>
+    <p>Рисувани пана с професионални бои за стъкло и начупени цветни стъклца. Без рамка, готови за окачване. Повечето са 12 × 12 см и струват 20 €.</p>
   </header>
-  <div class="pana-intro">
-    <div>
-      <h3>Закачалката</h3>
+
+  <div class="notes">
+    <section>
+      <h3>Закачалка</h3>
       <p>Метална, във формата на кобилица, завършваща със спирала. Символизира развитие и желание за извисеност, което затваря кръга.</p>
-      <ul class="ticks-light">
+      <ul class="dashes">
         <li>Подарък, лесен за поставяне</li>
-        <li>Подходящо за всякакъв цвят стена</li>
+        <li>Подходящ за всякакъв цвят стена</li>
         <li>Лесно се почиства</li>
         <li>Внася цвят, стил и настроение във всеки дом или офис</li>
         <li>Подходящ подарък за мъже и жени</li>
       </ul>
-    </div>
-    <div>
+    </section>
+    <section>
       <h3>Какво казват цветовете</h3>
-      <dl class="colors">
-        <div><dt style="--c:#5f8f3f">Зелено</dt><dd>близостта ни с природата</dd></div>
-        <div><dt style="--c:#c0302a">Червено</dt><dd>здраве</dd></div>
-        <div><dt style="--c:#e07a1f">Оранжево</dt><dd>борбата в живота</dd></div>
-        <div><dt style="--c:#e0b020">Жълто</dt><dd>достигането на свобода</dd></div>
-      </dl>
-    </div>
+      <ul class="beads">
+        <li style="--c:#4d8a3b"><i></i><b>Зелено</b><span>близостта ни с природата</span></li>
+        <li style="--c:#d2311c"><i></i><b>Червено</b><span>здраве</span></li>
+        <li style="--c:#ec7a14"><i></i><b>Оранжево</b><span>борбата в живота</span></li>
+        <li style="--c:#f0b914"><i></i><b>Жълто</b><span>достигането на свобода</span></li>
+      </ul>
+    </section>
   </div>
-  <div class="card-grid">
-    <article class="card">
-      <div class="card-media ph" style="--a:#c98a2b;--b:#7a4a1e"><span class="ph-note">Снимка скоро</span></div>
-      <h3>Бухал</h3>
-      <p>Символ на мъдрост и благополучие.</p>
-      <p class="meta"><span>12 × 12 см</span><strong>20 €</strong></p>
-      <a class="btn btn-sm btn-outline" href="#porachka" data-order="Пано „Бухал“">Поръчай</a>
-    </article>
-    <article class="card">
-      <div class="card-media ph" style="--a:#8a6a3c;--b:#c2562a"><span class="ph-note">Снимка скоро</span></div>
-      <h3>Таралеж</h3>
-      <p>Предвестник на есента. Символизира упоритостта на този, който събира плодове за зимата.</p>
-      <p class="meta"><span>12 × 12 см</span><strong>20 €</strong></p>
-      <a class="btn btn-sm btn-outline" href="#porachka" data-order="Пано „Таралеж“">Поръчай</a>
-    </article>
-    <article class="card">
-      <div class="card-media ph" style="--a:#2f2f33;--b:#6f8f55"><span class="ph-note">Снимка скоро</span></div>
-      <h3>Черно коте за късмет</h3>
-      <p>За да си кажеш „Ще пречупя карък и ще започна без страх отново!“. Подарява се за късмет и безстрашие.</p>
-      <p class="meta"><span>12 × 12 см</span><strong>20 €</strong></p>
-      <a class="btn btn-sm btn-outline" href="#porachka" data-order="Пано „Черно коте за късмет“">Поръчай</a>
-    </article>
-    <article class="card">
-      <div class="card-media ph" style="--a:#7aa05a;--b:#e0a43a"><span class="ph-note">Снимка скоро</span></div>
-      <h3>Шарената маца</h3>
-      <p>Подарява се за нежност, вярност, приятелство, игри и усмивки.</p>
-      <p class="meta"><span>12 × 12 см</span><strong>20 €</strong></p>
-      <a class="btn btn-sm btn-outline" href="#porachka" data-order="Пано „Шарената маца“">Поръчай</a>
-    </article>
-    <article class="card">
-      <div class="card-media ph" style="--a:#c0302a;--b:#f0b8a6"><span class="ph-note">Снимка скоро</span></div>
-      <h3>Сърце</h3>
-      <p>За любов, вярност и надежда — и за да не забравяш себе си и да се обичаш.</p>
-      <p class="meta"><span>12 × 12 см</span><strong>20 €</strong></p>
-      <a class="btn btn-sm btn-outline" href="#porachka" data-order="Пано „Сърце“">Поръчай</a>
-    </article>
-    <article class="card">
-      <div class="card-media ph" style="--a:#c0302a;--b:#3b6fb0"><span class="ph-note">Снимка скоро</span></div>
-      <h3>Мъжко сърце</h3>
-      <p>Освен червено има и син цвят — връзка с небето и със силния мъжки пол.</p>
-      <p class="meta"><span>12 × 12 см</span><strong>20 €</strong></p>
-      <a class="btn btn-sm btn-outline" href="#porachka" data-order="Пано „Мъжко сърце“">Поръчай</a>
-    </article>
-    <article class="card">
-      <div class="card-media has-img" style="--a:#6a9a4a;--b:#c2562a"><img src="assets/img/panel-apple.jpg" alt="Стъклено пано „Дърво на живота — Ябълка“" loading="lazy" width="454" height="648"></div>
-      <h3>Дърво на живота — Ябълка</h3>
-      <p>Освен нарисуваната символика има и 8 узрели ябълкови плода. Числото 8 е символ на успех и безкрайност.</p>
-      <p class="meta"><span>12 × 15 см</span><strong>24 €</strong></p>
-      <a class="btn btn-sm btn-outline" href="#porachka" data-order="Пано „Дърво на живота — Ябълка“">Поръчай</a>
-    </article>
-    <article class="card">
-      <div class="card-media ph" style="--a:#c2562a;--b:#6a5a3c"><span class="ph-note">Снимка скоро</span></div>
-      <h3>Дърво на живота — Урожай</h3>
-      <p>Тъмен ствол и червено-оранжева корона, събрала есенния урожай.</p>
-      <p class="meta"><span>12 × 15 см</span><strong>по запитване</strong></p>
-      <a class="btn btn-sm btn-outline" href="#porachka" data-order="Пано „Дърво на живота — Урожай“">Поръчай</a>
-    </article>
-    <article class="card">
-      <div class="card-media ph" style="--a:#e07a3a;--b:#4a8fb5"><span class="ph-note">Снимка скоро</span></div>
-      <h3>Раче</h3>
-      <p>Усещане за идването на лятото, топлината, морските почивки и плажовете.</p>
-      <p class="meta"><span>12 × 12 см</span><strong>20 €</strong></p>
-      <a class="btn btn-sm btn-outline" href="#porachka" data-order="Пано „Раче“">Поръчай</a>
-    </article>
-  </div>
-  <p class="note more">Предстои добавяне на още пана.</p>
+
+  <div class="works" id="gridPana"></div>
+  <p class="label more">Предстои добавяне на още пана</p>
 </section>
 
 <!-- PICTURES -->
-<section class="section" id="kartini">
-  <header class="section-head">
-    <p class="eyebrow">С рамка</p>
+<section class="block" id="kartini">
+  <header class="head">
     <h2>Стъклени картини</h2>
+    <p>Всичко с рамка. Дърветата на живота са нарисувани върху стъкло и сплавени с цветни стъкълца, после темперирани в пещ.</p>
   </header>
 
-  <article class="product">
-    <div class="gallery" data-gallery>
+  <article class="feature">
+    <div class="feature-fig">
       <div class="frame-pick" role="radiogroup" aria-label="Избор на рамка">
-        <span class="fp-label">Рамка</span>
+        <span class="label">Рамка</span>
         <button type="button" role="radio" aria-checked="true" class="on" data-frame="platinum" data-name="Платина" title="Платина"><img src="assets/img/swatch-platinum.jpg" alt="Платина"></button>
         <button type="button" role="radio" aria-checked="false" data-frame="walnut" data-name="Тъмен орех" title="Тъмен орех"><img src="assets/img/swatch-walnut.jpg" alt="Тъмен орех"></button>
         <button type="button" role="radio" aria-checked="false" data-frame="black" data-name="Черно и сребро" title="Черно и сребро"><img src="assets/img/swatch-black.jpg" alt="Черно и сребро"></button>
       </div>
-      <div class="gallery-stage">
-        <figure class="gallery-main"><img id="gMain" src="assets/img/framed-platinum.jpg" alt="Картина „Дърво на плодородието“ в платинена рамка" width="1000" height="1314"></figure>
-        <p class="frame-name">Рамка: <strong id="frameName">Платина</strong></p>
+      <div class="feature-stage">
+        <figure class="feature-main"><img id="gMain" src="assets/img/framed-platinum.jpg" alt="Дърво на плодородието в платинена рамка" width="1000" height="1314"></figure>
+        <p class="label">Рамка: <b id="frameName">Платина</b></p>
         <div class="thumbs" role="group" aria-label="Още снимки">
           <button type="button" data-src="assets/img/tree-autumn.jpg" data-alt="Оригиналната снимка на картината" aria-label="Оригинална снимка"><img src="assets/img/tree-autumn-sm.jpg" alt="" loading="lazy"></button>
-          <button type="button" data-src="assets/img/light-poster.jpg" data-alt="Цветните стъкла на светлина" aria-label="Стъклата на светлина"><img src="assets/img/light-poster.jpg" alt="" loading="lazy"></button>
-          <button type="button" data-video aria-label="Видео как се създава"><img src="assets/img/making-poster.jpg" alt="" loading="lazy"><span class="play">▶</span></button>
+          <button type="button" data-src="assets/img/light-poster.jpg" data-alt="Цветните стъкла на светлина" aria-label="Стъклата на светлина"><img src="assets/img/light-poster.jpg" alt=""></button>
+          <button type="button" data-video aria-label="Видео как се създава"><img src="assets/img/making-poster.jpg" alt="" loading="lazy"><span class="play" aria-hidden="true">▶</span></button>
         </div>
       </div>
     </div>
-
-    <div class="product-info">
-      <p class="eyebrow">Семейно дърво на живота</p>
+    <div class="feature-info">
+      <p class="label">Семейно дърво на живота</p>
       <h3>Дърво на плодородието</h3>
-      <p class="price">80 € <span>≈ 156,47 лв.</span></p>
-      <p>Изработено върху стъкло със специални професионални бои и цветни стъкла. Двойно темперирано в пещ за стъкло — за здравина и дълбок, траен блясък.</p>
+      <p class="price">80 €</p>
+      <p>Изработено върху стъкло със специални професионални бои и цветни стъкла. Двойно темперирано в пещ за стъкло.</p>
       <dl class="specs">
         <div><dt>Размер</dt><dd>30 × 40 см</dd></div>
-        <div><dt>Рамка</dt><dd>Дървена, платина, 3 см</dd></div>
-        <div><dt>Материал</dt><dd>Стъкло, цветно стъкло, професионални бои</dd></div>
+        <div><dt>Рамка</dt><dd>дървена, 3 см, по избор</dd></div>
+        <div><dt>Материал</dt><dd>стъкло, цветно стъкло, бои за стъкло</dd></div>
         <div><dt>Автор</dt><dd>Лъки Михайлова</dd></div>
       </dl>
-      <a class="btn btn-block" href="#porachka" data-order="Дърво на плодородието (30×40 см) — 80 €">Поръчай картината</a>
-      <p class="note">Всяка картина е уникална — възможни са фини разлики спрямо снимките.</p>
+      <button class="btn btn-wide" type="button" data-order="plodorodie">Поръчай картината</button>
+      <p class="fine">Всяка картина е уникална. Възможни са фини разлики спрямо снимките.</p>
     </div>
   </article>
 
-
-  <div class="series more-pics">
-    <h3>Още стъклени картини</h3>
-    <p>Всяка е с рамка. Вариантите на рамката за „Дърво на плодородието“ са по-долу.</p>
-    <div class="card-grid">
-    <article class="card">
-      <div class="card-media ph" style="--a:#c0302a;--b:#6a9a4a"><span class="ph-note">Снимка скоро</span></div>
-      <h3>Дърво на живота — Ябълка</h3>
-      <p>Предлага се в четири размера.</p>
-      <ul class="sizes">
-        <li><span>Малко · 14 × 16 см</span><b>28 €</b></li>
-        <li><span>Средно · 18 × 22 см</span><b>38 €</b></li>
-        <li><span>Голямо · 26 × 36 см</span><b>89 €</b></li>
-        <li><span>Най-голямо · 30 × 40 см</span><b>98 €</b></li>
-      </ul>
-      <p class="meta"><span>от 14 × 16 см</span><strong>от 28 €</strong></p>
-      <a class="btn btn-sm btn-outline" href="#porachka" data-order="Дърво на живота — Ябълка (малко)">Поръчай</a>
-    </article>
-    <article class="card">
-      <div class="card-media ph" style="--a:#d0402a;--b:#5a4a3a"><span class="ph-note">Снимка скоро</span></div>
-      <h3>Дърво на живота — Череша</h3>
-      <p>Червена корона върху тънки клони, в платинена рамка.</p>
-      <p class="meta"><span>размер при запитване</span><strong>по запитване</strong></p>
-      <a class="btn btn-sm btn-outline" href="#porachka" data-order="Дърво на живота — Череша">Поръчай</a>
-    </article>
-      <article class="card">
-        <div class="card-media ph" style="--a:#2e2a22;--b:#b08a4a"><span class="ph-note">Снимка скоро</span></div>
-        <h3>Дърво на живота — Престиж</h3>
-        <p>Масивна ретро рамка. Дърво с широки клони и дебел ствол, стъпило здраво на земята. Усещане за зрялост, сила и непоклатимост.</p>
-        <p class="meta"><span>ретро рамка</span><strong>68 €</strong></p>
-        <a class="btn btn-sm btn-outline" href="#porachka" data-order="Дърво на живота — Престиж">Поръчай</a>
-      </article>
-      <article class="card">
-        <div class="card-media ph" style="--a:#d9a420;--b:#5f8f3f"><span class="ph-note">Снимка скоро</span></div>
-        <h3>Дърво на живота — Пролет</h3>
-        <p>Със златна рамка и закопчалка. Носи радост, топлина и много цвят в дома и офиса. Усещане за изисканост, прецизност и блестяща чистота.</p>
-        <p class="meta"><span>24 × 36 см · само този размер</span><strong>76 €</strong></p>
-        <a class="btn btn-sm btn-outline" href="#porachka" data-order="Дърво на живота — Пролет">Поръчай</a>
-      </article>
-      <article class="card">
-        <div class="card-media ph" style="--a:#8a4a1e;--b:#c98a2b"><span class="ph-note">Снимка скоро</span></div>
-        <h3>Дърво на живота — Благодат</h3>
-        <p>Върху керамична плочка, в дървена рамка със златен кант.</p>
-        <p class="meta"><span>19,5 × 19,5 см с рамката</span><strong>35 €</strong></p>
-        <a class="btn btn-sm btn-outline" href="#porachka" data-order="Дърво на живота — Благодат">Поръчай</a>
-      </article>
-      <article class="card">
-        <div class="card-media ph" style="--a:#c0302a;--b:#2f2f33"><span class="ph-note">Снимка скоро</span></div>
-        <h3>Дърво на живота — Развитие</h3>
-        <p>Спираловиден ствол и корона от червени и зелени стъкла, в платинена рамка.</p>
-        <p class="meta"><span>платинена рамка</span><strong>по запитване</strong></p>
-        <a class="btn btn-sm btn-outline" href="#porachka" data-order="Дърво на живота — Развитие">Поръчай</a>
-      </article>
-      <article class="card">
-        <div class="card-media ph" style="--a:#e0b020;--b:#5f8f3f"><span class="ph-note">Снимка скоро</span></div>
-        <h3>Дърво на живота — Златно лято</h3>
-        <p>Цветна корона върху светло стъкло, в златна рамка.</p>
-        <p class="meta"><span>златна рамка</span><strong>по запитване</strong></p>
-        <a class="btn btn-sm btn-outline" href="#porachka" data-order="Дърво на живота — Златно лято">Поръчай</a>
-      </article>
-    </div>
-  </div>
-
-  <div class="series">
-    <h3>Авторски серии</h3>
-    <p>Освен показаното, Лъки създава и по поръчка:</p>
-    <ul class="chips">
-      <li>Семейно дърво</li><li>Дърво на живота за успеха</li><li>Зимно дърво на живота</li>
-      <li>Пролетно дърво на живота</li><li>Лятно дърво на живота</li><li>Дърво на живота за пари</li>
-      <li>Родово дърво на живота</li><li>Плодородно дърво на живота</li><li>Ябълка</li>
-      <li>Череша</li><li>Диня и слива</li>
-    </ul>
-  </div>
+  <h3 class="sub-h">Още картини</h3>
+  <div class="works" id="gridKartini"></div>
 </section>
 
 <!-- WEDDING -->
-<section class="section wedding" id="svatba">
-  <div class="wedding-media">
-    <img id="wedImg" src="assets/img/framed-wedding-platinum.jpg" alt="Сватбено Дърво на живота с младоженци и техните имена" loading="lazy" width="1000" height="1314">
+<section class="wedding" id="svatba">
+  <div class="wedding-fig">
+    <img id="wedImg" src="assets/img/framed-wedding-platinum.jpg" alt="Сватбено Дърво на живота с младоженци и техните имена" width="1000" height="1314">
     <div class="frame-pick frame-pick-row" role="radiogroup" aria-label="Избор на рамка">
-      <span class="fp-label">Рамка</span>
+      <span class="label">Рамка</span>
       <button type="button" role="radio" aria-checked="true" class="on" data-frame="platinum" data-name="Платина" title="Платина"><img src="assets/img/swatch-platinum.jpg" alt="Платина"></button>
       <button type="button" role="radio" aria-checked="false" data-frame="walnut" data-name="Тъмен орех" title="Тъмен орех"><img src="assets/img/swatch-walnut.jpg" alt="Тъмен орех"></button>
       <button type="button" role="radio" aria-checked="false" data-frame="black" data-name="Черно и сребро" title="Черно и сребро"><img src="assets/img/swatch-black.jpg" alt="Черно и сребро"></button>
     </div>
   </div>
-  <div class="wedding-text">
-    <p class="eyebrow">Само по поръчка</p>
-    <h2>Сватбено <em>Дърво на живота</em></h2>
-    <p>Подарък, който остава за цял живот. Върху картината се изписват имената на младоженците, а под дървото застават двамата — нежен символ на семейство, което расте и дава корен.</p>
-    <ul class="ticks">
-      <li>Имената ви върху стъклото</li>
+  <div class="wedding-copy">
+    <p class="label">Само по поръчка</p>
+    <h2>Сватбено Дърво на живота</h2>
+    <p>Върху стъклото се изписват имената на младоженците, а под дървото застават двамата. Подарък, който остава за цял живот.</p>
+    <ul class="dashes">
+      <li>Имената ви върху картината</li>
       <li>Изработва се изцяло по поръчка</li>
-      <li>Рамка по вкус — избирате от три варианта</li>
+      <li>Рамка по ваш вкус, три варианта</li>
     </ul>
-    <a class="btn" href="#porachka" data-order="Сватбено Дърво на живота (по поръчка)">Поръчай сватбено дърво</a>
+    <button class="btn btn-light" type="button" data-order="svatba">Поръчай сватбено дърво</button>
   </div>
 </section>
 
-<!-- FRAMES -->
-<section class="section frames" id="ramki">
-  <header class="section-head">
-    <p class="eyebrow">Рамки</p>
-    <h2>Три рамки, три настроения</h2>
-    <p class="sub">Рамката е част от картината. Изберете тази, която пасва на дома ви — важи и за сватбените дървета.</p>
-  </header>
-  <div class="frame-grid">
-    <button type="button" data-pick="platinum"><img src="assets/img/swatch-platinum.jpg" alt="" loading="lazy"><strong>Платина</strong><span>Топла и антична. Стандартна за картината.</span></button>
-    <button type="button" data-pick="walnut"><img src="assets/img/swatch-walnut.jpg" alt="" loading="lazy"><strong>Тъмен орех</strong><span>Дървесна шарка, уютна и класическа.</span></button>
-    <button type="button" data-pick="black"><img src="assets/img/swatch-black.jpg" alt="" loading="lazy"><strong>Черно и сребро</strong><span>Строга и съвременна.</span></button>
-  </div>
-</section>
-
-<!-- PLASTICS -->
-<section class="section soon" id="plastiki">
-  <p class="eyebrow">Скоро</p>
-  <h2>Пластики</h2>
-  <p class="sub">Стъклените пластики на Лъки ще се появят тук. Ако търсите конкретна, пишете ни във формата за поръчка.</p>
-</section>
-
-<!-- JEWELRY -->
-<section class="section soon" id="bijuta">
-  <p class="eyebrow">Скоро</p>
-  <h2>Бижута</h2>
-  <p class="sub">Бижутата от цветно стъкло са в подготовка. Следете сайта или ни пишете за повече информация.</p>
-</section>
+<!-- PLASTICS / JEWELRY -->
+<div class="soon-wrap">
+  <section class="soon" id="plastiki">
+    <h2>Пластики</h2>
+    <p>Колекцията се подготвя. Ако търсите нещо конкретно, пишете ни във формата за поръчка.</p>
+  </section>
+  <section class="soon" id="bijuta">
+    <h2>Бижута</h2>
+    <p>Бижутата от цветно стъкло скоро ще се появят тук.</p>
+  </section>
+</div>
 
 <!-- PROCESS -->
-<section class="section process">
+<section class="block process">
   <div class="process-video">
-    <video muted loop playsinline controls preload="none" poster="assets/img/making-poster.jpg" id="makingVideo"><source src="assets/video/making.mp4" type="video/mp4"></video>
+    <video muted loop playsinline controls preload="none" poster="assets/img/making-poster.jpg"><source src="assets/video/making.mp4" type="video/mp4"></video>
+    <p class="label">Фиг. 2 — от голо дърво до есенна корона</p>
   </div>
-  <div class="process-text">
-    <p class="eyebrow">Как се ражда една картина</p>
-    <h2>От голо дърво до есенна корона</h2>
+  <div class="process-copy">
+    <h2>Как се прави</h2>
     <ol class="steps">
-      <li><strong>Рисуваме</strong> ствола и клоните със специални професионални бои.</li>
-      <li><strong>Нареждаме</strong> стъкълце по стъкълце — всяко подбрано с добро намерение.</li>
-      <li><strong>Темперираме</strong> двойно в пещ за стъкло, докато цветовете се сплавят.</li>
-      <li><strong>Рамкираме</strong> в дървена рамка по ваш избор.</li>
+      <li><b>Рисуване.</b> Стволът и клоните се изрисуват със специални професионални бои.</li>
+      <li><b>Нареждане.</b> Цветните стъкълца се слагат едно по едно, подбрани с добро намерение.</li>
+      <li><b>Пещ.</b> Двойно темпериране в пещ за стъкло, докато цветовете се сплавят.</li>
+      <li><b>Рамка.</b> Дървена рамка по ваш избор.</li>
     </ol>
   </div>
 </section>
 
 <!-- AUTHOR -->
-<section class="section author" id="avtor">
-  <div class="author-card">
-    <p class="eyebrow">Авторът</p>
+<section class="author" id="avtor">
+  <blockquote>Не просто декоративна картина, а носител на лично послание и красиво пожелание за дома и хората, които го обитават.</blockquote>
+  <div class="author-copy">
+    <p class="label">Авторът</p>
     <h2>Лъки Михайлова</h2>
-    <p class="big">Вече 28 години създава авторски картини от цветно стъкло — с много чувство, внимание към детайла и индивидуално послание.</p>
-    <p>В основата на творчеството ѝ е Дървото на живота — вечен символ на живота, семейството, развитието, благополучието и връзката между поколенията.</p>
-    <p>Всяко цветно стъкълце е внимателно подбрано и вложено с позитивно намерение — за здраве, любов, благополучие, успех и хармония. Така всяка картина се превръща в уникален символичен подарък за човек, семейство или специален повод.</p>
-    <blockquote>Не просто декоративна картина, а носител на лично послание и красиво пожелание за дома и хората, които го обитават.</blockquote>
-  </div>
-</section>
-
-<!-- GALLERY -->
-<section class="section gallery-loc" id="galeria">
-  <div>
-    <p class="eyebrow">Галерия</p>
-    <h2>Artgifts.bg</h2>
-    <p>Лъки е и собственик на галерия <strong>Artgifts.bg</strong> на ул. „Гурко“ в София. Елате да видите картините на живо — светлината в стъклото се усеща най-добре отблизо.</p>
-    <a class="btn btn-outline" href="https://artgifts.bg" target="_blank" rel="noopener">Към artgifts.bg ↗</a>
+    <p>Вече 28 години Лъки създава авторски картини от цветно стъкло, с много чувство, внимание към детайла и индивидуално послание.</p>
+    <p>В основата на творчеството ѝ е Дървото на живота: символ на живота, семейството, развитието, благополучието и връзката между поколенията.</p>
+    <p>Всяко цветно стъкълце е подбрано и вложено с позитивно намерение за здраве, любов, благополучие, успех и хармония.</p>
+    <h3>Авторски серии</h3>
+    <p class="run">Семейно дърво / Дърво на живота за успеха / Зимно / Пролетно / Лятно / Дърво на живота за пари / Родово / Плодородно / Ябълка / Череша / Диня и слива</p>
+    <h3>Галерия</h3>
+    <p>Лъки е собственик и на галерия <b>Artgifts.bg</b> на ул. „Гурко“ в София. Картините се виждат най-добре на живо, на светлина.</p>
+    <a class="textlink" href="https://artgifts.bg" target="_blank" rel="noopener">artgifts.bg ↗</a>
   </div>
 </section>
 
 <!-- ORDER -->
-<section class="section order" id="porachka">
-  <header class="section-head">
-    <p class="eyebrow">Поръчка</p>
-    <h2>Свържете се с нас</h2>
-    <p class="sub">Попълнете формата и ще се свържем с вас за уточняване на детайли, плащане и доставка.</p>
+<section class="block order" id="porachka">
+  <header class="head">
+    <h2>Поръчка</h2>
+    <p>Изберете работа и оставете телефон. Ще ви потърсим, за да уточним детайли, плащане и доставка.</p>
   </header>
   <form id="orderForm" novalidate>
-    <label>Избор
-      <select name="item" id="item" required>
-        <optgroup label="Стъклени картини (с рамка)">
-          <option>Дърво на плодородието (30×40 см) — 80 €</option>
-          <option>Сватбено Дърво на живота (по поръчка)</option>
-          <option>Дърво на живота — Ябълка (малко) — 14×16 см — 28 €</option>
-          <option>Дърво на живота — Ябълка (средно) — 18×22 см — 38 €</option>
-          <option>Дърво на живота — Ябълка (голямо) — 26×36 см — 89 €</option>
-          <option>Дърво на живота — Ябълка (най-голямо) — 30×40 см — 98 €</option>
-          <option>Дърво на живота — Череша</option>
-          <option>Дърво на живота — Престиж — 68 €</option>
-          <option>Дърво на живота — Пролет — 24×36 см — 76 €</option>
-          <option>Дърво на живота — Благодат — 19,5×19,5 см — 35 €</option>
-          <option>Дърво на живота — Развитие</option>
-          <option>Дърво на живота — Златно лято</option>
-          <option>Друго Дърво на живота (по поръчка)</option>
-        </optgroup>
-        <optgroup label="Стъклени пана (12×12 см)">
-          <option>Пано „Бухал“ — 20 €</option>
-          <option>Пано „Таралеж“ — 20 €</option>
-          <option>Пано „Черно коте за късмет“ — 20 €</option>
-          <option>Пано „Шарената маца“ — 20 €</option>
-          <option>Пано „Сърце“ — 20 €</option>
-          <option>Пано „Мъжко сърце“ — 20 €</option>
-          <option>Пано „Дърво на живота — Ябълка“ — 24 €</option>
-          <option>Пано „Дърво на живота — Урожай“</option>
-          <option>Пано „Раче“ — 20 €</option>
-        </optgroup>
-      </select>
-    </label>
+    <label class="full">Избор <select name="item" id="item" required></select></label>
     <label class="frm">Рамка
-      <select name="frame" id="frameSel">
-        <option>Платина</option><option>Тъмен орех</option><option>Черно и сребро</option>
-      </select>
+      <select name="frame" id="frameSel"><option>Платина</option><option>Тъмен орех</option><option>Черно и сребро</option></select>
     </label>
-    <label class="wed" hidden>Имена на младоженците
-      <input name="names" placeholder="напр. Йоана & Кристиян">
-    </label>
-    <label>Вашето име <input name="name" required autocomplete="name"></label>
-    <label>Телефон <input name="phone" type="tel" required autocomplete="tel"></label>
-    <label class="full">Съобщение <textarea name="msg" rows="3" placeholder="Повод, срок, въпроси…"></textarea></label>
+    <label class="wed" hidden>Имена на младоженците <input name="names" id="names" placeholder="напр. Йоана & Кристиян"></label>
+    <label>Вашето име <input name="name" id="name" required autocomplete="name"></label>
+    <label>Телефон <input name="phone" id="phone" type="tel" required autocomplete="tel"></label>
+    <label class="full">Съобщение <textarea name="msg" id="msg" rows="3" placeholder="Повод, срок, въпроси"></textarea></label>
     <button class="btn full" type="submit">Изпрати поръчката</button>
-    <p class="note full" id="formNote" role="status"></p>
+    <p class="fine full" id="formNote" role="status"></p>
   </form>
 </section>
 
 </main>
 
-<footer class="footer">
-  <p><strong>Лъки Михайлова</strong> · картини от стъкло</p>
-  <p><a href="#top">↑ Нагоре</a></p>
-  <p class="small">© <span id="yr"></span> Лъки Михайлова. Всички права запазени.</p>
+<footer class="foot">
+  <a class="mark" href="#top">Лъки Михайлова</a>
+  <p class="label">Картини от стъкло · © <span id="yr"></span></p>
 </footer>
 
 <script src="main.js"></script>
