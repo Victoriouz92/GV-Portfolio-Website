@@ -87,10 +87,11 @@ document.addEventListener("pointermove", e => {
 
 /* ---------- cards ---------- */
 const lot = w => String(WORKS.indexOf(w) + 1).padStart(2, "0");
+const hung = w => w.cat === "kartina"; // framed pictures are cut from the photo and hung on the page wall
 const card = w => `
-  <a class="work rv" href="#tvorba-${w.id}">
+  <a class="work rv${hung(w) ? " hung" : ""}" href="#tvorba-${w.id}">
     <span class="mat glass">
-      <img class="main" src="${P}${w.id}-sm.jpg" alt="${esc(w.name)}" loading="lazy" width="720" height="964">
+      <img class="main" src="${P}${w.id}${hung(w) ? "-wall" : ""}-sm.jpg" alt="${esc(w.name)}" loading="lazy">
       <img class="alt" src="${P}${w.id}-close-sm.jpg" alt="" loading="lazy" width="720" height="964">
     </span>
     <span class="cap">
@@ -125,7 +126,7 @@ function showShot(i) {
   wpImg.style.opacity = 0;
   const s = shots[i];
   const next = new Image(); next.src = s.src;
-  next.onload = () => { wpImg.src = s.src; wpImg.style.opacity = 1; lens.style.backgroundImage = `url("${s.src}")`; };
+  next.onload = () => { wpMain.classList.toggle("hung", !!s.hung); wpImg.src = s.src; wpImg.style.opacity = 1; lens.style.backgroundImage = `url("${s.src}")`; };
   wpImg.alt = cur.name;
   $$("#wpThumbs button").forEach((b, k) => b.setAttribute("aria-pressed", k === i));
 }
@@ -133,10 +134,11 @@ function renderWork(id) {
   cur = byId(id); if (!cur) return false;
   shots = [];
   if (cur.id === "plodorodie") {
-    Object.keys(FRAMES).forEach(f => shots.push({ src: `assets/img/framed-${f}.jpg`, th: `assets/img/swatch-${f}.jpg`, v: 1, label: `рамка ${FRAMES[f]}` }));
+    Object.keys(FRAMES).forEach(f => shots.push({ src: `assets/img/framed-${f}-wall.jpg`, th: `assets/img/swatch-${f}.jpg`, v: 1, hung: true, label: `рамка ${FRAMES[f]}` }));
     shots.push({ src: `${P}plodorodie-close.jpg`, th: `${P}plodorodie-close-sm.jpg`, v: 1 });
   } else for (let i = 1; i <= (cur.photos || 1); i++) {
-    shots.push({ src: `${P}${vid(cur, i)}.jpg`, th: `${P}${vid(cur, i)}-sm.jpg`, v: i });
+    const h = hung(cur), sfx = h ? "-wall" : "";
+    shots.push({ src: `${P}${vid(cur, i)}${sfx}.jpg`, th: `${P}${vid(cur, i)}-sm.jpg`, v: i, hung: h });
     shots.push({ src: `${P}${vid(cur, i)}-close.jpg`, th: `${P}${vid(cur, i)}-close-sm.jpg`, v: i });
   }
   $("#wpThumbs").innerHTML = shots.map((s, i) => `<button type="button" data-shot="${i}" aria-label="Снимка ${i + 1}${s.label ? ", " + s.label : ""}"><img src="${s.th}" alt=""></button>`).join("");
@@ -162,10 +164,12 @@ $("#wpThumbs").addEventListener("click", e => { const b = e.target.closest("[dat
 $("#wpSizes").addEventListener("change", () => { $("#wpPrice").textContent = money(cur.sizes[+$("input[name=psize]:checked").value][2]); });
 wpMain.addEventListener("pointermove", e => {
   if (e.pointerType === "touch") return;
-  const r = wpMain.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top, Z = 3;
+  const r = wpMain.getBoundingClientRect(), ir = wpImg.getBoundingClientRect(), Z = 3;
+  const x = e.clientX - ir.left, y = e.clientY - ir.top; // relative to the photo itself (a hung frame is smaller than the box)
+  if (x < 0 || y < 0 || x > ir.width || y > ir.height) return wpMain.classList.remove("zooming");
   wpMain.classList.add("zooming");
-  lens.style.left = `${x}px`; lens.style.top = `${y}px`;
-  lens.style.backgroundSize = `${r.width * Z}px ${r.height * Z}px`;
+  lens.style.left = `${e.clientX - r.left}px`; lens.style.top = `${e.clientY - r.top}px`;
+  lens.style.backgroundSize = `${ir.width * Z}px ${ir.height * Z}px`;
   lens.style.backgroundPosition = `${-(x * Z - 95)}px ${-(y * Z - 95)}px`;
 });
 wpMain.addEventListener("pointerleave", () => wpMain.classList.remove("zooming"));
@@ -189,10 +193,10 @@ function renderWSizes() {
 }
 function updateWed() {
   const k = val("wkind"), f = val("wframe"), img = $("#wedImg");
-  const src = k === "svatba" ? `assets/img/framed-wedding-${f}.jpg` : k === "darvo" ? `assets/img/framed-${f}.jpg` : `${P}pana-yabalka.jpg`;
+  const src = k === "svatba" ? `assets/img/framed-wedding-${f}-wall.jpg` : k === "darvo" ? `assets/img/framed-${f}-wall.jpg` : `${P}pana-yabalka.jpg`;
   if (img.getAttribute("src") !== src) {
     img.style.opacity = 0;
-    const n = new Image(); n.src = src; n.onload = () => { img.src = src; img.style.opacity = 1; };
+    const n = new Image(); n.src = src; n.onload = () => { img.classList.toggle("hung", k !== "pano"); img.src = src; img.style.opacity = 1; };
   }
   $("#namesField").hidden = k !== "svatba";
   $("#wFrameSet").hidden = k === "pano";

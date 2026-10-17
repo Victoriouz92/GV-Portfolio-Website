@@ -199,6 +199,17 @@ body.locked{overflow:hidden}
   transition:opacity 1s var(--ease),transform 1.6s var(--ease)}
 .work .mat .alt{opacity:0;transform:scale(1.05)}
 .work:hover .mat .alt,.work:focus-visible .mat .alt{opacity:1;transform:scale(1)}
+/* hung on the wall: the photo wall matches the page, so frames hang straight on it with a soft cast shadow */
+:root{--hang:0 1px 1px rgba(40,24,14,.16),0 8px 12px -4px rgba(40,24,14,.2),0 26px 46px -14px rgba(40,24,14,.38)}
+.work .mat{background:none}
+.work.hung .mat{overflow:visible;aspect-ratio:5/6}
+.work.hung .mat img.main{inset:auto 0 0;margin:0 auto;width:auto;height:auto;max-width:88%;max-height:100%;object-fit:fill;
+  box-shadow:var(--hang);transition:transform .9s var(--ease),box-shadow .9s var(--ease)}
+.work.hung .mat .alt{display:none}
+.work.hung:hover .mat img.main,.work.hung:focus-visible .mat img.main{transform:translateY(-6px);
+  box-shadow:0 1px 1px rgba(40,24,14,.12),0 14px 18px -6px rgba(40,24,14,.2),0 40px 60px -18px rgba(40,24,14,.42)}
+.wp-main.hung{background:none}
+.wp-main.hung img{position:absolute;inset:0;margin:auto;width:auto;height:auto;max-width:100%;max-height:100%;box-shadow:var(--hang)}
 .work .cap{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 16px;padding-top:20px}
 .lot{grid-column:1/-1;font-size:.64rem;letter-spacing:.22em;text-transform:uppercase;color:var(--terracotta);margin-bottom:6px}
 .work h3{grid-column:1/-1}
@@ -382,6 +393,7 @@ textarea{resize:vertical}
 /* main page sections */
 .plain{margin:0}
 .plain img{width:100%}
+.wedding-fig img.hung,.plain.hung img{box-shadow:var(--hang)}
 .author-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(30px,6vw,100px);align-items:start}
 .author h2{margin:14px 0 22px}
 .author .mf{text-align:left;color:var(--umber);margin:0;max-width:20em}
