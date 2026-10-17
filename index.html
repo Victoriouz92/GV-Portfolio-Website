@@ -111,10 +111,10 @@
         <button type="button" role="radio" aria-checked="false" data-frame="black" data-name="Черно и сребро" title="Черно и сребро"><img src="assets/img/swatch-black.jpg" alt="Черно и сребро"></button>
       </div>
       <div class="feature-stage">
-        <figure class="feature-main"><img id="gMain" src="assets/img/framed-platinum.jpg" alt="Дърво на плодородието в платинена рамка" width="1000" height="1314"></figure>
+        <figure class="feature-main"><img id="gMain" src="assets/img/framed-platinum.jpg" alt="Дърво на плодородието в платинена рамка" width="1500" height="2009"></figure>
         <p class="label">Рамка: <b id="frameName">Платина</b></p>
         <div class="thumbs" role="group" aria-label="Още снимки">
-          <button type="button" data-src="assets/img/tree-autumn.jpg" data-alt="Оригиналната снимка на картината" aria-label="Оригинална снимка"><img src="assets/img/tree-autumn-sm.jpg" alt="" loading="lazy"></button>
+          <button type="button" data-src="assets/products/plodorodie-close.jpg" data-alt="Стъклата отблизо" aria-label="Стъклата отблизо"><img src="assets/products/plodorodie-close-sm.jpg" alt="" loading="lazy"></button>
           <button type="button" data-src="assets/img/light-poster.jpg" data-alt="Цветните стъкла на светлина" aria-label="Стъклата на светлина"><img src="assets/img/light-poster.jpg" alt=""></button>
           <button type="button" data-video aria-label="Видео как се създава"><img src="assets/img/making-poster.jpg" alt="" loading="lazy"><span class="play" aria-hidden="true">▶</span></button>
         </div>
@@ -135,6 +135,11 @@
       <p class="fine">Всяка картина е уникална. Възможни са фини разлики спрямо снимките.</p>
     </div>
   </article>
+
+  <figure class="collection">
+    <img src="assets/img/collection.jpg" alt="Седем Дървета на живота в златни рамки, подредени на стена" loading="lazy" width="2000" height="1493">
+    <figcaption class="label">Дървета на живота · авторска серия</figcaption>
+  </figure>
 
   <h3 class="sub-h">Още картини</h3>
   <div class="works" id="gridKartini"></div>
@@ -236,6 +241,17 @@
   <a class="mark" href="#top">Лъки Михайлова</a>
   <p class="label">Картини от стъкло · © <span id="yr"></span></p>
 </footer>
+
+<dialog class="viewer" id="viewer" aria-labelledby="vTitle">
+  <div class="viewer-bar">
+    <b id="vTitle"></b>
+    <span class="label" id="vCap"></span>
+    <button type="button" class="viewer-x" id="vClose" aria-label="Затвори">✕</button>
+  </div>
+  <img id="vImg" alt="">
+  <button type="button" class="viewer-nav prev" id="vPrev" aria-label="Предишна снимка">←</button>
+  <button type="button" class="viewer-nav next" id="vNext" aria-label="Следваща снимка">→</button>
+</dialog>
 
 <script src="main.js"></script>
 </body>

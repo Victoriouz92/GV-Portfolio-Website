@@ -1,50 +1,51 @@
 // TODO: replace with the real contact email before launch
 const ORDER_EMAIL = "info@artgifts.bg";
 
-/* Photos: a file at assets/products/<id>.jpg shows up on its card automatically.
-   Without one, the card shows a tinted glass placeholder. */
+/* Photos live in assets/products/: <id>.jpg, <id>-close.jpg, and <id>-2.jpg … for variants
+   (each with a -sm.jpg copy for the grid). "photos" = how many variants a work has. */
 const WORKS = [
   // ---- PANELS (no frame) ----
-  { id: "pana-buhal", cat: "pana", name: "Бухал", size: "12 × 12 см", price: 20, tint: ["#d79a2b", "#6b3d17"],
+  { id: "pana-buhal", cat: "pana", name: "Бухал", size: "12 × 12 см", price: 20,
     text: "Символ на мъдрост и благополучие." },
-  { id: "pana-taralezh", cat: "pana", name: "Таралеж", size: "12 × 12 см", price: 20, tint: ["#9a7a45", "#c2562a"],
+  { id: "pana-taralezh", cat: "pana", name: "Таралеж", size: "12 × 12 см", price: 20, photos: 3, note: "Три варианта",
     text: "Предвестник на есента. Символизира упорития труд на този, който събира узрели плодове за зимнина. Събира слънчевите лъчи и ги пренася в дома ни." },
-  { id: "pana-cherno-kote", cat: "pana", name: "Черно коте за късмет", size: "12 × 12 см", price: 20, tint: ["#2b2d2c", "#6f9a52"],
+  { id: "pana-cherno-kote", cat: "pana", name: "Черно коте за късмет", size: "12 × 12 см", price: 20,
     text: "Подарява се за късмет и безстрашие. За да си кажем: „Ще пречупя карък и ще започна без страх отново!“" },
-  { id: "pana-sharena-maca", cat: "pana", name: "Шарената маца", size: "12 × 12 см", price: 20, tint: ["#7fae5c", "#e3a732"],
+  { id: "pana-sharena-maca", cat: "pana", name: "Шарената маца", size: "12 × 12 см", price: 20,
     text: "Подарява се за нежност, вярност, приятелство, игри и усмивки." },
-  { id: "pana-sartse", cat: "pana", name: "Сърце", size: "12 × 12 см", price: 20, tint: ["#c4291f", "#f3b8a4"],
+  { id: "pana-sartse", cat: "pana", name: "Сърце", size: "12 × 12 см", price: 20,
     text: "Подарява се за любов, вярност и надежда. И за да не забравяш себе си и да се обичаш!" },
-  { id: "pana-mazhko-sartse", cat: "pana", name: "Мъжко сърце", size: "12 × 12 см", price: 20, tint: ["#c4291f", "#2f66b3"],
+  { id: "pana-mazhko-sartse", cat: "pana", name: "Мъжко сърце", size: "12 × 12 см", price: 20,
     text: "Освен червено има и добавен син цвят: връзка с небето и със силния мъжки пол." },
-  { id: "pana-angel", cat: "pana", name: "Ангел Хранител", size: "12 × 14 см", price: 24, tint: ["#c9c08a", "#9a5a32"],
-    note: "Два цветови варианта",
+  { id: "pana-angel", cat: "pana", name: "Ангел Хранител", size: "12 × 14 см", price: 24, photos: 2, note: "Два цветови варианта",
     text: "Рамката на паното е изрисувана с висококачествени професионални бои за стъкло. Ангелът е от сребърна тел, огънат на ръка. Всеки има свой собствен чар и индивидуалност." },
-  { id: "pana-yabalka", cat: "pana", name: "Дърво на живота — Ябълка", size: "12 × 15 см", price: 24, tint: ["#6a9a4a", "#c2562a"],
-    img: "assets/img/panel-apple.jpg",
+  { id: "pana-yabalka", cat: "pana", name: "Дърво на живота — Ябълка", size: "12 × 15 см", price: 24, photos: 2, note: "Два варианта",
     text: "Освен нарисуваната символика има и 8 узрели ябълкови плода. Числото 8 е символ на успех и безкрайност." },
-  { id: "pana-urozhay", cat: "pana", name: "Дърво на живота — Урожай", size: null, price: null, tint: ["#c9501d", "#5a4a32"] },
-  { id: "pana-rache", cat: "pana", name: "Раче", size: "12 × 12 см", price: 20, tint: ["#e8772f", "#3f8bb5"],
+  { id: "pana-urozhay", cat: "pana", name: "Дърво на живота — Урожай", size: null, price: null },
+  { id: "pana-rache", cat: "pana", name: "Раче", size: "12 × 12 см", price: 20,
     text: "Усещане за идването на лятото, топлината, морските почивки и плажовете." },
 
   // ---- PICTURES (framed) ----
   { id: "plodorodie", cat: "kartina", hidden: true, name: "Дърво на плодородието", size: "30 × 40 см", price: 80 },
-  { id: "kartina-yabalka", cat: "kartina", name: "Дърво на живота — Ябълка", tint: ["#c4291f", "#6a9a4a"],
+  { id: "kartina-yabalka", cat: "kartina", name: "Дърво на живота — Ябълка", photos: 2,
     note: "Дървена рамка платина",
     sizes: [["Малко", "14 × 16 см", 28], ["Средно", "18 × 22 см", 38], ["Голямо", "26 × 36 см", 89], ["Най-голямо", "30 × 40 см", 98]] },
-  { id: "kartina-prestizh", cat: "kartina", name: "Дърво на живота — Престиж", size: null, price: 68, tint: ["#2a2a22", "#b08a3e"],
+  { id: "kartina-prestizh", cat: "kartina", name: "Дърво на живота — Престиж", size: null, price: 68,
     note: "Масивна ретро рамка",
     text: "Дърво с широки клони и дебел ствол, стъпило здраво на земята и пуснало дълбоки корени. Усещане за зрялост, сила и непоклатимост." },
-  { id: "kartina-prolet", cat: "kartina", name: "Дърво на живота — Пролет", size: "24 × 36 см", price: 76, tint: ["#dba522", "#5f8f3f"],
+  { id: "kartina-prolet", cat: "kartina", name: "Дърво на живота — Пролет", size: "24 × 36 см", price: 76,
     note: "Златна рамка и закопчалка · само в този размер",
     text: "Носи радост, топлина и много цвят в дома и офиса. Усещане за изисканост, прецизност и блестяща чистота." },
-  { id: "kartina-proletno-darvo", cat: "kartina", name: "Пролетно дърво", size: "голямо · 26 × 36 см", price: 89, tint: ["#e0702a", "#5f8f3f"],
+  { id: "kartina-proletno-darvo", cat: "kartina", name: "Пролетно дърво", size: "голямо · 26 × 36 см", price: 89, photos: 2,
     note: "Платинена дървена рамка" },
-  { id: "kartina-blagodat", cat: "kartina", name: "Дърво на живота — Благодат", size: "19,5 × 19,5 см с рамката", price: 35, tint: ["#8a4a1e", "#c98a2b"],
+  { id: "kartina-blagodat", cat: "kartina", name: "Дърво на живота — Благодат", size: "19,5 × 19,5 см с рамката", price: 35,
     note: "Върху керамична плочка" },
-  { id: "kartina-cheresha", cat: "kartina", name: "Дърво на живота — Череша", size: null, price: null, tint: ["#d0402a", "#5a4a3a"] },
-  { id: "kartina-razvitie", cat: "kartina", name: "Дърво на живота — Развитие", size: null, price: null, tint: ["#c0302a", "#2d2f2e"] },
-  { id: "kartina-zlatno-lyato", cat: "kartina", name: "Дърво на живота — Златно лято", size: null, price: null, tint: ["#e3b52a", "#5f8f3f"],
+  { id: "kartina-semeino", cat: "kartina", name: "Семейно дърво", size: null, price: null },
+  { id: "kartina-barok", cat: "kartina", name: "Дърво на живота — Барок", size: null, price: null, note: "Барокова рамка" },
+  { id: "kartina-byalo", cat: "kartina", name: "Дърво на живота — Бяло", size: null, price: null, note: "Бяла рамка" },
+  { id: "kartina-cheresha", cat: "kartina", name: "Дърво на живота — Череша", size: null, price: null },
+  { id: "kartina-razvitie", cat: "kartina", name: "Дърво на живота — Развитие", size: null, price: null },
+  { id: "kartina-zlatno-lyato", cat: "kartina", name: "Дърво на живота — Златно лято", size: null, price: null,
     note: "Златна рамка" },
 ];
 
@@ -55,18 +56,26 @@ const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;",
 const prices = w => w.sizes ? w.sizes.map(s => s[2]) : w.price != null ? [w.price] : [];
 
 /* ---------- catalogue ---------- */
+const P = "assets/products/";
+const shots = w => {
+  const out = [];
+  for (let i = 1; i <= (w.photos || 1); i++) {
+    const base = P + w.id + (i > 1 ? `-${i}` : "");
+    out.push(base, base + "-close");
+  }
+  return out;
+};
 function card(w) {
-  const src = w.img || `assets/products/${w.id}.jpg`;
-  const [a, b] = w.tint;
   const price = w.sizes ? `от ${money(Math.min(...prices(w)))}` : w.price != null ? money(w.price) : "по запитване";
   const size = w.size || (w.sizes ? `${w.sizes.length} размера` : "размер при запитване");
   const sizes = w.sizes
     ? `<ul class="sizes">${w.sizes.map(s => `<li><span>${s[0]} · ${s[1]}</span><b>${money(s[2])}</b></li>`).join("")}</ul>` : "";
   return `<article class="work">
-    <div class="mat${w.cat === "pana" ? " sq" : ""}" style="--a:${a};--b:${b}">
-      <img src="${src}" alt="${esc(w.name)}" decoding="async" onerror="this.parentNode.classList.add('empty');this.remove()">
-      <span class="label ph">снимка предстои</span>
-    </div>
+    <button type="button" class="mat" data-view="${w.id}" aria-label="Снимки: ${esc(w.name)}">
+      <img src="${P}${w.id}-sm.jpg" alt="${esc(w.name)}" loading="lazy" width="720" height="964">
+      <img class="close" src="${P}${w.id}-close-sm.jpg" alt="" loading="lazy" width="720" height="964">
+      ${(w.photos || 1) > 1 ? `<span class="label count">${w.photos} варианта</span>` : ""}
+    </button>
     <h3>${esc(w.name)}</h3>
     ${w.note ? `<p class="label">${esc(w.note)}</p>` : ""}
     ${w.text ? `<p class="work-text">${esc(w.text)}</p>` : ""}${sizes}
@@ -77,6 +86,35 @@ function card(w) {
     <button class="textlink" type="button" data-order="${w.id}">Поръчай →</button>
   </article>`;
 }
+
+/* ---------- photo viewer ---------- */
+const viewer = $("#viewer"), vImg = $("#vImg"), vCap = $("#vCap");
+let vList = [], vI = 0;
+const vShow = () => {
+  vImg.src = vList[vI] + ".jpg";
+  vCap.textContent = `${vI + 1} / ${vList.length}`;
+};
+function openViewer(list, title) {
+  vList = list; vI = 0;
+  $("#vTitle").textContent = title;
+  vShow();
+  viewer.showModal();
+}
+document.addEventListener("click", e => {
+  const b = e.target.closest("[data-view]");
+  if (!b) return;
+  const w = WORKS.find(x => x.id === b.dataset.view);
+  openViewer(shots(w), w.name);
+});
+$("#vPrev").addEventListener("click", () => { vI = (vI - 1 + vList.length) % vList.length; vShow(); });
+$("#vNext").addEventListener("click", () => { vI = (vI + 1) % vList.length; vShow(); });
+$("#vClose").addEventListener("click", () => viewer.close());
+viewer.addEventListener("click", e => { if (e.target === viewer) viewer.close(); });
+viewer.addEventListener("keydown", e => {
+  if (e.key === "ArrowLeft") $("#vPrev").click();
+  if (e.key === "ArrowRight") $("#vNext").click();
+});
+
 $("#gridPana").innerHTML = WORKS.filter(w => w.cat === "pana").map(card).join("");
 $("#gridKartini").innerHTML = WORKS.filter(w => w.cat === "kartina" && !w.hidden).map(card).join("");
 $$("[data-count]").forEach(el => {
@@ -131,7 +169,7 @@ function pickFrame(key) {
   $("#wedImg").src = `assets/img/framed-wedding-${key}.jpg`;
   $("#frameName").textContent = f.dataset.name;
   frameSel.value = f.dataset.name;
-  stage.innerHTML = `<img src="assets/img/framed-${key}.jpg" alt="Картината в рамка ${f.dataset.name}" width="1000" height="1314">`;
+  stage.innerHTML = `<img src="assets/img/framed-${key}.jpg" alt="Картината в рамка ${f.dataset.name}" width="1500" height="2009">`;
   thumbs.forEach(t => t.classList.remove("on"));
 }
 allSwatches.forEach(s => s.addEventListener("click", () => pickFrame(s.dataset.frame)));
