@@ -91,7 +91,7 @@ const hung = w => w.cat === "kartina"; // framed pictures are cut from the photo
 const card = w => `
   <a class="work rv${hung(w) ? " hung" : ""}" href="#tvorba-${w.id}">
     <span class="mat glass">
-      <img class="main" src="${P}${w.id}${hung(w) ? "-wall" : ""}-sm.jpg" alt="${esc(w.name)}" loading="lazy">
+      <img class="main" src="${P}${w.id}${hung(w) ? "-wall-sm.jpg?v=2" : "-sm.jpg"}" alt="${esc(w.name)}" loading="lazy">
       <img class="alt" src="${P}${w.id}-close-sm.jpg" alt="" loading="lazy" width="720" height="964">
     </span>
     <span class="cap">
@@ -138,7 +138,7 @@ function renderWork(id) {
     shots.push({ src: `${P}plodorodie-close.jpg`, th: `${P}plodorodie-close-sm.jpg`, v: 1 });
   } else for (let i = 1; i <= (cur.photos || 1); i++) {
     const h = hung(cur), sfx = h ? "-wall" : "";
-    shots.push({ src: `${P}${vid(cur, i)}${sfx}.jpg`, th: `${P}${vid(cur, i)}-sm.jpg`, v: i, hung: h });
+    shots.push({ src: `${P}${vid(cur, i)}${sfx}.jpg${h ? "?v=2" : ""}`, th: `${P}${vid(cur, i)}-sm.jpg`, v: i, hung: h });
     shots.push({ src: `${P}${vid(cur, i)}-close.jpg`, th: `${P}${vid(cur, i)}-close-sm.jpg`, v: i });
   }
   $("#wpThumbs").innerHTML = shots.map((s, i) => `<button type="button" data-shot="${i}" aria-label="Снимка ${i + 1}${s.label ? ", " + s.label : ""}"><img src="${s.th}" alt=""></button>`).join("");
