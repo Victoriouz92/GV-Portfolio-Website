@@ -329,6 +329,9 @@ const intro = $("#intro");
   $("#enterBtn").addEventListener("click", enter);
   $("#enterBtn").setAttribute("aria-label", "Влез в сайта");
   addEventListener("keydown", e => { if (!intro.hidden && e.key === "Enter") enter(); });
+  let ci = 0;
+  $$(".intro-name .w").forEach(w => { w.setAttribute("aria-hidden", "true");
+    w.innerHTML = [...w.textContent].map(c => `<span class="ch" style="--i:${ci++}">${c}</span>`).join(""); });
   let seen = false; try { seen = sessionStorage.getItem("entered") === "1"; } catch {}
   const deep = location.hash && location.hash !== "#kolekcia";
   if (seen || deep) { intro.hidden = true; cancelAnimationFrame(raf); }
