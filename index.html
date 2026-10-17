@@ -38,18 +38,21 @@
 <!-- ============ HOME ============ -->
 <div class="view" data-view="nachalo">
   <section class="hero">
-    <figure class="hero-media">
-      <video autoplay muted playsinline preload="auto" poster="assets/img/hero-poster.jpg" aria-label="Дървото на плодородието се ражда — от голи клони до пълна корона от цветно стъкло"><source src="assets/video/hero.mp4" type="video/mp4"></video>
-    </figure>
-    <div class="hero-copy">
-      <p class="eyebrow rv">28 години авторски картини от стъкло</p>
-      <h1 class="rv">Светлина,<br><i>уловена</i><br>в стъкло</h1>
-      <p class="lead rv">Дървета на живота и пана, рисувани с бои за стъкло и сплавени в пещ. Всяко е единствено и носи пожелание за дома, в който ще живее.</p>
-      <div class="actions rv">
-        <a class="btn" href="#kolekcia">Колекцията</a>
-        <a class="link" href="#poruchka">Поръчка по мярка</a>
-      </div>
-      <p class="hero-foot rv"><span>№ 01</span>Дърво на плодородието, от голи клони до корона</p>
+    <p class="hero-kicker rv"><span>Лъки Михайлова</span><span>Картини от цветно стъкло</span><span>София</span></p>
+    <h1 class="hero-title rv">
+      <span class="ln">Дървета
+        <span class="arch" aria-hidden="true"><video autoplay muted playsinline preload="auto" poster="assets/img/hero-poster.jpg"><source src="assets/video/hero.mp4" type="video/mp4"></video></span>
+        на живота,</span>
+      <span class="ln ind">сплавени от</span>
+      <span class="ln"><i>пожелания</i><span class="dotline" aria-hidden="true"></span></span>
+    </h1>
+    <div class="hero-row rv">
+      <p class="lead">Всяко цветно стъкълце е вложено с намерение — за здраве, любов, успех и хармония. Рисувано на ръка, двойно темперирано в пещ, единствено по рода си.</p>
+      <a class="orb" href="#kolekcia" aria-label="Към колекцията">
+        <svg viewBox="0 0 200 200" aria-hidden="true"><defs><path id="orbPath" d="M100,100 m-74,0 a74,74 0 1,1 148,0 a74,74 0 1,1 -148,0"/></defs>
+          <text><textPath href="#orbPath">колекцията · колекцията · колекцията · </textPath></text></svg>
+        <span class="orb-arrow">↓</span>
+      </a>
     </div>
   </section>
 
@@ -61,25 +64,31 @@
     </div>
   </section>
 
-  <section class="block">
-    <header class="head rv"><div><p class="eyebrow">Каталог</p><h2>Избрани творби</h2></div><a class="link" href="#kolekcia">Всички творби</a></header>
-    <div class="curated" id="curated"></div>
+  <section class="block cats4">
+    <header class="head rv"><div><p class="eyebrow">Колекция</p><h2>Четири начина да внесете светлина</h2></div><a class="link" href="#kolekcia">Всички творби</a></header>
+    <div class="cat4-grid">
+      <a class="cat4 rv" href="#kolekcia" data-goto="kartina">
+        <span class="arch-img"><img src="assets/products/kartina-zlatno-lyato-sm.jpg" alt="" loading="lazy"></span>
+        <span class="c4-num">I</span><b>Картини</b><span class="c4-sub">Дървета на живота в рамка · от 28 €</span>
+      </a>
+      <a class="cat4 rv" href="#kolekcia" data-goto="pana">
+        <span class="arch-img"><img src="assets/products/pana-taralezh-2-sm.jpg" alt="" loading="lazy"></span>
+        <span class="c4-num">II</span><b>Пана</b><span class="c4-sub">На метална закачалка · от 20 €</span>
+      </a>
+      <a class="cat4 rv soon-cat" href="#kolekcia" data-goto="soon">
+        <span class="arch-img fill terracotta"><span>скоро</span></span>
+        <span class="c4-num">III</span><b>Пластики</b><span class="c4-sub">Стъклени обемни форми</span>
+      </a>
+      <a class="cat4 rv soon-cat" href="#kolekcia" data-goto="soon">
+        <span class="arch-img fill olive"><span>скоро</span></span>
+        <span class="c4-num">IV</span><b>Бижута</b><span class="c4-sub">Цветно стъкло за носене</span>
+      </a>
+    </div>
   </section>
 
-  <section class="block cats rv">
-    <a class="cat" href="#kolekcia" data-goto="kartina">
-      <span class="mat"><img src="assets/products/kartina-zlatno-lyato.jpg" alt="Стъклени картини" loading="lazy"></span>
-      <span class="cat-cap"><b>Картини</b><span>в дървена рамка · от 28 €</span></span>
-    </a>
-    <a class="cat" href="#kolekcia" data-goto="pana">
-      <span class="mat"><img src="assets/products/pana-taralezh-2.jpg" alt="Стъклени пана" loading="lazy"></span>
-      <span class="cat-cap"><b>Пана</b><span>на метална закачалка · от 20 €</span></span>
-    </a>
-  </section>
-
-  <section class="feature linen" id="izbrano">
+  <section class="feature" id="izbrano">
     <div class="feature-in">
-      <figure class="feature-fig mat glass">
+      <figure class="feature-fig">
         <img id="featImg" src="assets/img/framed-platinum.jpg" alt="Дърво на плодородието в платинена рамка" width="1200" height="1607">
       </figure>
       <div class="feature-copy">

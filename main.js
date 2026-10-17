@@ -100,7 +100,6 @@ const card = w => `
       <span class="price">${priceLabel(w)}</span>
     </span>
   </a>`;
-$("#curated").innerHTML = ["kartina-prestizh", "pana-buhal", "pana-angel", "kartina-zlatno-lyato"].map(id => card(byId(id))).join("");
 
 /* ---------- collection ---------- */
 let curCat = "kartina";
