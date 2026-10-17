@@ -254,35 +254,73 @@ const intro = $("#intro");
 (function introScene() {
   const cv = $("#introCanvas"), ctx = cv.getContext("2d");
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const COLORS = ["154,74,46", "179,133,54", "85,88,63", "196,98,48", "120,60,40", "205,160,90"];
-  let W, H, dpr, beads = [], raf, t0 = performance.now();
+  // fused-glass chips in the colours of her trees: orange, amber, red, green, honey, brown
+  const GLASS = [[229,100,28],[201,138,36],[196,42,26],[63,140,70],[232,176,40],[110,48,20],[238,128,44],[150,30,22]];
+  let W, H, dpr, chips = [], raf, t0 = performance.now();
+  function chipSprite(c, r, blur) {
+    const pad = Math.ceil(r * .6 + blur * 2), S = Math.ceil(r * 2 + pad * 2);
+    const oc = document.createElement("canvas"); oc.width = oc.height = S;
+    const g = oc.getContext("2d"), m = S / 2;
+    if (blur) g.filter = `blur(${blur}px)`;
+    // irregular pebble / drop outline
+    const n = 7 + (Math.random() * 4 | 0), stretch = .45 + Math.random() * .6, pts = [];
+    for (let i = 0; i < n; i++) {
+      const an = i / n * 6.283, k = r * (.75 + Math.random() * .4);
+      pts.push([m + Math.cos(an) * k, m + Math.sin(an) * k * stretch]);
+    }
+    const path = new Path2D();
+    for (let i = 0; i <= n; i++) {
+      const p0 = pts[i % n], p1 = pts[(i + 1) % n], mx = (p0[0] + p1[0]) / 2, my = (p0[1] + p1[1]) / 2;
+      i ? path.quadraticCurveTo(p0[0], p0[1], mx, my) : path.moveTo(mx, my);
+    }
+    const [R, G, B] = c, lt = (v, f) => Math.min(255, v + (255 - v) * f) | 0, dk = (v, f) => v * f | 0;
+    const body = g.createRadialGradient(m - r * .25, m - r * .3, r * .1, m, m, r * 1.05);
+    body.addColorStop(0, `rgba(${lt(R,.5)},${lt(G,.5)},${lt(B,.5)},.7)`);
+    body.addColorStop(.55, `rgba(${R},${G},${B},.78)`);
+    body.addColorStop(1, `rgba(${dk(R,.45)},${dk(G,.45)},${dk(B,.45)},.95)`);
+    g.fillStyle = body; g.fill(path);
+    g.save(); g.clip(path);
+    g.lineWidth = r * .18; g.strokeStyle = `rgba(${dk(R,.35)},${dk(G,.35)},${dk(B,.35)},.45)`; g.stroke(path); // thick glass edge
+    const glow = g.createRadialGradient(m + r * .3, m + r * .35, 0, m + r * .3, m + r * .35, r * .55);
+    glow.addColorStop(0, `rgba(${lt(R,.7)},${lt(G,.6)},${lt(B,.4)},.55)`); glow.addColorStop(1, "rgba(255,255,255,0)");
+    g.fillStyle = glow; g.fillRect(0, 0, S, S); // light passing through
+    g.restore();
+    g.fillStyle = "rgba(255,252,242,.85)"; g.beginPath(); // specular highlight
+    g.ellipse(m - r * .32, m - r * .34 * stretch, r * .26, r * .12, -.6, 0, 6.283); g.fill();
+    g.fillStyle = "rgba(255,252,242,.5)"; g.beginPath();
+    g.arc(m + r * .38, m + r * .22 * stretch, r * .06, 0, 6.283); g.fill();
+    return oc;
+  }
   function size() {
     dpr = Math.min(2, devicePixelRatio || 1);
     W = cv.width = innerWidth * dpr; H = cv.height = innerHeight * dpr;
     cv.style.width = innerWidth + "px"; cv.style.height = innerHeight + "px";
-    const n = Math.round(Math.min(46, innerWidth / 26));
-    beads = Array.from({ length: n }, (_, i) => ({
-      x: Math.random() * W, y: Math.random() * H,
-      r: (18 + Math.random() * 70) * dpr * (innerWidth < 600 ? .7 : 1),
-      c: COLORS[i % COLORS.length], a: .18 + Math.random() * .3,
-      vx: (Math.random() - .5) * .12 * dpr, vy: (-.05 - Math.random() * .18) * dpr, ph: Math.random() * 6.28,
-    }));
+    const n = Math.round(Math.min(80, innerWidth / 16)), sc = innerWidth < 600 ? .7 : 1;
+    chips = Array.from({ length: n }, (_, i) => {
+      const z = Math.random(); // 0 = far, 1 = near
+      const r = (6 + z * z * 34) * dpr * sc, blur = z > .85 ? (z - .85) * 40 * dpr : z < .3 ? (.3 - z) * 10 * dpr : 0;
+      return { x: Math.random() * W, y: Math.random() * H, z, r, img: chipSprite(GLASS[i % GLASS.length], r, blur),
+        a: .6 + z * .4, rot: Math.random() * 6.283, vr: (Math.random() - .5) * .006,
+        vx: (Math.random() - .5) * .15 * dpr, vy: -(.06 + z * .32) * dpr, ph: Math.random() * 6.28 };
+    }).sort((p, q) => p.z - q.z);
   }
   function frame(now) {
-    const t = (now - t0) / 1000;
+    const t = (now - t0) / 1000, fade = Math.min(1, t / 2.5);
     ctx.clearRect(0, 0, W, H);
-    for (const b of beads) {
+    for (const c of chips) {
       if (!reduce) {
-        b.x += b.vx + Math.sin(t * .3 + b.ph) * .15 * dpr; b.y += b.vy;
-        if (b.y < -b.r) { b.y = H + b.r; b.x = Math.random() * W; }
+        c.x += c.vx + Math.sin(t * .35 + c.ph) * .18 * dpr * (.4 + c.z); c.y += c.vy; c.rot += c.vr;
+        const e = c.img.width;
+        if (c.y < -e) { c.y = H + e; c.x = Math.random() * W; }
+        if (c.x < -e) c.x = W + e; else if (c.x > W + e) c.x = -e;
       }
-      const g = ctx.createRadialGradient(b.x - b.r * .3, b.y - b.r * .35, b.r * .05, b.x, b.y, b.r);
-      const fade = Math.min(1, t / 2.5);
-      g.addColorStop(0, `rgba(255,240,215,${.55 * b.a * fade})`);
-      g.addColorStop(.35, `rgba(${b.c},${b.a * fade})`);
-      g.addColorStop(1, `rgba(${b.c},0)`);
-      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, 6.283); ctx.fill();
+      // soften chips that drift behind the name so the text stays clear
+      const dx = (c.x - W / 2) / (W * .42), dy = (c.y - H * .45) / (H * .22), near = dx * dx + dy * dy;
+      ctx.globalAlpha = c.a * fade * (near < 1 ? .3 + .7 * near : 1);
+      ctx.setTransform(1, 0, 0, 1, c.x, c.y); ctx.rotate(c.rot + Math.sin(t * .5 + c.ph) * .15);
+      ctx.drawImage(c.img, -c.img.width / 2, -c.img.height / 2);
     }
+    ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1;
     if (!reduce) raf = requestAnimationFrame(frame);
   }
   size(); addEventListener("resize", size);
