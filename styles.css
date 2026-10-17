@@ -399,7 +399,7 @@ textarea{resize:vertical}
 .author .mf{text-align:left;color:var(--umber);margin:0;max-width:20em}
 .author-text p{color:var(--bark);margin-bottom:16px;max-width:34em}
 .author-fig{margin-top:clamp(50px,7vw,90px)}
-.author-fig img{width:100%}
+.author-fig img{width:100%;height:auto}
 .contacts h2{margin:14px 0 clamp(36px,5vw,60px)}
 .contact-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px 40px;border-top:1px solid var(--line);padding-top:28px}
 .c-label{font-size:.66rem;letter-spacing:.24em;text-transform:uppercase;color:var(--bark)}
