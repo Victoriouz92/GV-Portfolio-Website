@@ -4,6 +4,8 @@ const ORDER_EMAIL = "info@artgifts.bg";
 /* Photos live in assets/products/: <id>.jpg (on the wall), <id>-close.jpg (detail),
    and <id>-2.jpg … for variants, each with a -sm.jpg copy for the grid. */
 const WORKS = [
+  { id: "plodorodie", cat: "kartina", name: "Дърво на плодородието", size: "30 × 40 см", price: 80, frame: "дървена, 3 см, по избор",
+    text: "Семейно дърво на живота. Изработено върху стъкло със специални професионални бои и цветни стъкла. Двойно темперирано в пещ за стъкло." },
   // ---- PICTURES (framed) ----
   { id: "kartina-yabalka", cat: "kartina", name: "Дърво на живота — Ябълка", photos: 2, frame: "дървена, платина",
     sizes: [["Малко", "14 × 16 см", 28], ["Средно", "18 × 22 см", 38], ["Голямо", "26 × 36 см", 89], ["Най-голямо", "30 × 40 см", 98]] },
@@ -55,12 +57,13 @@ const prices = w => w.sizes ? w.sizes.map(s => s[2]) : w.price != null ? [w.pric
 const priceLabel = w => w.sizes ? `от ${money(Math.min(...prices(w)))}` : w.price != null ? money(w.price) : "по запитване";
 const sizeLabel = w => w.size || (w.sizes ? w.sizes.map(s => s[1].replace(" см", "")).join(" · ") + " см" : "размер при запитване");
 const vid = (w, i) => w.id + (i > 1 ? `-${i}` : "");
+const byId = id => WORKS.find(w => w.id === id);
+const FRAMES = { platinum: "Платина", walnut: "Тъмен орех", black: "Черно и сребро" };
 const store = {
   get(k, d) { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } },
   set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} },
 };
 document.documentElement.classList.add("js");
-
 const bar = $(".bar");
 addEventListener("scroll", () => bar.classList.toggle("lined", scrollY > 20), { passive: true });
 
@@ -68,116 +71,182 @@ addEventListener("scroll", () => bar.classList.toggle("lined", scrollY > 20), { 
 const io = "IntersectionObserver" in window ? new IntersectionObserver(es => es.forEach(e => {
   if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
 }), { rootMargin: "0px 0px -6% 0px" }) : null;
-const observe = els => els.forEach((el, i) => { el.style.transitionDelay = `${(i % 3) * 90}ms`; io ? io.observe(el) : el.classList.add("in"); });
-setTimeout(() => $$(".rv").forEach(el => el.classList.add("in")), 1800);
+function observe(root = document) {
+  const els = $$(".rv:not(.in)", root);
+  els.forEach((el, i) => { el.style.transitionDelay = `${(i % 3) * 90}ms`; io ? io.observe(el) : el.classList.add("in"); });
+  setTimeout(() => els.forEach(el => el.classList.add("in")), 1800);
+}
+
+/* ---------- light through glass: sheen follows the pointer ---------- */
+document.addEventListener("pointermove", e => {
+  const g = e.target.closest && e.target.closest(".glass"); if (!g) return;
+  const r = g.getBoundingClientRect();
+  g.style.setProperty("--gx", `${((e.clientX - r.left) / r.width) * 100}%`);
+  g.style.setProperty("--gy", `${((e.clientY - r.top) / r.height) * 100}%`);
+});
+
+/* ---------- cards ---------- */
+const card = w => `
+  <a class="work rv" href="#tvorba-${w.id}">
+    <span class="frame glass">
+      <img class="main" src="${P}${w.id}-sm.jpg" alt="${esc(w.name)}" loading="lazy" width="720" height="964">
+      <img class="alt" src="${P}${w.id}-close-sm.jpg" alt="" loading="lazy" width="720" height="964">
+      ${(w.photos || 1) > 1 ? `<span class="tag">${w.photos} варианта</span>` : ""}
+    </span>
+    <span class="cap"><h3>${esc(w.name)}</h3><span class="price">${priceLabel(w)}</span><span class="size">${sizeLabel(w)}</span></span>
+  </a>`;
+$("#curated").innerHTML = ["kartina-prestizh", "pana-buhal", "pana-angel", "kartina-zlatno-lyato"].map(id => card(byId(id))).join("");
 
 /* ---------- collection ---------- */
-const grid = $("#grid");
-function render(cat) {
+let curCat = "kartina";
+function renderGrid(cat) {
+  curCat = cat;
   const soon = cat === "soon";
-  $("#soon").hidden = !soon; grid.hidden = soon;
+  $("#soon").hidden = !soon; $("#grid").hidden = soon;
   $("#catNote").textContent = soon ? "" : CAT_NOTE[cat];
-  if (soon) return;
-  grid.innerHTML = WORKS.filter(w => w.cat === cat).map(w => `
-    <button type="button" class="work rv" data-open="${w.id}">
-      <span class="frame">
-        <img class="main" src="${P}${w.id}-sm.jpg" alt="${esc(w.name)}" loading="lazy" width="720" height="964">
-        <img class="alt" src="${P}${w.id}-close-sm.jpg" alt="" loading="lazy" width="720" height="964">
-        ${(w.photos || 1) > 1 ? `<span class="tag">${w.photos} варианта</span>` : ""}
-      </span>
-      <span class="cap"><h3>${esc(w.name)}</h3><span class="price">${priceLabel(w)}</span><span class="size">${sizeLabel(w)}</span></span>
-    </button>`).join("");
-  observe($$(".rv", grid));
+  if (!soon) $("#grid").innerHTML = WORKS.filter(w => w.cat === cat && w.id !== "plodorodie").map(card).join("");
+  observe($("#grid"));
 }
 $$(".tabs button").forEach(t => t.addEventListener("click", () => {
   $$(".tabs button").forEach(x => x.setAttribute("aria-selected", x === t));
-  render(t.dataset.cat);
+  renderGrid(t.dataset.cat);
 }));
-render("kartina");
+renderGrid("kartina");
 
-/* ---------- product ---------- */
-const dlg = $("#product"), pMain = $("#pMain"), pImg = $("#pImg");
-let cur = null, shotList = [];
+/* ---------- work page with magnifier ---------- */
+const wpMain = $("#wpMain"), wpImg = $("#wpImg"), lens = $("#lens");
+let cur = null, shots = [], shotI = 0;
 function showShot(i) {
-  const s = shotList[i];
-  pMain.classList.remove("on");
-  pImg.src = s.src; pImg.alt = cur.name;
-  $$("#pThumbs button").forEach((b, k) => b.setAttribute("aria-pressed", k === i));
+  shotI = i;
+  wpImg.style.opacity = 0;
+  const s = shots[i];
+  const next = new Image(); next.src = s.src;
+  next.onload = () => { wpImg.src = s.src; wpImg.style.opacity = 1; lens.style.backgroundImage = `url("${s.src}")`; };
+  wpImg.alt = cur.name;
+  $$("#wpThumbs button").forEach((b, k) => b.setAttribute("aria-pressed", k === i));
 }
-function openWork(id) {
-  cur = WORKS.find(w => w.id === id);
-  shotList = [];
-  for (let i = 1; i <= (cur.photos || 1); i++) {
-    shotList.push({ src: `${P}${vid(cur, i)}.jpg`, th: `${P}${vid(cur, i)}-sm.jpg`, v: i });
-    shotList.push({ src: `${P}${vid(cur, i)}-close.jpg`, th: `${P}${vid(cur, i)}-close-sm.jpg`, v: i });
+function renderWork(id) {
+  cur = byId(id); if (!cur) return false;
+  shots = [];
+  if (cur.id === "plodorodie") {
+    Object.keys(FRAMES).forEach(f => shots.push({ src: `assets/img/framed-${f}.jpg`, th: `assets/img/swatch-${f}.jpg`, v: 1, label: `рамка ${FRAMES[f]}` }));
+    shots.push({ src: `${P}plodorodie-close.jpg`, th: `${P}plodorodie-close-sm.jpg`, v: 1 });
+  } else for (let i = 1; i <= (cur.photos || 1); i++) {
+    shots.push({ src: `${P}${vid(cur, i)}.jpg`, th: `${P}${vid(cur, i)}-sm.jpg`, v: i });
+    shots.push({ src: `${P}${vid(cur, i)}-close.jpg`, th: `${P}${vid(cur, i)}-close-sm.jpg`, v: i });
   }
-  $("#pThumbs").innerHTML = shotList.map((s, i) => `<button type="button" data-shot="${i}" aria-label="Снимка ${i + 1}"><img src="${s.th}" alt=""></button>`).join("");
-  $("#pCat").textContent = cur.cat === "pana" ? "Стъклено пано" : "Стъклена картина";
-  $("#pName").textContent = cur.name;
-  $("#pPrice").textContent = priceLabel(cur);
-  $("#pText").textContent = cur.text || (cur.cat === "pana" ? CAT_NOTE.pana : "Дърво на живота, рисувано върху стъкло и сплавено в пещ с цветни стъкълца.");
-  $("#pSizes").innerHTML = cur.sizes ? `<fieldset><legend>Размер</legend><div class="chips">${cur.sizes.map((s, k) =>
+  $("#wpThumbs").innerHTML = shots.map((s, i) => `<button type="button" data-shot="${i}" aria-label="Снимка ${i + 1}${s.label ? ", " + s.label : ""}"><img src="${s.th}" alt=""></button>`).join("");
+  $("#wpCat").textContent = cur.cat === "pana" ? "Стъклено пано · без рамка" : "Стъклена картина · с рамка";
+  $("#wpName").textContent = cur.name;
+  $("#wpPrice").textContent = priceLabel(cur);
+  $("#wpText").textContent = cur.text || (cur.cat === "pana" ? CAT_NOTE.pana : "Дърво на живота, рисувано върху стъкло и сплавено в пещ с цветни стъкълца.");
+  $("#wpSizes").innerHTML = cur.sizes ? `<fieldset><legend>Размер</legend><div class="chips">${cur.sizes.map((s, k) =>
     `<label><input type="radio" name="psize" value="${k}" ${k ? "" : "checked"}><span>${s[1].replace(" см", "")} · ${money(s[2])}</span></label>`).join("")}</div></fieldset>` : "";
   const specs = [["Размер", cur.sizes ? "по избор" : sizeLabel(cur)],
-    [cur.cat === "pana" ? "Окачване" : "Рамка", cur.cat === "pana" ? "метална закачалка" : (cur.frame || "дървена")],
-    ["Материал", "стъкло, цветни стъкълца"], ["Автор", "Лъки Михайлова"]];
-  if ((cur.photos || 1) > 1) specs.push(["Варианти", `${cur.photos}, вижте снимките`]);
-  $("#pSpecs").innerHTML = specs.map(([a, b]) => `<div><dt>${a}</dt><dd>${esc(b)}</dd></div>`).join("");
+    [cur.cat === "pana" ? "Окачване" : "Рамка", cur.cat === "pana" ? "метална закачалка-кобилица" : (cur.frame || "дървена")],
+    ["Материал", "стъкло, цветни стъкълца, бои за стъкло"], ["Автор", "Лъки Михайлова"]];
+  if ((cur.photos || 1) > 1) specs.push(["Варианти", `${cur.photos} — вижте снимките`]);
+  $("#wpSpecs").innerHTML = specs.map(([a, b]) => `<div><dt>${a}</dt><dd>${esc(b)}</dd></div>`).join("");
+  const rel = WORKS.filter(w => w.cat === cur.cat && w.id !== cur.id && w.id !== "plodorodie");
+  const start = Math.max(0, rel.findIndex(w => WORKS.indexOf(w) > WORKS.indexOf(cur)));
+  $("#related").innerHTML = [...rel.slice(start), ...rel.slice(0, start)].slice(0, 3).map(card).join("");
+  observe($("#related"));
   showShot(0);
-  dlg.showModal();
+  return true;
 }
-document.addEventListener("click", e => {
-  const o = e.target.closest("[data-open]"); if (o) openWork(o.dataset.open);
-  const s = e.target.closest("[data-shot]"); if (s) showShot(+s.dataset.shot);
+$("#wpThumbs").addEventListener("click", e => { const b = e.target.closest("[data-shot]"); if (b) showShot(+b.dataset.shot); });
+$("#wpSizes").addEventListener("change", () => { $("#wpPrice").textContent = money(cur.sizes[+$("input[name=psize]:checked").value][2]); });
+wpMain.addEventListener("pointermove", e => {
+  if (e.pointerType === "touch") return;
+  const r = wpMain.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top, Z = 3;
+  wpMain.classList.add("zooming");
+  lens.style.left = `${x}px`; lens.style.top = `${y}px`;
+  lens.style.backgroundSize = `${r.width * Z}px ${r.height * Z}px`;
+  lens.style.backgroundPosition = `${-(x * Z - 95)}px ${-(y * Z - 95)}px`;
 });
-$("#pSizes").addEventListener("change", () => { $("#pPrice").textContent = money(cur.sizes[+$("input[name=psize]:checked").value][2]); });
-pMain.addEventListener("click", () => pMain.classList.toggle("on"));
-pMain.addEventListener("pointermove", e => {
-  const r = pImg.getBoundingClientRect();
-  pImg.style.transformOrigin = `${((e.clientX - r.left) / r.width) * 100}% ${((e.clientY - r.top) / r.height) * 100}%`;
-});
-$("[data-close]", dlg).addEventListener("click", () => dlg.close());
-dlg.addEventListener("click", e => { if (e.target === dlg) dlg.close(); });
-$("#pAdd").addEventListener("click", () => {
-  const cur_i = +($$("#pThumbs [aria-pressed=true]")[0]?.dataset.shot || 0);
-  const v = shotList[cur_i].v;
+wpMain.addEventListener("pointerleave", () => wpMain.classList.remove("zooming"));
+$("#wpAdd").addEventListener("click", () => {
+  const s = shots[shotI];
   let price = cur.price ?? null, detail = sizeLabel(cur);
-  if (cur.sizes) { const s = cur.sizes[+$("input[name=psize]:checked").value]; detail = `${s[0].toLowerCase()}, ${s[1]}`; price = s[2]; }
-  if ((cur.photos || 1) > 1) detail += ` · вариант ${v}`;
-  addToList({ name: cur.name, detail, price, img: `${P}${vid(cur, v)}-sm.jpg` });
-  dlg.close();
+  if (cur.sizes) { const z = cur.sizes[+$("input[name=psize]:checked").value]; detail = `${z[0].toLowerCase()}, ${z[1]}`; price = z[2]; }
+  if (cur.id === "plodorodie") detail += ` · ${s.label || "рамка Платина"}`;
+  if ((cur.photos || 1) > 1) detail += ` · вариант ${s.v}`;
+  addToList({ name: cur.name, detail, price, img: s.th.includes("swatch") ? s.src : `${P}${vid(cur, s.v)}-sm.jpg` });
 });
 
-/* ---------- featured: frame picker ---------- */
-const FRAMES = { platinum: "Платина", walnut: "Тъмен орех", black: "Черно и сребро" };
+/* ---------- featured frame picker ---------- */
 let featFrame = "platinum";
 $$(".frames button").forEach(b => b.addEventListener("click", () => {
   featFrame = b.dataset.frame;
   $$(".frames button").forEach(x => x.setAttribute("aria-checked", x === b));
-  const img = $("#featImg");
+  const img = $("#featImg"), src = `assets/img/framed-${featFrame}.jpg`;
+  const n = new Image(); n.src = src;
   img.style.opacity = 0;
-  setTimeout(() => { img.src = `assets/img/framed-${featFrame}.jpg`; img.alt = `Дърво на плодородието в рамка ${FRAMES[featFrame]}`; }, 250);
-  img.onload = () => (img.style.opacity = 1);
+  n.onload = () => setTimeout(() => { img.src = src; img.alt = `Дърво на плодородието в рамка ${FRAMES[featFrame]}`; img.style.opacity = 1; }, 200);
 }));
 $("#featAdd").addEventListener("click", () =>
   addToList({ name: "Дърво на плодородието", detail: `30 × 40 см · рамка ${FRAMES[featFrame]}`, price: 80, img: `assets/img/framed-${featFrame}.jpg` }));
 
-/* ---------- wedding tree ---------- */
+/* ---------- commission ---------- */
 const wedForm = $("#wedForm");
-function updateWed() {
-  const f = $("input[name=wframe]:checked").value, img = $("#wedImg");
-  if (!img.src.endsWith(`framed-wedding-${f}.jpg`)) img.src = `assets/img/framed-wedding-${f}.jpg`;
-  const n = $("#wedNames").value.trim();
-  $("#wedCap").hidden = !n; $("#wedCap").textContent = n;
+const KIND = { svatba: "Сватбено Дърво на живота", darvo: "Дърво на живота по поръчка", pano: "Пано по поръчка" };
+const KSIZE = { svatba: ["18 × 22", "26 × 36", "30 × 40"], darvo: ["14 × 16", "18 × 22", "26 × 36", "30 × 40"], pano: ["12 × 12", "12 × 15"] };
+const val = n => ($(`input[name=${n}]:checked`) || {}).value;
+function renderWSizes() {
+  const k = val("wkind"), list = KSIZE[k];
+  $("#wSizes").innerHTML = list.map((s, i) => `<label><input type="radio" name="wsize" value="${s} см" ${i === list.length - 1 ? "checked" : ""}><span>${s}</span></label>`).join("");
 }
+function updateWed() {
+  const k = val("wkind"), f = val("wframe"), img = $("#wedImg");
+  const src = k === "svatba" ? `assets/img/framed-wedding-${f}.jpg` : k === "darvo" ? `assets/img/framed-${f}.jpg` : `${P}pana-yabalka.jpg`;
+  if (img.getAttribute("src") !== src) {
+    img.style.opacity = 0;
+    const n = new Image(); n.src = src; n.onload = () => { img.src = src; img.style.opacity = 1; };
+  }
+  $("#namesField").hidden = k !== "svatba";
+  $("#wFrameSet").hidden = k === "pano";
+  const names = $("#wedNames").value.trim();
+  $("#wedCap").hidden = !(k === "svatba" && names); $("#wedCap").textContent = names;
+}
+wedForm.addEventListener("change", e => { if (e.target.name === "wkind") renderWSizes(); updateWed(); });
 wedForm.addEventListener("input", updateWed);
-wedForm.addEventListener("change", updateWed);
 wedForm.addEventListener("submit", e => {
   e.preventDefault();
-  const bits = [$("input[name=wsize]:checked").value, `рамка ${FRAMES[$("input[name=wframe]:checked").value]}`];
-  if ($("#wedNames").value.trim()) bits.push(`имена: ${$("#wedNames").value.trim()}`);
+  const k = val("wkind"), bits = [val("wsize")];
+  if (k !== "pano") bits.push(`рамка ${FRAMES[val("wframe")]}`);
+  const wishes = $$("input[name=wish]:checked").map(i => i.value);
+  if (wishes.length) bits.push(`цветове: ${wishes.join(", ")}`);
+  if (k === "svatba" && $("#wedNames").value.trim()) bits.push(`имена: ${$("#wedNames").value.trim()}`);
   if ($("#wedNote").value.trim()) bits.push($("#wedNote").value.trim());
-  addToList({ name: "Сватбено Дърво на живота", detail: bits.join(" · "), price: null, img: $("#wedImg").getAttribute("src") });
+  addToList({ name: KIND[k], detail: bits.join(" · "), price: null, img: $("#wedImg").getAttribute("src") });
+});
+renderWSizes(); updateWed();
+
+/* ---------- router ---------- */
+const TITLES = { nachalo: "", kolekcia: "Колекция", poruchka: "По поръчка", avtor: "Авторът" };
+function route() {
+  let h = location.hash.slice(1) || "nachalo", view = h;
+  if (h.startsWith("tvorba-")) { view = "tvorba"; if (!renderWork(h.slice(7))) view = "kolekcia"; }
+  if (!$(`.view[data-view="${view}"]`)) {
+    const el = document.getElementById(h);
+    if (el) { const v = el.closest(".view"); if (v && v.hidden) { location.hash = v.dataset.view; return; } return; }
+    view = "nachalo";
+  }
+  const swap = () => {
+    $$(".view").forEach(v => (v.hidden = v.dataset.view !== view));
+    const navKey = view === "tvorba" ? "kolekcia" : view;
+    $$("[data-nav]").forEach(a => a.dataset.nav === navKey ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current"));
+    document.title = (view === "tvorba" ? cur.name : TITLES[view]) ? `${view === "tvorba" ? cur.name : TITLES[view]} — Лъки Михайлова` : "Лъки Михайлова — Картини от стъкло";
+    scrollTo({ top: 0, behavior: "instant" });
+    observe($(`.view[data-view="${view}"]`));
+  };
+  document.startViewTransition ? document.startViewTransition(swap) : swap();
+  $("#mnav").hidden = true; $("#menuBtn").setAttribute("aria-expanded", "false");
+}
+addEventListener("hashchange", route);
+$("#menuBtn").addEventListener("click", () => {
+  const open = $("#mnav").hidden;
+  $("#mnav").hidden = !open; $("#menuBtn").setAttribute("aria-expanded", open);
 });
 
 /* ---------- list ---------- */
@@ -203,7 +272,6 @@ function closeDrawer() { drawer.hidden = true; document.body.style.overflow = ""
 $("#cartBtn").addEventListener("click", openDrawer);
 $$("[data-close-drawer]").forEach(b => b.addEventListener("click", closeDrawer));
 addEventListener("keydown", e => { if (e.key === "Escape" && !drawer.hidden) closeDrawer(); });
-
 $("#orderForm").addEventListener("submit", e => {
   e.preventDefault();
   const d = Object.fromEntries(new FormData(e.target)), note = $("#orderNote");
@@ -220,7 +288,5 @@ $("#copyOrder").addEventListener("click", async () => {
   catch { $("#orderText").select(); }
 });
 renderList();
-observe($$(".statement, .feature, .wedding, .author"));
-$$(".statement, .feature, .wedding, .author").forEach(el => el.classList.add("rv"));
-
+route();
 $("#yr").textContent = new Date().getFullYear();
