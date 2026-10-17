@@ -86,14 +86,19 @@ document.addEventListener("pointermove", e => {
 });
 
 /* ---------- cards ---------- */
+const lot = w => String(WORKS.indexOf(w) + 1).padStart(2, "0");
 const card = w => `
   <a class="work rv" href="#tvorba-${w.id}">
-    <span class="frame glass">
+    <span class="mat glass">
       <img class="main" src="${P}${w.id}-sm.jpg" alt="${esc(w.name)}" loading="lazy" width="720" height="964">
       <img class="alt" src="${P}${w.id}-close-sm.jpg" alt="" loading="lazy" width="720" height="964">
-      ${(w.photos || 1) > 1 ? `<span class="tag">${w.photos} варианта</span>` : ""}
     </span>
-    <span class="cap"><h3>${esc(w.name)}</h3><span class="price">${priceLabel(w)}</span><span class="size">${sizeLabel(w)}</span></span>
+    <span class="cap">
+      <span class="lot">№ ${lot(w)}${(w.photos || 1) > 1 ? ` · ${w.photos} варианта` : ""}</span>
+      <h3>${esc(w.name)}</h3>
+      <span class="size">${sizeLabel(w)}</span>
+      <span class="price">${priceLabel(w)}</span>
+    </span>
   </a>`;
 $("#curated").innerHTML = ["kartina-prestizh", "pana-buhal", "pana-angel", "kartina-zlatno-lyato"].map(id => card(byId(id))).join("");
 
@@ -136,7 +141,7 @@ function renderWork(id) {
     shots.push({ src: `${P}${vid(cur, i)}-close.jpg`, th: `${P}${vid(cur, i)}-close-sm.jpg`, v: i });
   }
   $("#wpThumbs").innerHTML = shots.map((s, i) => `<button type="button" data-shot="${i}" aria-label="Снимка ${i + 1}${s.label ? ", " + s.label : ""}"><img src="${s.th}" alt=""></button>`).join("");
-  $("#wpCat").textContent = cur.cat === "pana" ? "Стъклено пано · без рамка" : "Стъклена картина · с рамка";
+  $("#wpCat").textContent = `№ ${lot(cur)} · ` + (cur.cat === "pana" ? "Стъклено пано · без рамка" : "Стъклена картина · с рамка");
   $("#wpName").textContent = cur.name;
   $("#wpPrice").textContent = priceLabel(cur);
   $("#wpText").textContent = cur.text || (cur.cat === "pana" ? CAT_NOTE.pana : "Дърво на живота, рисувано върху стъкло и сплавено в пещ с цветни стъкълца.");
@@ -221,6 +226,10 @@ wedForm.addEventListener("submit", e => {
   addToList({ name: KIND[k], detail: bits.join(" · "), price: null, img: $("#wedImg").getAttribute("src") });
 });
 renderWSizes(); updateWed();
+
+$$("[data-goto]").forEach(a => a.addEventListener("click", () => {
+  const t = $(`.tabs [data-cat="${a.dataset.goto}"]`); if (t) t.click();
+}));
 
 /* ---------- router ---------- */
 const TITLES = { nachalo: "", kolekcia: "Колекция", poruchka: "По поръчка", avtor: "Авторът" };
