@@ -108,7 +108,7 @@ function renderGrid(cat) {
   const soon = cat === "soon";
   $("#soon").hidden = !soon; $("#grid").hidden = soon;
   $("#catNote").textContent = soon ? "" : CAT_NOTE[cat];
-  if (!soon) $("#grid").innerHTML = WORKS.filter(w => w.cat === cat && w.id !== "plodorodie").map(card).join("");
+  if (!soon) $("#grid").innerHTML = WORKS.filter(w => w.cat === cat).map(card).join("");
   observe($("#grid"));
 }
 $$(".tabs button").forEach(t => t.addEventListener("click", () => {
@@ -178,19 +178,6 @@ $("#wpAdd").addEventListener("click", () => {
   addToList({ name: cur.name, detail, price, img: s.th.includes("swatch") ? s.src : `${P}${vid(cur, s.v)}-sm.jpg` });
 });
 
-/* ---------- featured frame picker ---------- */
-let featFrame = "platinum";
-$$(".frames button").forEach(b => b.addEventListener("click", () => {
-  featFrame = b.dataset.frame;
-  $$(".frames button").forEach(x => x.setAttribute("aria-checked", x === b));
-  const img = $("#featImg"), src = `assets/img/framed-${featFrame}.jpg`;
-  const n = new Image(); n.src = src;
-  img.style.opacity = 0;
-  n.onload = () => setTimeout(() => { img.src = src; img.alt = `Дърво на плодородието в рамка ${FRAMES[featFrame]}`; img.style.opacity = 1; }, 200);
-}));
-$("#featAdd").addEventListener("click", () =>
-  addToList({ name: "Дърво на плодородието", detail: `30 × 40 см · рамка ${FRAMES[featFrame]}`, price: 80, img: `assets/img/framed-${featFrame}.jpg` }));
-
 /* ---------- commission ---------- */
 const wedForm = $("#wedForm");
 const KIND = { svatba: "Сватбено Дърво на живота", darvo: "Дърво на живота по поръчка", pano: "Пано по поръчка" };
@@ -230,32 +217,89 @@ $$("[data-goto]").forEach(a => a.addEventListener("click", () => {
   const t = $(`.tabs [data-cat="${a.dataset.goto}"]`); if (t) t.click();
 }));
 
-/* ---------- router ---------- */
-const TITLES = { nachalo: "", kolekcia: "Колекция", poruchka: "По поръчка", avtor: "Авторът" };
+/* ---------- router: one main page with sections, plus work and commission pages ---------- */
+const SECTIONS = ["kolekcia", "avtor", "kontakti", "svatba"];
+let curView = null;
 function route() {
-  let h = location.hash.slice(1) || "nachalo", view = h;
-  if (h.startsWith("tvorba-")) { view = "tvorba"; if (!renderWork(h.slice(7))) view = "kolekcia"; }
-  if (!$(`.view[data-view="${view}"]`)) {
-    const el = document.getElementById(h);
-    if (el) { const v = el.closest(".view"); if (v && v.hidden) { location.hash = v.dataset.view; return; } return; }
-    view = "nachalo";
-  }
-  const swap = () => {
-    $$(".view").forEach(v => (v.hidden = v.dataset.view !== view));
-    const navKey = view === "tvorba" ? "kolekcia" : view;
-    $$("[data-nav]").forEach(a => a.dataset.nav === navKey ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current"));
-    document.title = (view === "tvorba" ? cur.name : TITLES[view]) ? `${view === "tvorba" ? cur.name : TITLES[view]} — Лъки Михайлова` : "Лъки Михайлова — Картини от стъкло";
-    scrollTo({ top: 0, behavior: "instant" });
-    observe($(`.view[data-view="${view}"]`));
-  };
-  document.startViewTransition ? document.startViewTransition(swap) : swap();
+  const h = location.hash.slice(1) || "kolekcia";
+  let view = "nachalo", section = null;
+  if (h.startsWith("tvorba-")) view = renderWork(h.slice(7)) ? "tvorba" : "nachalo";
+  else if (h === "poruchka") view = "poruchka";
+  else section = SECTIONS.includes(h) ? h : "kolekcia";
+  const navKey = view === "tvorba" ? "kolekcia" : view === "poruchka" ? "poruchka" : section;
+  $$("[data-nav]").forEach(a => a.dataset.nav === navKey ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current"));
+  document.title = view === "tvorba" ? `${cur.name} — Лъки Михайлова` : view === "poruchka" ? "По поръчка — Лъки Михайлова" : "Лъки Михайлова — Магия от стъкло";
   $("#mnav").hidden = true; $("#menuBtn").setAttribute("aria-expanded", "false");
+  const go = () => {
+    if (section) {
+      const el = document.getElementById(section);
+      const top = section === "kolekcia" ? 0 : el.getBoundingClientRect().top + scrollY - 70;
+      scrollTo({ top, behavior: changed ? "instant" : "smooth" });
+    } else scrollTo({ top: 0, behavior: "instant" });
+  };
+  const changed = view !== curView;
+  if (changed) {
+    const swap = () => { $$(".view").forEach(v => (v.hidden = v.dataset.view !== view)); curView = view; observe($(`.view[data-view="${view}"]`)); go(); };
+    document.startViewTransition ? document.startViewTransition(swap) : swap();
+  } else go();
 }
 addEventListener("hashchange", route);
 $("#menuBtn").addEventListener("click", () => {
   const open = $("#mnav").hidden;
   $("#mnav").hidden = !open; $("#menuBtn").setAttribute("aria-expanded", open);
 });
+
+/* ---------- intro: drifting glass beads in earth tones, name, "Влез" ---------- */
+const intro = $("#intro");
+(function introScene() {
+  const cv = $("#introCanvas"), ctx = cv.getContext("2d");
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const COLORS = ["154,74,46", "179,133,54", "85,88,63", "196,98,48", "120,60,40", "205,160,90"];
+  let W, H, dpr, beads = [], raf, t0 = performance.now();
+  function size() {
+    dpr = Math.min(2, devicePixelRatio || 1);
+    W = cv.width = innerWidth * dpr; H = cv.height = innerHeight * dpr;
+    cv.style.width = innerWidth + "px"; cv.style.height = innerHeight + "px";
+    const n = Math.round(Math.min(46, innerWidth / 26));
+    beads = Array.from({ length: n }, (_, i) => ({
+      x: Math.random() * W, y: Math.random() * H,
+      r: (18 + Math.random() * 70) * dpr * (innerWidth < 600 ? .7 : 1),
+      c: COLORS[i % COLORS.length], a: .18 + Math.random() * .3,
+      vx: (Math.random() - .5) * .12 * dpr, vy: (-.05 - Math.random() * .18) * dpr, ph: Math.random() * 6.28,
+    }));
+  }
+  function frame(now) {
+    const t = (now - t0) / 1000;
+    ctx.clearRect(0, 0, W, H);
+    for (const b of beads) {
+      if (!reduce) {
+        b.x += b.vx + Math.sin(t * .3 + b.ph) * .15 * dpr; b.y += b.vy;
+        if (b.y < -b.r) { b.y = H + b.r; b.x = Math.random() * W; }
+      }
+      const g = ctx.createRadialGradient(b.x - b.r * .3, b.y - b.r * .35, b.r * .05, b.x, b.y, b.r);
+      const fade = Math.min(1, t / 2.5);
+      g.addColorStop(0, `rgba(255,240,215,${.55 * b.a * fade})`);
+      g.addColorStop(.35, `rgba(${b.c},${b.a * fade})`);
+      g.addColorStop(1, `rgba(${b.c},0)`);
+      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, 6.283); ctx.fill();
+    }
+    if (!reduce) raf = requestAnimationFrame(frame);
+  }
+  size(); addEventListener("resize", size);
+  raf = requestAnimationFrame(frame);
+  function enter() {
+    intro.classList.add("leaving");
+    document.body.classList.remove("locked");
+    setTimeout(() => { cancelAnimationFrame(raf); intro.hidden = true; }, 1300);
+    try { sessionStorage.setItem("entered", "1"); } catch {}
+  }
+  $("#enterBtn").addEventListener("click", enter);
+  addEventListener("keydown", e => { if (!intro.hidden && e.key === "Enter") enter(); });
+  let seen = false; try { seen = sessionStorage.getItem("entered") === "1"; } catch {}
+  const deep = location.hash && location.hash !== "#kolekcia";
+  if (seen || deep) { intro.hidden = true; cancelAnimationFrame(raf); }
+  else { document.body.classList.add("locked"); requestAnimationFrame(() => intro.classList.add("play")); $("#enterBtn").focus({ preventScroll: true }); }
+})();
 
 /* ---------- list ---------- */
 let cart = store.get("cart2", []);

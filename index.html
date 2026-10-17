@@ -16,128 +16,41 @@
 <body>
 <a class="skip" href="#main">Към съдържанието</a>
 
-<p class="announce">Посетете ни в галерия Artgifts на ул. „Гурко“ в София</p>
+<div class="intro" id="intro" role="dialog" aria-label="Добре дошли">
+  <canvas id="introCanvas" aria-hidden="true"></canvas>
+  <div class="intro-in">
+    <p class="intro-name" aria-label="Лъки Михайлова"><span class="w">Лъки</span> <span class="w">Михайлова</span></p>
+    <p class="intro-tag"><i>Магия от стъкло</i></p>
+    <button type="button" class="enter" id="enterBtn"><span>Влез</span></button>
+  </div>
+  <p class="intro-foot">Картини и пана от цветно стъкло · София</p>
+</div>
+
 <header class="bar" id="top">
-  <nav class="nav-l" aria-label="Основна навигация">
+  <a class="logo" href="#kolekcia" aria-label="Лъки Михайлова — начало">
+    <svg class="emblem" viewBox="0 0 40 52" aria-hidden="true"><path d="M3 50V21a17 17 0 0 1 34 0v29" fill="none" stroke="currentColor" stroke-width="1.4"/><circle cx="20" cy="22" r="5" fill="#9a4a2e"/><circle cx="12.5" cy="32" r="2.8" fill="#b38536"/><circle cx="27.5" cy="31" r="3.2" fill="#55583f"/><path d="M20 50V34" stroke="currentColor" stroke-width="1.4"/></svg>
+    <span class="logo-name">Лъки Михайлова<em>магия от стъкло</em></span>
+  </a>
+  <nav class="nav" aria-label="Основна навигация">
     <a href="#kolekcia" data-nav="kolekcia">Колекция</a>
     <a href="#poruchka" data-nav="poruchka">По поръчка</a>
-  </nav>
-  <a class="mark" href="#nachalo">Лъки Михайлова<span>картини от стъкло</span></a>
-  <nav class="nav-r" aria-label="Още">
     <a href="#avtor" data-nav="avtor">Авторът</a>
-    <button type="button" class="list-btn" id="cartBtn">Списък <span id="cartCount">0</span></button>
+    <a href="#kontakti" data-nav="kontakti">Контакти</a>
   </nav>
+  <button type="button" class="list-btn" id="cartBtn">Списък <span id="cartCount">0</span></button>
   <button type="button" class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="mnav">Меню</button>
 </header>
 <nav class="mnav" id="mnav" hidden aria-label="Меню">
-  <a href="#nachalo">Начало</a><a href="#kolekcia">Колекция</a><a href="#poruchka">По поръчка</a><a href="#avtor">Авторът</a>
+  <a href="#kolekcia">Колекция</a><a href="#poruchka">По поръчка</a><a href="#avtor">Авторът</a><a href="#kontakti">Контакти</a>
 </nav>
 
 <main id="main">
 
-<!-- ============ HOME ============ -->
+<!-- ============ MAIN PAGE ============ -->
 <div class="view" data-view="nachalo">
-  <section class="hero">
-    <p class="hero-kicker rv"><span>Лъки Михайлова</span><span>Картини от цветно стъкло</span><span>София</span></p>
-    <h1 class="hero-title rv">
-      <span class="ln">Дървета
-        <span class="arch" aria-hidden="true"><video autoplay muted playsinline preload="auto" poster="assets/img/hero-poster.jpg"><source src="assets/video/hero.mp4" type="video/mp4"></video></span>
-        на живота,</span>
-      <span class="ln ind">сплавени от</span>
-      <span class="ln"><i>пожелания</i><span class="dotline" aria-hidden="true"></span></span>
-    </h1>
-    <div class="hero-row rv">
-      <p class="lead">Всяко цветно стъкълце е вложено с намерение — за здраве, любов, успех и хармония. Рисувано на ръка, двойно темперирано в пещ, единствено по рода си.</p>
-      <a class="orb" href="#kolekcia" aria-label="Към колекцията">
-        <svg viewBox="0 0 200 200" aria-hidden="true"><defs><path id="orbPath" d="M100,100 m-74,0 a74,74 0 1,1 148,0 a74,74 0 1,1 -148,0"/></defs>
-          <text><textPath href="#orbPath">колекцията · колекцията · колекцията · </textPath></text></svg>
-        <span class="orb-arrow">↓</span>
-      </a>
-    </div>
-  </section>
-
-  <section class="band terracotta">
-    <div class="band-in">
-      <p class="eyebrow rv">Манифест</p>
-      <p class="mf rv">Стъклото не се рисува — то се <i>осветява</i>. Всяко стъкълце е подбрано с намерение: зелено за природата, червено за здраве, оранжево за борбата, жълто за свободата.</p>
-      <p class="sig rv">Лъки Михайлова</p>
-    </div>
-  </section>
-
-  <section class="block cats4">
-    <header class="head rv"><div><p class="eyebrow">Колекция</p><h2>Четири начина да внесете светлина</h2></div><a class="link" href="#kolekcia">Всички творби</a></header>
-    <div class="cat4-grid">
-      <a class="cat4 rv" href="#kolekcia" data-goto="kartina">
-        <span class="arch-img"><img src="assets/products/kartina-zlatno-lyato-sm.jpg" alt="" loading="lazy"></span>
-        <span class="c4-num">I</span><b>Картини</b><span class="c4-sub">Дървета на живота в рамка · от 28 €</span>
-      </a>
-      <a class="cat4 rv" href="#kolekcia" data-goto="pana">
-        <span class="arch-img"><img src="assets/products/pana-taralezh-2-sm.jpg" alt="" loading="lazy"></span>
-        <span class="c4-num">II</span><b>Пана</b><span class="c4-sub">На метална закачалка · от 20 €</span>
-      </a>
-      <a class="cat4 rv soon-cat" href="#kolekcia" data-goto="soon">
-        <span class="arch-img fill terracotta"><span>скоро</span></span>
-        <span class="c4-num">III</span><b>Пластики</b><span class="c4-sub">Стъклени обемни форми</span>
-      </a>
-      <a class="cat4 rv soon-cat" href="#kolekcia" data-goto="soon">
-        <span class="arch-img fill olive"><span>скоро</span></span>
-        <span class="c4-num">IV</span><b>Бижута</b><span class="c4-sub">Цветно стъкло за носене</span>
-      </a>
-    </div>
-  </section>
-
-  <section class="feature" id="izbrano">
-    <div class="feature-in">
-      <figure class="feature-fig">
-        <img id="featImg" src="assets/img/framed-platinum.jpg" alt="Дърво на плодородието в платинена рамка" width="1200" height="1607">
-      </figure>
-      <div class="feature-copy">
-        <p class="eyebrow">№ 01 · Семейно дърво на живота</p>
-        <h2>Дърво на плодородието</h2>
-        <p>Изработено върху стъкло със специални професионални бои и цветни стъкла. Двойно темперирано в пещ. Рамката избирате вие.</p>
-        <div class="frames" role="radiogroup" aria-label="Рамка">
-          <button type="button" role="radio" aria-checked="true" data-frame="platinum"><img src="assets/img/swatch-platinum.jpg" alt=""><span>Платина</span></button>
-          <button type="button" role="radio" aria-checked="false" data-frame="walnut"><img src="assets/img/swatch-walnut.jpg" alt=""><span>Тъмен орех</span></button>
-          <button type="button" role="radio" aria-checked="false" data-frame="black"><img src="assets/img/swatch-black.jpg" alt=""><span>Черно и сребро</span></button>
-        </div>
-        <dl class="specs">
-          <div><dt>Размер</dt><dd>30 × 40 см</dd></div>
-          <div><dt>Рамка</dt><dd>дървена, 3 см</dd></div>
-          <div><dt>Цена</dt><dd>80 €</dd></div>
-        </dl>
-        <button type="button" class="btn" id="featAdd">Добави в списъка</button>
-      </div>
-    </div>
-  </section>
-
-  <section class="band olive commission-band">
-    <div class="band-in split">
-      <figure class="mat dark"><img src="assets/img/framed-wedding-platinum.jpg" alt="Сватбено Дърво на живота" loading="lazy"></figure>
-      <div>
-        <p class="eyebrow rv">По поръчка</p>
-        <h2 class="rv">Сватбено Дърво на живота</h2>
-        <p class="rv">Под дървото застават двамата, а над тях — имената им. Подарък, който остава за цял живот, изработен само за вас.</p>
-        <a class="btn light rv" href="#poruchka">Създай своето</a>
-      </div>
-    </div>
-  </section>
-
-  <section class="block visit rv">
-    <div>
-      <p class="eyebrow">Посетете ни</p>
-      <h2>Галерия Artgifts</h2>
-      <p>ул. „Гурко“, София. Стъклото се разбира най-добре на живо — на дневна светлина, когато цветовете оживяват.</p>
-      <div class="actions left"><a class="link" href="https://artgifts.bg" target="_blank" rel="noopener">artgifts.bg ↗</a><a class="link" href="#avtor">За авторката</a></div>
-    </div>
-    <figure class="mat"><img src="assets/img/collection.jpg" alt="Дървета на живота на стената в галерията" loading="lazy"></figure>
-  </section>
-</div>
-
-<!-- ============ COLLECTION ============ -->
-<div class="view" data-view="kolekcia" hidden>
-  <section class="block page-top">
+  <section class="block page-top" id="kolekcia">
     <header class="head">
-      <h1 class="h1-sm">Колекция</h1>
+      <div><p class="eyebrow">Колекция</p><h1 class="h1-sm">Стъкло, което <i>свети</i></h1></div>
       <div class="tabs" role="tablist" aria-label="Категории">
         <button role="tab" aria-selected="true" data-cat="kartina">Картини</button>
         <button role="tab" aria-selected="false" data-cat="pana">Пана</button>
@@ -147,7 +60,51 @@
     </header>
     <p class="cat-note" id="catNote"></p>
     <div class="grid" id="grid"></div>
-    <p class="soon" id="soon" hidden>Тази колекция се подготвя. Ако търсите нещо конкретно, <a href="#poruchka">пишете ни</a>.</p>
+    <p class="soon" id="soon" hidden>Тази колекция се подготвя. Ако търсите нещо конкретно, <a href="#kontakti">пишете ни</a>.</p>
+  </section>
+
+  <section class="band olive commission-band" id="svatba">
+    <div class="band-in split">
+      <figure class="plain"><img src="assets/img/framed-wedding-platinum.jpg" alt="Сватбено Дърво на живота" loading="lazy"></figure>
+      <div>
+        <p class="eyebrow rv">По поръчка</p>
+        <h2 class="rv">Сватбено Дърво на живота</h2>
+        <p class="rv">Под дървото застават двамата, а над тях — имената им. Подарък, който остава за цял живот, изработен само за вас.</p>
+        <a class="btn light rv" href="#poruchka">Създай своето</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="block author" id="avtor">
+    <div class="author-grid">
+      <div>
+        <p class="eyebrow rv">Авторът</p>
+        <h2 class="rv">Лъки Михайлова</h2>
+        <p class="mf rv">28 години опит със стъклото — с много чувство, внимание към детайла и лично послание във всяка творба.</p>
+      </div>
+      <div class="author-text rv">
+        <p>В основата на творчеството ѝ е Дървото на живота — вечен символ на живота, семейството, развитието, благополучието и връзката между поколенията.</p>
+        <p>Всяко цветно стъкълце е вложено с позитивно намерение. Затова всяка картина е символичен подарък — за човек, семейство или специален повод.</p>
+        <dl class="meanings">
+          <div><dt style="--c:#4d8a3b">Зелено</dt><dd>близостта с природата</dd></div>
+          <div><dt style="--c:#c4301d">Червено</dt><dd>здраве</dd></div>
+          <div><dt style="--c:#e2741a">Оранжево</dt><dd>борбата в живота</dd></div>
+          <div><dt style="--c:#e3b11c">Жълто</dt><dd>достигането на свобода</dd></div>
+        </dl>
+      </div>
+    </div>
+    <figure class="author-fig rv"><img src="assets/img/collection.jpg" alt="Дървета на живота на стената в галерията" loading="lazy"></figure>
+  </section>
+
+  <section class="block contacts" id="kontakti">
+    <p class="eyebrow rv">Контакти</p>
+    <h2 class="rv">Елате да видите стъклото <i>на живо</i></h2>
+    <div class="contact-grid rv">
+      <div><p class="c-label">Галерия</p><p class="c-val">Artgifts.bg</p><p class="fine">ул. „Гурко“, София</p></div>
+      <div><p class="c-label">Имейл</p><p class="c-val"><a href="mailto:info@artgifts.bg" id="contactMail">info@artgifts.bg</a></p><p class="fine">За поръчки и въпроси</p></div>
+      <div><p class="c-label">Онлайн</p><p class="c-val"><a href="https://artgifts.bg" target="_blank" rel="noopener">artgifts.bg ↗</a></p><p class="fine">Галерията в интернет</p></div>
+    </div>
+    <div class="actions left rv"><a class="btn" href="#poruchka">Поръчка по мярка</a></div>
   </section>
 </div>
 
@@ -235,59 +192,15 @@
   </section>
 </div>
 
-<!-- ============ ARTIST ============ -->
-<div class="view" data-view="avtor" hidden>
-  <section class="block page-top author">
-    <p class="eyebrow rv">Авторът</p>
-    <h1 class="rv">Лъки Михайлова</h1>
-    <p class="mf rv">Вече 28 години Лъки създава авторски картини от цветно стъкло — с много чувство, внимание към детайла и лично послание.</p>
-  </section>
-  <section class="block chapter rv">
-    <figure class="glass"><img src="assets/products/plodorodie-close.jpg" alt="Цветни стъкълца отблизо" loading="lazy"></figure>
-    <div>
-      <p class="eyebrow">I · Дървото на живота</p>
-      <h2 class="h2-sm">Символ, който свързва поколения</h2>
-      <p>В основата на творчеството ѝ е Дървото на живота — вечен символ на живота, семейството, развитието, благополучието и връзката между поколенията. Семейно, родово, плодородно, пролетно, зимно — всяко дърво носи своя смисъл.</p>
-    </div>
-  </section>
-  <section class="block chapter flip rv">
-    <figure class="glass"><img src="assets/products/kartina-zlatno-lyato-close.jpg" alt="Корона от цветно стъкло" loading="lazy"></figure>
-    <div>
-      <p class="eyebrow">II · Намерение</p>
-      <h2 class="h2-sm">Всяко стъкълце е пожелание</h2>
-      <p>Цветните стъкълца не са украса, а послание. Вложени са с намерение за здраве, любов, благополучие, успех и хармония — затова всяка картина се превръща в уникален символичен подарък за човек, семейство или специален повод.</p>
-      <dl class="meanings">
-        <div><dt style="--c:#4d8a3b">Зелено</dt><dd>близостта с природата</dd></div>
-        <div><dt style="--c:#c4301d">Червено</dt><dd>здраве</dd></div>
-        <div><dt style="--c:#e2741a">Оранжево</dt><dd>борбата в живота</dd></div>
-        <div><dt style="--c:#e3b11c">Жълто</dt><dd>достигането на свобода</dd></div>
-      </dl>
-    </div>
-  </section>
-  <section class="block chapter rv">
-    <figure class="glass"><img src="assets/img/collection.jpg" alt="Дървета на живота на стена" loading="lazy"></figure>
-    <div>
-      <p class="eyebrow">III · Галерията</p>
-      <h2 class="h2-sm">Artgifts.bg, ул. „Гурко“</h2>
-      <p>Лъки е собственик на галерия Artgifts.bg в центъра на София. Стъклото се разбира най-добре на живо — на дневна светлина, когато цветовете оживяват.</p>
-      <a class="link" href="https://artgifts.bg" target="_blank" rel="noopener">artgifts.bg ↗</a>
-    </div>
-  </section>
-  <section class="block quote rv">
-    <blockquote>„Не просто декоративна картина, а носител на лично послание и красиво пожелание за дома и хората, които го обитават.“</blockquote>
-    <a class="btn" href="#kolekcia">Разгледай творбите</a>
-  </section>
-</div>
-
 </main>
 
 <footer class="foot">
   <div class="foot-top">
     <p class="mf-sm">Не просто картина, а пожелание за дома и хората в него.</p>
-    <nav><a href="#kolekcia">Колекция</a><a href="#poruchka">По поръчка</a><a href="#avtor">Авторът</a><a href="https://artgifts.bg" target="_blank" rel="noopener">Artgifts.bg ↗</a></nav>
+    <nav><a href="#kolekcia">Колекция</a><a href="#poruchka">По поръчка</a><a href="#avtor">Авторът</a><a href="#kontakti">Контакти</a></nav>
   </div>
   <p class="giant" aria-hidden="true">Лъки Михайлова</p>
-  <div class="foot-bot"><span>Картини от стъкло · София</span><span>© <span id="yr"></span></span></div>
+  <div class="foot-bot"><span>Магия от стъкло · София</span><span>© <span id="yr"></span></span></div>
 </footer>
 
 <aside class="drawer" id="drawer" hidden aria-labelledby="dTitle">
