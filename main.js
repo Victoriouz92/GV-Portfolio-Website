@@ -88,7 +88,7 @@ document.addEventListener("pointermove", e => {
 /* ---------- cards ---------- */
 const lot = w => String(WORKS.indexOf(w) + 1).padStart(2, "0");
 const hung = w => w.cat === "kartina" || w.cat === "pana"; // works are cut from the photo and hung on the page wall
-const wallSrc = (id, cat, sm) => `${P}${id}-wall${sm ? "-sm" : ""}` + (cat === "pana" ? ".webp" : ".jpg?v=2"); // panels keep their wire, so they need transparency
+const wallSrc = (id, cat, sm) => `${P}${id}-wall${sm ? "-sm" : ""}` + (cat === "pana" ? ".webp?v=2" : ".jpg?v=2"); // panels keep their wire, so they need transparency
 const card = w => `
   <a class="work rv${hung(w) ? " hung" : ""}${w.cat === "pana" ? " pane" : ""}" href="#tvorba-${w.id}">
     <span class="mat glass">
@@ -194,7 +194,7 @@ function renderWSizes() {
 }
 function updateWed() {
   const k = val("wkind"), f = val("wframe"), img = $("#wedImg");
-  const src = k === "svatba" ? `assets/img/framed-wedding-${f}-wall.jpg` : k === "darvo" ? `assets/img/framed-${f}-wall.jpg` : `${P}pana-yabalka-wall.webp`;
+  const src = k === "svatba" ? `assets/img/framed-wedding-${f}-wall.jpg` : k === "darvo" ? `assets/img/framed-${f}-wall.jpg` : `${P}pana-yabalka-wall.webp?v=2`;
   if (img.getAttribute("src") !== src) {
     img.style.opacity = 0;
     const n = new Image(); n.src = src; n.onload = () => { img.classList.toggle("hung", k !== "pano"); img.classList.toggle("pane", k === "pano"); img.src = src; img.style.opacity = 1; };
