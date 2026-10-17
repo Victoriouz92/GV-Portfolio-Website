@@ -1,257 +1,264 @@
 <!doctype html>
-<html lang="bg">
+<html lang="bg" data-theme="dark">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Лъки Михайлова — Картини от стъкло</title>
-<meta name="description" content="Авторски пана и картини от цветно стъкло на Лъки Михайлова. Дърво на живота, сватбени дървета по поръчка. 28 години опит.">
+<meta name="description" content="Авторски пана и картини от цветно стъкло на Лъки Михайлова. Дървета на живота, сватбени дървета по поръчка. 28 години опит.">
 <meta property="og:title" content="Лъки Михайлова — Картини от стъкло">
-<meta property="og:description" content="Пана и картини от цветно стъкло, нарисувани и сплавени на ръка.">
-<meta property="og:image" content="assets/img/tree-autumn.jpg">
+<meta property="og:description" content="Пана и картини от цветно стъкло, рисувани и сплавени на ръка.">
+<meta property="og:image" content="assets/products/plodorodie.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Onest:wght@400;500;600&family=Yeseva+One&display=swap&subset=cyrillic" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@300;400;500;600;700&display=swap&subset=cyrillic" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <a class="skip" href="#main">Към съдържанието</a>
 
 <header class="bar" id="top">
-  <a class="mark" href="#top">Лъки Михайлова</a>
+  <a class="mark" href="#top">Лъки Михайлова<span>стъкло · София</span></a>
   <nav aria-label="Основна навигация">
-    <a href="#pana">Пана</a>
-    <a href="#kartini">Картини</a>
-    <a href="#plastiki">Пластики</a>
-    <a href="#bijuta">Бижута</a>
+    <a href="#kolekcia">Колекция</a>
+    <a href="#zanayat">Занаятът</a>
+    <a href="#po-poruchka">По поръчка</a>
     <a href="#avtor">Авторът</a>
   </nav>
-  <a class="btn btn-ghost" href="#porachka">Поръчай</a>
+  <button class="icon-btn" type="button" id="themeBtn" aria-label="Смени светла или тъмна тема">◐</button>
+  <button class="cart-btn" type="button" id="cartBtn" aria-label="Списък за поръчка">Списък <b id="cartCount">0</b></button>
 </header>
 
 <main id="main">
 
 <!-- HERO -->
-<section class="hero">
+<section class="hero" id="hero">
+  <div class="hero-light" aria-hidden="true"></div>
   <div class="hero-copy">
-    <h1>Светлина,<br>уловена<br>в&nbsp;стъкло.</h1>
-    <p class="lead">Пана и картини, нарисувани с бои за стъкло и сплавени с цветни стъкълца. Всяко е направено на ръка и носи пожелание за дома, в който ще живее.</p>
+    <p class="kicker">Авторско стъкло · 28 години</p>
+    <h1>Светлина,<br><em>уловена</em> в стъкло.</h1>
+    <p class="lead">Пана и Дървета на живота, рисувани с бои за стъкло и сплавени в пещ с цветни стъкълца. Всяко е единствено.</p>
     <div class="actions">
-      <a class="btn" href="#pana">Разгледай работите</a>
-      <a class="textlink" href="#avtor">За авторката</a>
+      <a class="btn btn-glow magnetic" href="#kolekcia">Разгледай колекцията</a>
+      <a class="btn btn-line magnetic" href="#po-poruchka">Поръчай по мярка</a>
     </div>
   </div>
-  <figure class="hero-fig">
-    <video autoplay muted loop playsinline preload="none" poster="assets/img/light-poster.jpg" aria-label="Светлина минава през цветните стъкла на картина">
-      <source src="assets/video/light.mp4" type="video/mp4">
-    </video>
-    <figcaption class="label">Фиг. 1 — светлина през цветно стъкло</figcaption>
+  <figure class="hero-art" id="heroArt">
+    <img src="assets/products/plodorodie-cut.webp" alt="Дърво на плодородието — картина от цветно стъкло в платинена рамка" width="896" height="1043">
+    <span class="sheen" aria-hidden="true"></span>
   </figure>
-  <dl class="facts">
-    <div><dt>28</dt><dd>години опит</dd></div>
-    <div><dt>100%</dt><dd>ръчна изработка</dd></div>
-    <div><dt>2×</dt><dd>темперирано в пещ</dd></div>
-  </dl>
+  <a class="scroll-cue" href="#kolekcia" aria-label="Към колекцията">↓</a>
 </section>
 
-<!-- INDEX -->
-<nav class="index" aria-label="Раздели">
-  <a href="#pana"><b>Пана</b><span class="label">без рамка</span><span class="label" data-count="pana"></span><i aria-hidden="true">→</i></a>
-  <a href="#kartini"><b>Картини</b><span class="label">с рамка</span><span class="label" data-count="kartina"></span><i aria-hidden="true">→</i></a>
-  <a href="#plastiki" class="soon-row"><b>Пластики</b><span class="label">скоро</span><span class="label"></span><i aria-hidden="true">→</i></a>
-  <a href="#bijuta" class="soon-row"><b>Бижута</b><span class="label">скоро</span><span class="label"></span><i aria-hidden="true">→</i></a>
-</nav>
-
-<!-- PANELS -->
-<section class="block" id="pana">
+<!-- COLLECTION -->
+<section class="block" id="kolekcia">
   <header class="head">
-    <h2>Стъклени пана</h2>
-    <p>Рисувани пана с професионални бои за стъкло и начупени цветни стъклца. Без рамка, готови за окачване. Повечето са 12 × 12 см и струват 20 €.</p>
+    <h2>Колекция</h2>
+    <div class="tabs" role="tablist" aria-label="Категории">
+      <button role="tab" aria-selected="true" data-cat="all">Всички</button>
+      <button role="tab" aria-selected="false" data-cat="kartina">Картини <small>с рамка</small></button>
+      <button role="tab" aria-selected="false" data-cat="pana">Пана <small>без рамка</small></button>
+      <button role="tab" aria-selected="false" data-cat="soon">Пластики · Бижута <small>скоро</small></button>
+    </div>
   </header>
-
-  <div class="notes">
-    <section>
-      <h3>Закачалка</h3>
-      <p>Метална, във формата на кобилица, завършваща със спирала. Символизира развитие и желание за извисеност, което затваря кръга.</p>
-      <ul class="dashes">
-        <li>Подарък, лесен за поставяне</li>
-        <li>Подходящ за всякакъв цвят стена</li>
-        <li>Лесно се почиства</li>
-        <li>Внася цвят, стил и настроение във всеки дом или офис</li>
-        <li>Подходящ подарък за мъже и жени</li>
-      </ul>
-    </section>
-    <section>
-      <h3>Какво казват цветовете</h3>
-      <ul class="beads">
-        <li style="--c:#4d8a3b"><i></i><b>Зелено</b><span>близостта ни с природата</span></li>
-        <li style="--c:#d2311c"><i></i><b>Червено</b><span>здраве</span></li>
-        <li style="--c:#ec7a14"><i></i><b>Оранжево</b><span>борбата в живота</span></li>
-        <li style="--c:#f0b914"><i></i><b>Жълто</b><span>достигането на свобода</span></li>
-      </ul>
-    </section>
+  <div class="bento" id="bento"></div>
+  <div class="soon-note" id="soonNote" hidden>
+    <h3>Пластики и бижута</h3>
+    <p>Колекцията се подготвя. Ако търсите нещо конкретно, пишете ни чрез поръчката по мярка.</p>
   </div>
-
-  <div class="works" id="gridPana"></div>
-  <p class="label more">Предстои добавяне на още пана</p>
 </section>
 
-<!-- PICTURES -->
-<section class="block" id="kartini">
-  <header class="head">
-    <h2>Стъклени картини</h2>
-    <p>Всичко с рамка. Дърветата на живота са нарисувани върху стъкло и сплавени с цветни стъкълца, после темперирани в пещ.</p>
-  </header>
+<!-- CRAFT -->
+<section class="craft" id="zanayat">
+  <div class="craft-sticky">
+    <header class="craft-head">
+      <p class="kicker">Занаятът</p>
+      <h2>Как се ражда<br>една картина</h2>
+    </header>
+    <div class="craft-track" id="craftTrack">
+      <article class="craft-card">
+        <img src="assets/products/kartina-blagodat-close.jpg" alt="Изрисувани клони върху стъкло" loading="lazy">
+        <div><span class="num">01</span><h3>Рисуване</h3><p>Стволът и клоните се изрисуват върху стъклото със специални професионални бои.</p></div>
+      </article>
+      <article class="craft-card">
+        <img src="assets/products/plodorodie-close.jpg" alt="Цветни стъкълца в короната" loading="lazy">
+        <div><span class="num">02</span><h3>Стъкълцата</h3><p>Цветните стъкълца се нареждат едно по едно. Всяко е подбрано с пожелание за здраве, любов, успех и хармония.</p></div>
+      </article>
+      <article class="craft-card craft-colors">
+        <div class="beads-big" aria-hidden="true"><i style="--c:#4d8a3b"></i><i style="--c:#d2311c"></i><i style="--c:#ec7a14"></i><i style="--c:#f0b914"></i></div>
+        <div><span class="num">03</span><h3>Езикът на цветовете</h3>
+          <ul class="meanings">
+            <li><b>Зелено</b> близостта ни с природата</li>
+            <li><b>Червено</b> здраве</li>
+            <li><b>Оранжево</b> борбата в живота</li>
+            <li><b>Жълто</b> достигането на свобода</li>
+          </ul></div>
+      </article>
+      <article class="craft-card">
+        <video muted loop playsinline preload="none" poster="assets/img/making-poster.jpg" data-autoplay><source src="assets/video/making.mp4" type="video/mp4"></video>
+        <div><span class="num">04</span><h3>Пещта</h3><p>Двойно темпериране в пещ за стъкло, докато цветовете се сплавят в една повърхност.</p></div>
+      </article>
+      <article class="craft-card">
+        <img src="assets/products/pana-buhal-close.jpg" alt="Пано с метална закачалка" loading="lazy">
+        <div><span class="num">05</span><h3>Рамка или закачалка</h3><p>Картините влизат в дървена рамка. Паната висят на метална закачалка-кобилица, завършваща със спирала — знак за развитие и извисеност.</p></div>
+      </article>
+    </div>
+  </div>
+</section>
 
-  <article class="feature">
-    <div class="feature-fig">
-      <div class="frame-pick" role="radiogroup" aria-label="Избор на рамка">
-        <span class="label">Рамка</span>
-        <button type="button" role="radio" aria-checked="true" class="on" data-frame="platinum" data-name="Платина" title="Платина"><img src="assets/img/swatch-platinum.jpg" alt="Платина"></button>
-        <button type="button" role="radio" aria-checked="false" data-frame="walnut" data-name="Тъмен орех" title="Тъмен орех"><img src="assets/img/swatch-walnut.jpg" alt="Тъмен орех"></button>
-        <button type="button" role="radio" aria-checked="false" data-frame="black" data-name="Черно и сребро" title="Черно и сребро"><img src="assets/img/swatch-black.jpg" alt="Черно и сребро"></button>
-      </div>
-      <div class="feature-stage">
-        <figure class="feature-main"><img id="gMain" src="assets/img/framed-platinum.jpg" alt="Дърво на плодородието в платинена рамка" width="1500" height="2009"></figure>
-        <p class="label">Рамка: <b id="frameName">Платина</b></p>
-        <div class="thumbs" role="group" aria-label="Още снимки">
-          <button type="button" data-src="assets/products/plodorodie-close.jpg" data-alt="Стъклата отблизо" aria-label="Стъклата отблизо"><img src="assets/products/plodorodie-close-sm.jpg" alt="" loading="lazy"></button>
-          <button type="button" data-src="assets/img/light-poster.jpg" data-alt="Цветните стъкла на светлина" aria-label="Стъклата на светлина"><img src="assets/img/light-poster.jpg" alt=""></button>
-          <button type="button" data-video aria-label="Видео как се създава"><img src="assets/img/making-poster.jpg" alt="" loading="lazy"><span class="play" aria-hidden="true">▶</span></button>
+<!-- COMMISSION -->
+<section class="block commission" id="po-poruchka">
+  <header class="head">
+    <h2>По поръчка</h2>
+    <p>Сватбено Дърво на живота с имената на младоженците, или ваше собствено дърво с пожеланията, които искате да носи.</p>
+  </header>
+  <div class="config">
+    <div class="config-preview">
+      <img id="cfgImg" src="assets/img/framed-wedding-platinum.jpg" alt="Преглед на поръчката">
+      <p class="cfg-names" id="cfgNames" hidden></p>
+    </div>
+    <form class="config-form" id="cfgForm">
+      <ol class="steps-nav" aria-label="Стъпки">
+        <li class="on">Вид</li><li>Размер</li><li>Рамка</li><li>Пожелания</li>
+      </ol>
+      <fieldset class="step on" data-step="0">
+        <legend>Какво да създадем?</legend>
+        <label class="opt"><input type="radio" name="kind" value="svatba" checked><span><b>Сватбено Дърво на живота</b>с имената на младоженците</span></label>
+        <label class="opt"><input type="radio" name="kind" value="darvo"><span><b>Дърво на живота</b>с ваши цветове и пожелания</span></label>
+        <label class="opt"><input type="radio" name="kind" value="pano"><span><b>Пано без рамка</b>с метална закачалка</span></label>
+      </fieldset>
+      <fieldset class="step" data-step="1">
+        <legend>Размер</legend>
+        <div class="chips" id="cfgSizes"></div>
+      </fieldset>
+      <fieldset class="step" data-step="2">
+        <legend>Рамка</legend>
+        <div class="chips" id="cfgFrames">
+          <label class="chip"><input type="radio" name="frame" value="platinum" checked><img src="assets/img/swatch-platinum.jpg" alt="">Платина</label>
+          <label class="chip"><input type="radio" name="frame" value="walnut"><img src="assets/img/swatch-walnut.jpg" alt="">Тъмен орех</label>
+          <label class="chip"><input type="radio" name="frame" value="black"><img src="assets/img/swatch-black.jpg" alt="">Черно и сребро</label>
         </div>
+        <p class="hint" id="cfgHangerNote" hidden>Паната са без рамка и висят на метална закачалка-кобилица.</p>
+      </fieldset>
+      <fieldset class="step" data-step="3">
+        <legend>Пожелания</legend>
+        <div class="chips">
+          <label class="chip"><input type="checkbox" name="wish" value="зелено — природа"><i style="--c:#4d8a3b"></i>Зелено · природа</label>
+          <label class="chip"><input type="checkbox" name="wish" value="червено — здраве"><i style="--c:#d2311c"></i>Червено · здраве</label>
+          <label class="chip"><input type="checkbox" name="wish" value="оранжево — борба"><i style="--c:#ec7a14"></i>Оранжево · борба</label>
+          <label class="chip"><input type="checkbox" name="wish" value="жълто — свобода"><i style="--c:#f0b914"></i>Жълто · свобода</label>
+        </div>
+        <label class="field" id="cfgNamesField">Имена на младоженците <input name="names" id="cfgNamesIn" placeholder="напр. Йоана & Кристиян"></label>
+        <label class="field">Повод, срок, бележки <textarea name="note" id="cfgNote" rows="2"></textarea></label>
+      </fieldset>
+      <div class="config-foot">
+        <button type="button" class="btn btn-line" id="cfgBack">Назад</button>
+        <p class="cfg-sum" id="cfgSum"></p>
+        <button type="button" class="btn btn-glow" id="cfgNext">Напред</button>
       </div>
-    </div>
-    <div class="feature-info">
-      <p class="label">Семейно дърво на живота</p>
-      <h3>Дърво на плодородието</h3>
-      <p class="price">80 €</p>
-      <p>Изработено върху стъкло със специални професионални бои и цветни стъкла. Двойно темперирано в пещ за стъкло.</p>
-      <dl class="specs">
-        <div><dt>Размер</dt><dd>30 × 40 см</dd></div>
-        <div><dt>Рамка</dt><dd>дървена, 3 см, по избор</dd></div>
-        <div><dt>Материал</dt><dd>стъкло, цветно стъкло, бои за стъкло</dd></div>
-        <div><dt>Автор</dt><dd>Лъки Михайлова</dd></div>
-      </dl>
-      <button class="btn btn-wide" type="button" data-order="plodorodie">Поръчай картината</button>
-      <p class="fine">Всяка картина е уникална. Възможни са фини разлики спрямо снимките.</p>
-    </div>
-  </article>
-
-  <figure class="collection">
-    <img src="assets/img/collection.jpg" alt="Седем Дървета на живота в златни рамки, подредени на стена" loading="lazy" width="2000" height="1493">
-    <figcaption class="label">Дървета на живота · авторска серия</figcaption>
-  </figure>
-
-  <h3 class="sub-h">Още картини</h3>
-  <div class="works" id="gridKartini"></div>
-</section>
-
-<!-- WEDDING -->
-<section class="wedding" id="svatba">
-  <div class="wedding-fig">
-    <img id="wedImg" src="assets/img/framed-wedding-platinum.jpg" alt="Сватбено Дърво на живота с младоженци и техните имена" width="1000" height="1314">
-    <div class="frame-pick frame-pick-row" role="radiogroup" aria-label="Избор на рамка">
-      <span class="label">Рамка</span>
-      <button type="button" role="radio" aria-checked="true" class="on" data-frame="platinum" data-name="Платина" title="Платина"><img src="assets/img/swatch-platinum.jpg" alt="Платина"></button>
-      <button type="button" role="radio" aria-checked="false" data-frame="walnut" data-name="Тъмен орех" title="Тъмен орех"><img src="assets/img/swatch-walnut.jpg" alt="Тъмен орех"></button>
-      <button type="button" role="radio" aria-checked="false" data-frame="black" data-name="Черно и сребро" title="Черно и сребро"><img src="assets/img/swatch-black.jpg" alt="Черно и сребро"></button>
-    </div>
-  </div>
-  <div class="wedding-copy">
-    <p class="label">Само по поръчка</p>
-    <h2>Сватбено Дърво на живота</h2>
-    <p>Върху стъклото се изписват имената на младоженците, а под дървото застават двамата. Подарък, който остава за цял живот.</p>
-    <ul class="dashes">
-      <li>Имената ви върху картината</li>
-      <li>Изработва се изцяло по поръчка</li>
-      <li>Рамка по ваш вкус, три варианта</li>
-    </ul>
-    <button class="btn btn-light" type="button" data-order="svatba">Поръчай сватбено дърво</button>
-  </div>
-</section>
-
-<!-- PLASTICS / JEWELRY -->
-<div class="soon-wrap">
-  <section class="soon" id="plastiki">
-    <h2>Пластики</h2>
-    <p>Колекцията се подготвя. Ако търсите нещо конкретно, пишете ни във формата за поръчка.</p>
-  </section>
-  <section class="soon" id="bijuta">
-    <h2>Бижута</h2>
-    <p>Бижутата от цветно стъкло скоро ще се появят тук.</p>
-  </section>
-</div>
-
-<!-- PROCESS -->
-<section class="block process">
-  <div class="process-video">
-    <video muted loop playsinline controls preload="none" poster="assets/img/making-poster.jpg"><source src="assets/video/making.mp4" type="video/mp4"></video>
-    <p class="label">Фиг. 2 — от голо дърво до есенна корона</p>
-  </div>
-  <div class="process-copy">
-    <h2>Как се прави</h2>
-    <ol class="steps">
-      <li><b>Рисуване.</b> Стволът и клоните се изрисуват със специални професионални бои.</li>
-      <li><b>Нареждане.</b> Цветните стъкълца се слагат едно по едно, подбрани с добро намерение.</li>
-      <li><b>Пещ.</b> Двойно темпериране в пещ за стъкло, докато цветовете се сплавят.</li>
-      <li><b>Рамка.</b> Дървена рамка по ваш избор.</li>
-    </ol>
+      <p class="hint">Цената се уточнява лично, според размера и детайлите.</p>
+    </form>
   </div>
 </section>
 
 <!-- AUTHOR -->
 <section class="author" id="avtor">
-  <blockquote>Не просто декоративна картина, а носител на лично послание и красиво пожелание за дома и хората, които го обитават.</blockquote>
+  <figure class="author-art"><img src="assets/img/collection.jpg" alt="Седем Дървета на живота, подредени на стена" loading="lazy"></figure>
   <div class="author-copy">
-    <p class="label">Авторът</p>
+    <p class="kicker">Авторът</p>
     <h2>Лъки Михайлова</h2>
-    <p>Вече 28 години Лъки създава авторски картини от цветно стъкло, с много чувство, внимание към детайла и индивидуално послание.</p>
-    <p>В основата на творчеството ѝ е Дървото на живота: символ на живота, семейството, развитието, благополучието и връзката между поколенията.</p>
-    <p>Всяко цветно стъкълце е подбрано и вложено с позитивно намерение за здраве, любов, благополучие, успех и хармония.</p>
-    <h3>Авторски серии</h3>
-    <p class="run">Семейно дърво / Дърво на живота за успеха / Зимно / Пролетно / Лятно / Дърво на живота за пари / Родово / Плодородно / Ябълка / Череша / Диня и слива</p>
-    <h3>Галерия</h3>
-    <p>Лъки е собственик и на галерия <b>Artgifts.bg</b> на ул. „Гурко“ в София. Картините се виждат най-добре на живо, на светлина.</p>
-    <a class="textlink" href="https://artgifts.bg" target="_blank" rel="noopener">artgifts.bg ↗</a>
+    <p class="big">Вече 28 години създава авторски картини от цветно стъкло — с много чувство, внимание към детайла и лично послание.</p>
+    <p>В основата на творчеството ѝ е Дървото на живота: символ на живота, семейството, развитието, благополучието и връзката между поколенията. Всяко стъкълце е вложено с намерение — за здраве, любов, успех и хармония.</p>
+    <blockquote>Не просто декоративна картина, а носител на лично послание и красиво пожелание за дома и хората, които го обитават.</blockquote>
+    <div class="gallery-card">
+      <span class="kicker">Галерия</span>
+      <b>Artgifts.bg</b>
+      <span>ул. „Гурко“, София</span>
+      <a class="textlink" href="https://artgifts.bg" target="_blank" rel="noopener">artgifts.bg ↗</a>
+    </div>
   </div>
-</section>
-
-<!-- ORDER -->
-<section class="block order" id="porachka">
-  <header class="head">
-    <h2>Поръчка</h2>
-    <p>Изберете работа и оставете телефон. Ще ви потърсим, за да уточним детайли, плащане и доставка.</p>
-  </header>
-  <form id="orderForm" novalidate>
-    <label class="full">Избор <select name="item" id="item" required></select></label>
-    <label class="frm">Рамка
-      <select name="frame" id="frameSel"><option>Платина</option><option>Тъмен орех</option><option>Черно и сребро</option></select>
-    </label>
-    <label class="wed" hidden>Имена на младоженците <input name="names" id="names" placeholder="напр. Йоана & Кристиян"></label>
-    <label>Вашето име <input name="name" id="name" required autocomplete="name"></label>
-    <label>Телефон <input name="phone" id="phone" type="tel" required autocomplete="tel"></label>
-    <label class="full">Съобщение <textarea name="msg" id="msg" rows="3" placeholder="Повод, срок, въпроси"></textarea></label>
-    <button class="btn full" type="submit">Изпрати поръчката</button>
-    <p class="fine full" id="formNote" role="status"></p>
-  </form>
 </section>
 
 </main>
 
 <footer class="foot">
   <a class="mark" href="#top">Лъки Михайлова</a>
-  <p class="label">Картини от стъкло · © <span id="yr"></span></p>
+  <p>Картини от стъкло · © <span id="yr"></span></p>
 </footer>
 
-<dialog class="viewer" id="viewer" aria-labelledby="vTitle">
-  <div class="viewer-bar">
-    <b id="vTitle"></b>
-    <span class="label" id="vCap"></span>
-    <button type="button" class="viewer-x" id="vClose" aria-label="Затвори">✕</button>
+<!-- PRODUCT -->
+<dialog class="product" id="product" aria-labelledby="pName">
+  <button type="button" class="x" data-close aria-label="Затвори">✕</button>
+  <div class="p-stage">
+    <div class="p-modes" role="tablist" aria-label="Изглед">
+      <button role="tab" data-mode="wall" aria-selected="true">На стената</button>
+      <button role="tab" data-mode="photo" aria-selected="false">Снимка</button>
+      <button role="tab" data-mode="detail" aria-selected="false">Детайл</button>
+    </div>
+    <div class="sim" id="sim">
+      <div class="sim-wall"></div>
+      <div class="sim-spot"></div>
+      <div class="sim-art" id="simArt"><img id="simImg" alt=""><span class="sim-sheen" id="simSheen"></span></div>
+    </div>
+    <div class="zoom" id="zoom" hidden><img id="zoomImg" alt=""><span class="zoom-hint">Кликни за увеличение</span></div>
+    <div class="sim-ctrl" id="simCtrl">
+      <div class="walls" role="radiogroup" aria-label="Стена">
+        <button data-wall="plaster" aria-checked="true" role="radio" title="Варова мазилка"></button>
+        <button data-wall="concrete" aria-checked="false" role="radio" title="Бетон"></button>
+        <button data-wall="brick" aria-checked="false" role="radio" title="Тухла"></button>
+        <button data-wall="night" aria-checked="false" role="radio" title="Тъмна стена"></button>
+      </div>
+      <label class="range">Посока на светлината <input type="range" id="lightDir" min="-60" max="60" value="-25"></label>
+      <label class="range">Светлина <input type="range" id="lightAmt" min="20" max="100" value="80"></label>
+    </div>
   </div>
-  <img id="vImg" alt="">
-  <button type="button" class="viewer-nav prev" id="vPrev" aria-label="Предишна снимка">←</button>
-  <button type="button" class="viewer-nav next" id="vNext" aria-label="Следваща снимка">→</button>
+  <div class="p-info">
+    <p class="kicker" id="pCat"></p>
+    <h2 id="pName"></h2>
+    <p class="p-price" id="pPrice"></p>
+    <div class="variants" id="pVariants"></div>
+    <div id="pSizes"></div>
+    <div id="pFrames" hidden>
+      <p class="kicker">Рамка</p>
+      <div class="chips">
+        <label class="chip"><input type="radio" name="pframe" value="platinum" checked><img src="assets/img/swatch-platinum.jpg" alt="">Платина</label>
+        <label class="chip"><input type="radio" name="pframe" value="walnut"><img src="assets/img/swatch-walnut.jpg" alt="">Тъмен орех</label>
+        <label class="chip"><input type="radio" name="pframe" value="black"><img src="assets/img/swatch-black.jpg" alt="">Черно и сребро</label>
+      </div>
+    </div>
+    <p class="p-text" id="pText"></p>
+    <dl class="specs" id="pSpecs"></dl>
+    <button type="button" class="btn btn-glow btn-wide" id="pAdd">Добави в списъка</button>
+    <p class="hint">Всяка творба е единствена. Възможни са фини разлики спрямо снимките.</p>
+  </div>
 </dialog>
+
+<!-- CART -->
+<aside class="drawer" id="drawer" aria-labelledby="drawerTitle" hidden>
+  <div class="drawer-scrim" data-close-drawer></div>
+  <div class="drawer-panel">
+    <header><h2 id="drawerTitle">Списък за поръчка</h2><button type="button" class="x" data-close-drawer aria-label="Затвори">✕</button></header>
+    <ul class="cart-list" id="cartList"></ul>
+    <p class="empty" id="cartEmpty">Списъкът е празен. Изберете творба от колекцията.</p>
+    <form id="orderForm" class="order-form" novalidate>
+      <fieldset>
+        <legend>Получаване</legend>
+        <label class="opt sm"><input type="radio" name="delivery" value="Вземане от галерия Artgifts, ул. „Гурко“, София" checked><span><b>От галерията</b>Artgifts, ул. „Гурко“, София</span></label>
+        <label class="opt sm"><input type="radio" name="delivery" value="Доставка с куриер в България"><span><b>С куриер</b>в България, уточняваме при потвърждение</span></label>
+      </fieldset>
+      <label class="field">Име <input name="name" id="oName" required autocomplete="name"></label>
+      <label class="field">Телефон <input name="phone" id="oPhone" type="tel" required autocomplete="tel"></label>
+      <label class="field">Имейл <input name="email" id="oEmail" type="email" autocomplete="email"></label>
+      <p class="sum-line"><span>Ориентировъчно</span><b id="cartTotal">—</b></p>
+      <button class="btn btn-glow btn-wide" type="submit">Изпрати запитване</button>
+      <p class="hint" id="orderNote" role="status">Не плащате сега. Ще се свържем с вас, за да потвърдим наличност, плащане и доставка.</p>
+      <div class="order-out" id="orderOut" hidden>
+        <p>Ако имейлът не се отвори, копирайте текста и го изпратете на <b id="orderMail"></b>:</p>
+        <textarea id="orderText" rows="6" readonly></textarea>
+        <button type="button" class="btn btn-line" id="copyOrder">Копирай</button>
+      </div>
+    </form>
+  </div>
+</aside>
 
 <script src="main.js"></script>
 </body>
