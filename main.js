@@ -287,18 +287,52 @@ const intro = $("#intro");
   }
   size(); addEventListener("resize", size);
   raf = requestAnimationFrame(frame);
+  function shatter(done) {
+    const btn = $("#enterBtn"), r = btn.getBoundingClientRect();
+    if (reduce || !btn.animate) return done();
+    const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+    const flash = document.createElement("div"); flash.className = "flash";
+    flash.style.left = `${cx - 130}px`; flash.style.top = `${cy - 130}px`; document.body.appendChild(flash);
+    flash.animate([{ opacity: 0, transform: "scale(.4)" }, { opacity: 1, transform: "scale(1)" }, { opacity: 0, transform: "scale(1.5)" }], { duration: 700, easing: "ease-out" }).onfinish = () => flash.remove();
+    btn.classList.add("broken");
+    const N = 18;
+    for (let i = 0; i < N; i++) {
+      const s = document.createElement("div"); s.className = "shard";
+      const w = r.width * (.18 + Math.random() * .22), h = r.height * (.18 + Math.random() * .25);
+      s.style.width = `${w}px`; s.style.height = `${h}px`;
+      const ang = (i / N) * Math.PI * 2 + Math.random() * .4;
+      const ox = Math.cos(ang) * r.width * .22, oy = Math.sin(ang) * r.height * .22;
+      s.style.left = `${cx + ox - w / 2}px`; s.style.top = `${cy + oy - h / 2}px`;
+      const p = () => `${Math.round(Math.random() * 100)}% ${Math.round(Math.random() * 100)}%`;
+      s.style.clipPath = `polygon(${p()}, ${p()}, ${p()}${Math.random() > .5 ? ", " + p() : ""})`;
+      document.body.appendChild(s);
+      const dist = 160 + Math.random() * 260, dx = Math.cos(ang) * dist, dy = Math.sin(ang) * dist + 120;
+      const rot = (Math.random() - .5) * 720;
+      s.animate([{ transform: "translate(0,0) rotate(0)", opacity: 1 },
+        { transform: `translate(${dx * .6}px,${dy * .4 - 60}px) rotate(${rot * .6}deg)`, opacity: 1, offset: .55 },
+        { transform: `translate(${dx}px,${dy}px) rotate(${rot}deg)`, opacity: 0 }],
+        { duration: 900 + Math.random() * 400, easing: "cubic-bezier(.2,.6,.3,1)" }).onfinish = () => s.remove();
+    }
+    setTimeout(done, 520);
+  }
+  let entering = false;
   function enter() {
+    if (entering) return; entering = true;
+    shatter(leave);
+  }
+  function leave() {
     intro.classList.add("leaving");
     document.body.classList.remove("locked");
     setTimeout(() => { cancelAnimationFrame(raf); intro.hidden = true; }, 1300);
     try { sessionStorage.setItem("entered", "1"); } catch {}
   }
   $("#enterBtn").addEventListener("click", enter);
+  $("#enterBtn").setAttribute("aria-label", "Влез в сайта");
   addEventListener("keydown", e => { if (!intro.hidden && e.key === "Enter") enter(); });
   let seen = false; try { seen = sessionStorage.getItem("entered") === "1"; } catch {}
   const deep = location.hash && location.hash !== "#kolekcia";
   if (seen || deep) { intro.hidden = true; cancelAnimationFrame(raf); }
-  else { document.body.classList.add("locked"); requestAnimationFrame(() => intro.classList.add("play")); $("#enterBtn").focus({ preventScroll: true }); }
+  else { document.body.classList.add("locked"); requestAnimationFrame(() => intro.classList.add("play")); }
 })();
 
 /* ---------- list ---------- */
