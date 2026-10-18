@@ -268,7 +268,8 @@ const intro = $("#intro");
     leaf: [[110, 138, 58], [80, 112, 54]], dark: [[64, 36, 22]]
   };
   // timeline (seconds)
-  const T = { name: .7, nameDur: 4.6, paint: 5.6, paintDur: 1.9, crown: 7.2, crownDur: 3.6, lit: 11 };
+  const T = { name: .6, letterGap: .3, letterFill: .55, fly: .85, paint: 6.4, paintDur: 1.9, crown: 8, crownDur: 3.4, lit: 11.6, nameEnd: 5 };
+  const N = {};
   let W, H, dpr, beads = [], raf, t0 = 0, done = false, bursting = false, L = {}, sprites = new Map(), layer, lctx, next = 0;
 
   function sprite(c, r, v) {               // one glossy glass chip, cached by colour / size / shape
@@ -288,87 +289,60 @@ const intro = $("#intro");
     g.fillStyle = "rgba(255,250,238,.82)"; g.beginPath(); g.ellipse(-r * .34, -r * .4, r * .28, r * .14, -.6, 0, 6.283); g.fill();
     sprites.set(key, o); return o;
   }
-  const bead = (x, y, r, c, delay, v) => ({ x, y, r, c, delay, img: sprite(c, Math.max(1, Math.round(r * dpr * 2) / 2), v) });
-  // mosaic packing: every chip as large as the stroke allows at its spot, chips touching but not overlapping
-  function packMask(draw, w, h, rmin, rmax) {
-    const c = document.createElement("canvas"); c.width = w = Math.ceil(w); c.height = h = Math.ceil(h);
-    const g = c.getContext("2d"); draw(g); const a = g.getImageData(0, 0, w, h).data, dt = new Float32Array(w * h);
-    for (let i = 0; i < w * h; i++) dt[i] = a[i * 4 + 3] > 128 ? 1e6 : 0;
-    const D = Math.SQRT2;
-    for (let y = 1; y < h; y++) for (let x = 1; x < w - 1; x++) { const i = y * w + x; if (!dt[i]) continue;
-      dt[i] = Math.min(dt[i], dt[i - 1] + 1, dt[i - w] + 1, dt[i - w - 1] + D, dt[i - w + 1] + D); }
-    for (let y = h - 2; y >= 0; y--) for (let x = w - 2; x > 0; x--) { const i = y * w + x; if (!dt[i]) continue;
-      dt[i] = Math.min(dt[i], dt[i + 1] + 1, dt[i + w] + 1, dt[i + w + 1] + D, dt[i + w - 1] + D); }
-    // chips sit only on the ridge (the centre line of every stroke): one neat row, each as wide as the stroke there
-    const ridge = [], rest = [];
-    for (let y = 1; y < h - 1; y++) for (let x = 1; x < w - 1; x++) {
-      const i = y * w + x, v = dt[i]; if (v < rmin) continue;
-      const m = Math.max(dt[i - 1], dt[i + 1], dt[i - w], dt[i + w], dt[i - w - 1], dt[i - w + 1], dt[i + w - 1], dt[i + w + 1]);
-      (v >= m - .25 ? ridge : rest).push(i);
-    }
-    const byDt = (p, q) => dt[q] - dt[p] + (Math.random() - .5) * .4;
-    ridge.sort(byDt); rest.sort(byDt);
-    const cell = rmax * 2, grid = new Map(), out = [];
-    for (const i of ridge) {
-      const x = i % w, y = (i / w) | 0, r = Math.min(rmax, dt[i] * .94), gx = Math.floor(x / cell), gy = Math.floor(y / cell);
-      let ok = true;
-      for (let u = -1; u <= 1 && ok; u++) for (let v = -1; v <= 1 && ok; v++) for (const q of grid.get((gx + u) + "," + (gy + v)) || [])
-        if ((q[0] - x) ** 2 + (q[1] - y) ** 2 < ((q[2] + r) * .8) ** 2) { ok = false; break; }
-      if (!ok) continue;
-      const k = gx + "," + gy; (grid.get(k) || grid.set(k, []).get(k)).push([x, y, r]); out.push([x, y, r]);
-    }
-    return out;
-  }
-  function strokeOrder(pts) {               // walk each letter like a hand laying chips: nearest next, starting low-left
-    if (!pts.length) return pts;
-    const left = pts.slice(), out = []; let i = 0, best = 1e9;
-    left.forEach((p, k) => { const s = p[0] * 1.4 - p[1] * .2; if (s < best) { best = s; i = k; } });
-    let cur = left.splice(i, 1)[0]; out.push(cur);
-    while (left.length) {
-      let bi = 0, bd = 1e18;
-      for (let k = 0; k < left.length; k++) { const d = (left[k][0] - cur[0]) ** 2 + (left[k][1] - cur[1]) ** 2; if (d < bd) { bd = d; bi = k; } }
-      cur = left.splice(bi, 1)[0]; out.push(cur);
-    }
-    return out;
-  }
-
+  const bead = (x, y, r, c, delay, v) => ({ x, y, r, c, delay, dur: .24, img: sprite(c, Math.max(1, Math.round(r * dpr * 2) / 2), v) });
   function layout() {
     dpr = Math.min(2, devicePixelRatio || 1); W = innerWidth; H = innerHeight;
     cv.width = W * dpr; cv.height = H * dpr; cv.style.width = W + "px"; cv.style.height = H + "px";
     layer = document.createElement("canvas"); layer.width = cv.width; layer.height = cv.height;
     lctx = layer.getContext("2d"); lctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     beads = []; next = 0; sprites.clear();
-    const font = '"Great Vibes", "Marck Script", cursive', text = "Лъки Михайлова";
+    const font = 'italic 500 {S}px "Playfair Display", Georgia, serif', text = "Лъки Михайлова", F = n => font.replace("{S}", n);
     const lines = W < 640 ? ["Лъки", "Михайлова"] : [text];   // on a phone the name gets two lines so it can be large
-    ctx.font = `100px ${font}`; const w100 = Math.max(...lines.map(l => ctx.measureText(l).width));
-    const fs = Math.min(100 * W * .9 / w100, H * (lines.length > 1 ? .13 : .19), 230), lh = fs * 1.05;
-    const mw = w100 * fs / 100 + fs * .8, mh = fs * 1.7 + lh * (lines.length - 1);
-    ctx.font = `${fs}px ${font}`;
-    const rows = lines.map((l, li) => { const lw = ctx.measureText(l).width, lx = (mw - lw) / 2;
-      return { l, lx, by: fs * 1.15 + li * lh, edges: [...l].map((_, i) => lx + ctx.measureText(l.slice(0, i)).width) }; });
-    const pts = packMask(g => { g.font = `${fs}px ${font}`; g.lineJoin = "round"; g.lineWidth = fs * .026;
-      for (const r of rows) { g.fillText(r.l, r.lx, r.by); g.strokeText(r.l, r.lx, r.by); } }, mw, mh, Math.max(1.2, fs * .011), Math.max(3, fs * .036));
-    let x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9; for (const [x, y] of pts) { x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y); }
+    ctx.font = F(100); const w100 = Math.max(...lines.map(l => ctx.measureText(l).width));
+    const fs = Math.min(100 * W * .86 / w100, H * (lines.length > 1 ? .12 : .16), 200), lh = fs * 1.08;
+    ctx.font = F(fs);
+    const asc = fs * .78, nameH = asc + fs * .22 + lh * (lines.length - 1), tagH = fs * .5 + 18;
     // vertical composition: name, tagline, tree; spare height is shared so nothing floats apart
-    const nameH = y1 - y0, tagH = fs * .55 + 18;
-    let top = Math.max(H * .06, 28);
+    let top = Math.max(H * .07, 30);
     const TH = Math.max(160, Math.min((H - top - nameH - tagH - 70) / .99, W * .9 / .76, 640));
     const spare = Math.max(0, H - 64 - TH * .99 - tagH - nameH - top - 40);
     top += spare * .42;
-    const ox = (W - (x1 - x0)) / 2 - x0, oy = top - y0;
-    // letters in writing order, each one walked stroke-like
-    const letters = rows.map(r => r.edges.map(() => []));
-    for (const p of pts) {   // [x, y, r] -> its line, then its letter
-      let li = 0; while (li + 1 < rows.length && p[1] > rows[li].by + lh * .3) li++;
-      const e = rows[li].edges; let k = 0; while (k + 1 < e.length && p[0] >= e[k + 1]) k++; letters[li][k].push(p); }
-    const ordered = letters.flat().flatMap(strokeOrder);
-    const RAMP = [[150, 36, 26], [182, 52, 30], [204, 72, 34], [224, 112, 42], [234, 152, 62], [238, 186, 96], [234, 152, 62], [224, 112, 42], [204, 72, 34]];
-    ordered.forEach(([x, y, r], i) => {
-      const u = i / ordered.length, f = (Math.sin(u * 6.283 * 2.3 + 1.1) * .5 + .5) * (RAMP.length - 1) + rnd(-.7, .7);
-      const c = r < fs * .022 && Math.random() < .06 ? [118, 140, 60] : RAMP[clamp(Math.round(f), 0, RAMP.length - 1)];
-      const b = bead(x + ox, y + oy, r, c, T.name + u * T.nameDur, Math.random() * 3 | 0); b.kind = "name"; beads.push(b);
-    });
-    tag.style.top = `${y1 + oy + Math.max(6, fs * .08)}px`;
+    const rows = lines.map((l, li) => { const lw = ctx.measureText(l).width, lx = (W - lw) / 2;
+      return { l, lx, lw, by: top + asc + li * lh, edges: [...l].map((_, i) => lx + ctx.measureText(l.slice(0, i)).width).concat(lx + lw) }; });
+    // the glyphs as a mask: used to fill letters with chips, to fuse them, and for the light sweep
+    N.mask = document.createElement("canvas"); N.mask.width = cv.width; N.mask.height = cv.height;
+    const mg = N.mask.getContext("2d"); mg.setTransform(dpr, 0, 0, dpr, 0, 0); mg.font = F(fs); mg.fillStyle = "#fff";
+    for (const r of rows) mg.fillText(r.l, r.lx, r.by);
+    N.rows = rows; N.F = F(fs); N.fs = fs; N.letters = []; N.sparks = [];
+    const md = mg.getImageData(0, 0, N.mask.width, N.mask.height).data, MW = N.mask.width;
+    const inside = (x, y) => md[((y * dpr | 0) * MW + (x * dpr | 0)) * 4 + 3] > 110;
+    const sp = Math.max(2.4, fs * .052), RAMP = [[128, 30, 22], [158, 40, 26], [186, 56, 30], [206, 80, 34], [222, 112, 42], [232, 146, 58], [236, 176, 88]];
+    const x0 = Math.min(...rows.map(r => r.lx)), xw = Math.max(...rows.map(r => r.lw));
+    let li = 0;
+    rows.forEach(r => [...r.l].forEach((ch, k) => {
+      if (ch === " ") return;
+      const lx0 = r.edges[k] - fs * .12, lx1 = r.edges[k + 1] + fs * .18, pts = [];
+      for (let row = 0, y = r.by - asc - fs * .1; y < r.by + fs * .3; y += sp * .866, row++)
+        for (let x = lx0 + (row % 2 ? sp / 2 : 0); x < lx1; x += sp) {
+          const jx = x + rnd(-.12, .12) * sp, jy = y + rnd(-.12, .12) * sp;
+          if (jx >= r.edges[k] - fs * .06 && jx < r.edges[k + 1] + fs * .06 && inside(jx, jy)) pts.push([jx, jy]);
+        }
+      const t0l = T.name + li * T.letterGap, letter = { r, k, t0: t0l, done: t0l + T.letterFill + T.fly };
+      N.letters.push(letter); li++;
+      pts.sort((p, q) => (q[1] - p[1]) + (p[0] - q[0]) * .35);   // fill from the bottom of the stroke up, like pouring
+      pts.forEach(([x, y], i) => {
+        const u = (x - x0) / xw, ci = clamp(Math.round(u * 4.2 + rnd(-1.2, 1.4)), 0, RAMP.length - 1);
+        const b = bead(x, y, sp * rnd(.6, .7), RAMP[ci], t0l + i / pts.length * T.letterFill, Math.random() * 3 | 0);
+        b.kind = "name"; b.dur = T.fly;
+        const side = Math.random() < .5 ? -1 : 1;     // a swirl of glass rising from below and curling in
+        b.sx = x + side * rnd(.15, .35) * W; b.sy = H * rnd(.75, 1.05);
+        b.cx = x - side * rnd(.05, .2) * W; b.cy = y - rnd(.1, .3) * H;
+        beads.push(b);
+      });
+    }));
+    T.nameEnd = N.letters.length ? N.letters[N.letters.length - 1].done : T.name;
+    const y1 = rows[rows.length - 1].by + fs * .22;
+    tag.style.top = `${y1 + Math.max(8, fs * .12)}px`;
 
     // tree geometry: painted trunk and limbs (drawn progressively), crown of chips
     const cx = W / 2, baseY = H - 64 - spare * .3, ccY = baseY - TH * .64, RC = TH * .34, rw = TH * .105;
@@ -409,7 +383,7 @@ const intro = $("#intro");
       const b = bead(q.x, q.y, q.r, q.c, T.crown + i / crown.length * T.crownDur, 2 + (Math.random() * 4 | 0)); b.kind = "crown"; beads.push(b); });
     btn.style.left = `${cx - rw * 1.3}px`; btn.style.top = `${ccY - rw * 1.3}px`; btn.style.width = btn.style.height = `${rw * 2.6}px`;
     btn.style.fontSize = `${Math.max(13, rw * .3)}px`;
-    beads.sort((p, q) => p.delay - q.delay);
+    beads.sort((p, q) => p.delay + p.dur - q.delay - q.dur);
   }
 
   // the trunk is painted like her glass paint: dark, glossy, brushed; p runs 0..1
@@ -464,22 +438,72 @@ const intro = $("#intro");
     if (depth && q > .55) [-1, 1].forEach(sd => limb(g, x + (ex - x) * .55, y + (ey - y) * .55, ang + sd * 26, len * .5, wd * .45, depth - 1, (q - .55) / .45));
   }
 
+  function nameFx(t) {
+    // under the chips: each letter's glass "grout" fills in as it is laid, so the shape always reads clearly
+    const { fs, rows } = N; ctx.save(); ctx.font = N.F;
+    for (const l of N.letters) {
+      const p = clamp((t - l.t0 - T.fly * .6) / (T.letterFill + T.fly * .4), 0, 1); if (!p) continue;
+      ctx.save(); ctx.beginPath(); ctx.rect(l.r.edges[l.k] - fs * .2, l.r.by - fs * 1.1, l.r.edges[l.k + 1] - l.r.edges[l.k] + fs * .35, fs * 1.5); ctx.clip();
+      ctx.globalAlpha = .92 * p; ctx.fillStyle = "#5c2414"; ctx.fillText(l.r.l, l.r.lx, l.r.by);
+      const g = t - l.done;                      // kiln: the finished letter glows hot, then cools into glass
+      if (g > 0 && g < 1.4) {
+        const k = Math.sin(Math.min(1, g / 1.4) * Math.PI) * (1 - g / 1.4 * .3);
+        ctx.globalAlpha = k * .85; ctx.shadowColor = "rgba(255,150,60,.9)"; ctx.shadowBlur = fs * .18;
+        ctx.fillStyle = "#ffb35c"; ctx.fillText(l.r.l, l.r.lx, l.r.by);
+      }
+      ctx.restore();
+    }
+    ctx.restore();
+  }
+  function nameSweep(t) {                     // one slow band of light across the finished name
+    const p = (t - T.nameEnd - .3) / 1.6; if (p <= 0 || p >= 1) return;
+    const s = N.sweep || (N.sweep = document.createElement("canvas")); s.width = cv.width; s.height = cv.height;
+    const g = s.getContext("2d"), x = (-.2 + p * 1.4) * W * dpr, bw = W * .12 * dpr;
+    const gr = g.createLinearGradient(x - bw, 0, x + bw, 0);
+    gr.addColorStop(0, "rgba(255,220,160,0)"); gr.addColorStop(.5, "rgba(255,236,196,.85)"); gr.addColorStop(1, "rgba(255,220,160,0)");
+    g.fillStyle = gr; g.fillRect(0, 0, s.width, s.height);
+    g.globalCompositeOperation = "destination-in"; g.drawImage(N.mask, 0, 0);
+    ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalCompositeOperation = "lighter"; ctx.globalAlpha = .55; ctx.drawImage(s, 0, 0); ctx.restore();
+  }
+  function sparks(dt) {
+    ctx.save(); ctx.globalCompositeOperation = "lighter";
+    N.sparks = N.sparks.filter(s => (s.life -= dt) > 0);
+    for (const s of N.sparks) {
+      s.x += s.vx * dt; s.y += s.vy * dt; s.vy += 40 * dt;
+      const a = s.life / s.max, r = 1.2 + 2 * a;
+      const g = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, r * 3);
+      g.addColorStop(0, `rgba(255,236,190,${a})`); g.addColorStop(.4, `rgba(255,170,80,${a * .6})`); g.addColorStop(1, "rgba(255,140,60,0)");
+      ctx.fillStyle = g; ctx.fillRect(s.x - r * 3, s.y - r * 3, r * 6, r * 6);
+    }
+    ctx.restore();
+  }
+  let lastT = 0;
   function render(t) {
-    // chips that have finished landing are baked into a layer; only the ones landing now are drawn each frame
-    while (next < beads.length && beads[next].delay + .24 <= t) {
+    const dt = Math.max(0, Math.min(.05, t - lastT)); lastT = t;
+    // chips that have landed are baked into a layer; only the ones in flight are drawn each frame
+    while (next < beads.length && beads[next].delay + beads[next].dur <= t) {
       const b = beads[next++], w = b.img.width / dpr; lctx.drawImage(b.img, b.x - w / 2, b.y - w / 2, w, w);
+      if (b.kind === "name" && Math.random() < .12 && t - b.delay - b.dur < .1) N.sparks.push({ x: b.x, y: b.y, vx: rnd(-30, 30), vy: rnd(-70, -20), life: .7, max: .7 });
     }
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H);
     paintTree(ctx, (t - T.paint) / T.paintDur);
+    nameFx(t);
     ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.drawImage(layer, 0, 0); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    for (let i = next; i < beads.length && beads[i].delay <= t; i++) {
-      const b = beads[i], p = clamp((t - b.delay) / .24, 0, 1), s = 1 + (1 - ease(p)) * .7, w = b.img.width / dpr * s;
-      ctx.globalAlpha = ease(p); ctx.drawImage(b.img, b.x - w / 2, b.y - w / 2 - (1 - ease(p)) * 6, w, w);   // pressed into place
+    for (let i = next; i < beads.length && beads[i].delay - 1 <= t; i++) {
+      const b = beads[i]; if (b.delay > t) continue;
+      const p = clamp((t - b.delay) / b.dur, 0, 1), e = ease(p);
+      let x = b.x, y = b.y - (1 - e) * 6, s = 1 + (1 - e) * .7, a = e;
+      if (b.kind === "name") {                // fly along a curve, small and bright, landing with a press
+        const u = 1 - e; x = u * u * b.sx + 2 * u * e * b.cx + e * e * b.x; y = u * u * b.sy + 2 * u * e * b.cy + e * e * b.y;
+        s = .45 + .55 * e + (p > .85 ? (1 - p) * 2 : 0); a = Math.min(1, p * 4);
+      }
+      const w = b.img.width / dpr * s; ctx.globalAlpha = a; ctx.drawImage(b.img, x - w / 2, y - w / 2, w, w);
     }
     ctx.globalAlpha = 1;
-    if (t >= T.name + T.nameDur - .3) tag.classList.add("on");
+    nameSweep(t); sparks(dt);
+    if (t >= T.nameEnd - .2) tag.classList.add("on");
     if (t >= T.lit) { btn.classList.add("lit"); foot.classList.add("on"); }
-    return next < beads.length || t < T.paint + T.paintDur;
+    return next < beads.length || t < T.paint + T.paintDur || t < T.nameEnd + 2 || N.sparks.length;
   }
   const freeze = +(new URLSearchParams(location.search).get("introt") || 0);   // test hook: ?introt=5 renders one moment
   let clock = 0, last = 0;
@@ -536,7 +560,7 @@ const intro = $("#intro");
   const deep = location.hash && location.hash !== "#kolekcia";
   if (seen || deep) { intro.hidden = true; return; }
   document.body.classList.add("locked"); requestAnimationFrame(() => intro.classList.add("play"));
-  const ready = document.fonts && document.fonts.load ? Promise.race([document.fonts.load('100px "Great Vibes"', "Лъки"), new Promise(r => setTimeout(r, 1800))]) : Promise.resolve();
+  const ready = document.fonts && document.fonts.load ? Promise.race([document.fonts.load('italic 500 100px "Playfair Display"', "Лъки"), new Promise(r => setTimeout(r, 1800))]) : Promise.resolve();
   const loaded = document.readyState === "complete" ? Promise.resolve() : new Promise(r => addEventListener("load", r, { once: true }));
   const visible = () => new Promise(r => { if (!document.hidden) return r(); document.addEventListener("visibilitychange", function v() { if (!document.hidden) { document.removeEventListener("visibilitychange", v); r(); } }); });
   Promise.all([ready.catch(() => {}), Promise.race([loaded, new Promise(r => setTimeout(r, 4000))])]).then(visible).then(start, start);
