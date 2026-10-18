@@ -254,26 +254,28 @@ $("#menuBtn").addEventListener("click", () => {
   $("#mnav").hidden = !open; $("#menuBtn").setAttribute("aria-expanded", open);
 });
 
-/* ---------- intro: the name and a Tree of Life assemble from fused-glass beads; "Влез" glows in the crown ---------- */
+/* ---------- intro: the name is laid bead by bead, the trunk is painted, the crown is set chip by chip; "Влез" glows ---------- */
 const intro = $("#intro");
 (function introScene() {
   const cv = $("#introCanvas"), ctx = cv.getContext("2d"), btn = $("#enterBtn"), tag = $(".intro-tag");
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const rnd = (a, b) => a + Math.random() * (b - a), pick = arr => arr[Math.random() * arr.length | 0];
-  const ease = t => 1 - Math.pow(1 - t, 3), back = t => 1 + 2.2 * Math.pow(t - 1, 3) + 1.2 * Math.pow(t - 1, 2);
-  // palettes taken from her glass: a copper-to-honey name, an autumn crown, a dark glossy trunk
-  const NAME = [[122, 52, 22], [150, 66, 26], [176, 86, 34], [196, 110, 44], [210, 136, 58], [222, 160, 76]];
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v)), ease = t => 1 - Math.pow(1 - t, 3);
+  const wpick = (arr, w) => { let r = Math.random() * w.reduce((x, y) => x + y); for (let i = 0; i < arr.length; i++) if ((r -= w[i]) < 0) return arr[i]; return arr[0]; };
+  // her glass: warm reds, oranges, amber and honey, deep garnet, a little olive
+  const NAMEC = [[204, 72, 34], [224, 112, 42], [234, 152, 62], [182, 52, 30], [146, 36, 26], [238, 186, 96], [118, 140, 60]];
+  const NAMEW = [3, 3, 2.4, 2, 1.2, 1.6, .7];
   const CROWN = {
     core: [[236, 182, 92], [226, 154, 60], [224, 118, 46]],
     mid: [[226, 102, 40], [212, 74, 34], [232, 142, 58], [198, 60, 30]],
     edge: [[176, 50, 30], [144, 36, 26], [200, 80, 36], [118, 30, 22]],
     leaf: [[110, 138, 58], [80, 112, 54]], dark: [[64, 36, 22]]
   };
-  const BARK = [[38, 24, 17], [52, 33, 22], [70, 45, 30], [30, 19, 13], [96, 66, 44]];
-  const GROUND = [[92, 108, 52], [70, 84, 42], [120, 128, 64], [58, 38, 24]];
-  let W, H, dpr, beads = [], raf, t0 = 0, settled = false, bursting = false, L = {}, sprites = new Map();
+  // timeline (seconds)
+  const T = { name: .35, nameDur: 4.1, paint: 4.75, paintDur: 1.9, crown: 6.35, crownDur: 3.5, lit: 10.05 };
+  let W, H, dpr, beads = [], raf, t0 = 0, done = false, bursting = false, L = {}, sprites = new Map(), layer, lctx, next = 0;
 
-  function sprite(c, r, v) {               // one glossy glass bead, cached by colour / size / shape variant
+  function sprite(c, r, v) {               // one glossy glass chip, cached by colour / size / shape
     const key = c.join() + "|" + r + "|" + v; let s = sprites.get(key); if (s) return s;
     const S = Math.ceil(r * 2 + 4), m = S / 2, o = document.createElement("canvas"); o.width = o.height = S;
     const g = o.getContext("2d"), [R, G, B] = c, lt = (x, f) => Math.min(255, x + (255 - x) * f) | 0, dk = (x, f) => x * f | 0;
@@ -290,86 +292,75 @@ const intro = $("#intro");
     g.fillStyle = "rgba(255,250,238,.82)"; g.beginPath(); g.ellipse(-r * .34, -r * .4, r * .28, r * .14, -.6, 0, 6.283); g.fill();
     sprites.set(key, o); return o;
   }
-  function bead(x, y, r, c, kind, delay, from) {
-    const rr = Math.max(1, Math.round(r * dpr * 2) / 2);
-    beads.push({ x, y, r, c, kind, delay, sx: from ? from[0] : x, sy: from ? from[1] : y, img: sprite(c, rr, kind === "crown" ? 2 + (Math.random() * 4 | 0) : Math.random() * 2 | 0) });
-  }
-  // hex-grid samples inside whatever is painted on a mask canvas
-  function sampleMask(draw, w, h, sp) {
+  const bead = (x, y, r, c, delay, v) => ({ x, y, r, c, delay, img: sprite(c, Math.max(1, Math.round(r * dpr * 2) / 2), v) });
+  function sampleMask(draw, w, h, sp) {    // hex-grid points inside whatever is painted on a mask
     const c = document.createElement("canvas"); c.width = Math.ceil(w); c.height = Math.ceil(h);
     const g = c.getContext("2d"); draw(g); const d = g.getImageData(0, 0, c.width, c.height).data, out = [];
     for (let row = 0, y = sp / 2; y < h; y += sp * .866, row++)
       for (let x = (row % 2 ? sp / 2 : 0) + sp / 4; x < w; x += sp) {
-        const jx = x + rnd(-.22, .22) * sp, jy = y + rnd(-.22, .22) * sp, i = ((jy | 0) * c.width + (jx | 0)) * 4 + 3;
-        if (d[i] > 140) out.push([jx, jy]);
+        const jx = x + rnd(-.2, .2) * sp, jy = y + rnd(-.2, .2) * sp;
+        if (d[((jy | 0) * c.width + (jx | 0)) * 4 + 3] > 140) out.push([jx, jy]);
       }
     return out;
   }
+  function strokeOrder(pts) {               // walk each letter like a hand laying chips: nearest next, starting low-left
+    if (!pts.length) return pts;
+    const left = pts.slice(), out = []; let i = 0, best = 1e9;
+    left.forEach((p, k) => { const s = p[0] * 1.4 - p[1] * .2; if (s < best) { best = s; i = k; } });
+    let cur = left.splice(i, 1)[0]; out.push(cur);
+    while (left.length) {
+      let bi = 0, bd = 1e18;
+      for (let k = 0; k < left.length; k++) { const d = (left[k][0] - cur[0]) ** 2 + (left[k][1] - cur[1]) ** 2; if (d < bd) { bd = d; bi = k; } }
+      cur = left.splice(bi, 1)[0]; out.push(cur);
+    }
+    return out;
+  }
+
   function layout() {
     dpr = Math.min(2, devicePixelRatio || 1); W = innerWidth; H = innerHeight;
     cv.width = W * dpr; cv.height = H * dpr; cv.style.width = W + "px"; cv.style.height = H + "px";
-    beads = []; sprites.clear();
+    layer = document.createElement("canvas"); layer.width = cv.width; layer.height = cv.height;
+    lctx = layer.getContext("2d"); lctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    beads = []; next = 0; sprites.clear();
     const font = '"Great Vibes", "Marck Script", cursive', text = "Лъки Михайлова";
-    // name: size to fit, thicken the hairlines a little so every stroke can hold a bead
     ctx.font = `100px ${font}`; const w100 = ctx.measureText(text).width;
-    const fs = Math.min(100 * W * .84 / w100, H * .15, 180), sp = Math.max(2, Math.min(4.2, fs * .031));
-    const tw = w100 * fs / 100, mw = tw + fs * .8, mh = fs * 1.7;
+    const fs = Math.min(100 * W * .84 / w100, H * .15, 180), sp = Math.max(2.1, Math.min(4.4, fs * .033));
+    const mw = w100 * fs / 100 + fs * .8, mh = fs * 1.7, x0t = fs * .4;
+    ctx.font = `${fs}px ${font}`;
+    const edges = [...text].map((_, i) => x0t + ctx.measureText(text.slice(0, i)).width);
     const pts = sampleMask(g => { g.font = `${fs}px ${font}`; g.lineJoin = "round"; g.lineWidth = fs * .024;
-      g.fillText(text, fs * .4, fs * 1.15); g.strokeText(text, fs * .4, fs * 1.15); }, mw, mh, sp);
+      g.fillText(text, x0t, fs * 1.15); g.strokeText(text, x0t, fs * 1.15); }, mw, mh, sp);
     let x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9; for (const [x, y] of pts) { x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y); }
-    // vertical composition: name, tagline, tree; spare height is shared above and between so nothing floats apart
+    // vertical composition: name, tagline, tree; spare height is shared so nothing floats apart
     const nameH = y1 - y0, tagH = fs * .55 + 18;
     let top = Math.max(H * .06, 28);
     const TH = Math.max(160, Math.min((H - top - nameH - tagH - 70) / .99, W * .9 / .76, 640));
     const spare = Math.max(0, H - 64 - TH * .99 - tagH - nameH - top - 40);
     top += spare * .42;
     const ox = (W - (x1 - x0)) / 2 - x0, oy = top - y0;
-    for (const [x, y] of pts) {
-      const u = (x - x0) / (x1 - x0), ci = Math.min(NAME.length - 1, Math.max(0, Math.round(u * 3.2 + rnd(-.9, 1.6))));
-      const ang = rnd(0, 6.283), dist = rnd(.25, .6) * Math.max(W, H);
-      bead(x + ox, y + oy, sp * rnd(.64, .76), NAME[ci], "name", .25 + u * 1.9 + rnd(0, .18),
-        [x + ox + Math.cos(ang) * dist, y + oy + Math.sin(ang) * dist * .6 + H * .25]);
-    }
-    const nameBottom = y1 + oy;
-    tag.style.top = `${nameBottom + Math.max(6, fs * .08)}px`;
-    // tree: fits between the tagline and the footer
+    // letters in writing order, each one walked stroke-like
+    const letters = edges.map(() => []);
+    for (const p of pts) { let k = 0; while (k + 1 < edges.length && p[0] >= edges[k + 1]) k++; letters[k].push(p); }
+    const ordered = letters.flatMap(strokeOrder);
+    ordered.forEach(([x, y], i) => {
+      const b = bead(x + ox, y + oy, sp * rnd(.62, .74), wpick(NAMEC, NAMEW), T.name + i / ordered.length * T.nameDur, Math.random() * 3 | 0);
+      b.kind = "name"; beads.push(b);
+    });
+    tag.style.top = `${y1 + oy + Math.max(6, fs * .08)}px`;
+
+    // tree geometry: painted trunk and limbs (drawn progressively), crown of chips
     const cx = W / 2, baseY = H - 64 - spare * .3, ccY = baseY - TH * .64, RC = TH * .34, rw = TH * .105;
-    L = { cx, ccY, rw, TH };
-    const bsp = Math.max(2.2, TH * .0105), T0 = 2.15;
-    // trunk, roots and limbs painted as tapered strokes, then filled with dark glossy beads
-    const limbs = [[-62, .3], [-38, .34], [-16, .3], [8, .33], [30, .32], [54, .3]];
     const trunkTop = baseY - TH * .36;
-    const tree = sampleMask(g => {
-      g.translate(-cx + TH * .6, -baseY + TH * 1.05); g.fillStyle = g.strokeStyle = "#000"; g.lineCap = "round";
-      g.beginPath(); g.moveTo(cx - TH * .085, baseY); g.quadraticCurveTo(cx - TH * .03, baseY - TH * .05, cx - TH * .03, baseY - TH * .2);
-      g.lineTo(cx - TH * .022, trunkTop); g.lineTo(cx + TH * .022, trunkTop); g.lineTo(cx + TH * .03, baseY - TH * .2);
-      g.quadraticCurveTo(cx + TH * .03, baseY - TH * .05, cx + TH * .09, baseY); g.closePath(); g.fill();
-      const limb = (x, y, ang, len, wd, depth) => {
-        const a = ang * Math.PI / 180, ex = x + Math.sin(a) * len, ey = y - Math.cos(a) * len, n = 8;
-        for (let i = 0; i < n; i++) {
-          const t1 = i / n, t2 = (i + 1) / n, bend = Math.sin(t2 * 3) * len * .06 * Math.sign(ang || 1);
-          g.lineWidth = wd * (1 - t1 * .75); g.beginPath();
-          g.moveTo(x + (ex - x) * t1, y + (ey - y) * t1); g.lineTo(x + (ex - x) * t2 + bend, y + (ey - y) * t2); g.stroke();
-        }
-        if (depth) [-1, 1].forEach(sd => limb(x + (ex - x) * .55, y + (ey - y) * .55, ang + sd * 26, len * .5, wd * .45, depth - 1));
-      };
-      for (const [ang, len] of limbs) limb(cx + ang / 62 * TH * .012, trunkTop + TH * .02, ang, len * TH, TH * .034, 1);
-      g.lineWidth = TH * .016; [[-1, .14], [1, .13], [-1, .07]].forEach(([sd, l]) => {
-        g.beginPath(); g.moveTo(cx + sd * TH * .04, baseY - TH * .01); g.quadraticCurveTo(cx + sd * TH * .09, baseY + TH * .004, cx + sd * TH * (.06 + l), baseY + TH * .012); g.stroke(); });
-    }, TH * 1.2, TH * 1.12, bsp);
-    for (const [x, y] of tree) {
-      const X = x + cx - TH * .6, Y = y + baseY - TH * 1.05;
-      const grow = (baseY - Y) / (TH * .62) + Math.abs(X - cx) / TH * .5;   // grows from the root up and out along the limbs
-      bead(X, Y, bsp * rnd(.56, .72), pick(BARK), "bark", T0 + Math.min(1, grow) * 1.25 + rnd(0, .08));
-    }
-    // ground: a soft line of grass-glass with a few fallen leaves
+    L = { cx, ccY, rw, TH, baseY, trunkTop, blades: [], fallen: [],
+      limbs: [[-62, .3], [-38, .34], [-16, .3], [8, .33], [30, .32], [54, .3]].map(([ang, len], i) => ({ ang, len: len * TH, x: cx + ang / 62 * TH * .012, y: trunkTop + TH * .02, w: TH * .034, seed: i })) };
     const gw = Math.min(TH * .42, W * .4);
-    for (let x = cx - gw; x < cx + gw; x += bsp * .9) {
-      const k = 1 - Math.pow(Math.abs(x - cx) / gw, 2), hgt = k * TH * .028 * rnd(.3, 1);
-      for (let y = 0; y < hgt; y += bsp * .9) bead(x + rnd(-1, 1), baseY + TH * .016 - y, bsp * rnd(.45, .62),
-        Math.random() < .08 ? pick(CROWN.mid) : pick(GROUND), "ground", 1.95 + Math.abs(x - cx) / TH * .9 + rnd(0, .1));
-    }
-    // crown: packed chips, honey near the glowing centre, deep reds at the rim, a few greens for life
+    for (let i = 0; i < 230; i++) { const x = cx + rnd(-gw, gw) * Math.sqrt(Math.random()), k = 1 - Math.abs(x - cx) / gw;
+      L.blades.push({ x, h: TH * rnd(.01, .05) * Math.pow(k, .6), lean: rnd(-.45, .45), w: rnd(.6, 1.5), at: Math.abs(x - cx) / gw,
+        c: Math.random() < .7 ? "rgba(30,20,13,.92)" : "rgba(62,58,30,.85)" }); }
+    for (let i = 0; i < 9; i++) { const x = cx + rnd(-gw * .8, gw * .8);
+      const b = bead(x, baseY + TH * .006 - rnd(0, TH * .01), TH * rnd(.006, .01), pick(CROWN.mid.concat(CROWN.core)), T.paint + .2 + Math.abs(x - cx) / gw * .5, 2 + (Math.random() * 4 | 0));
+      b.kind = "crown"; beads.push(b); }
+    // crown chips: packed, honey near the light, deep reds at the rim, a little green
     const rmin = TH * .0062, rmax = TH * .0145, grid = new Map(), cell = rmax * 2, placed = [];
     const edge = th => RC * (1 + .045 * Math.sin(3 * th + 1.3) + .035 * Math.sin(5 * th + .4) + .02 * Math.sin(9 * th));
     const fits = (x, y, r) => { const gx = Math.floor(x / cell), gy = Math.floor(y / cell);
@@ -384,49 +375,105 @@ const intro = $("#intro");
       const key = Math.floor(x / cell) + "," + Math.floor(y / cell); (grid.get(key) || grid.set(key, []).get(key)).push([x, y, r]);
       placed.push([x, y, r, k]);
     }
-    for (const [x, y, r, k] of placed) if (Math.random() < .3)   // deep-red under-layer gives the crown depth
-      bead(x + rnd(-r, r), y + rnd(-r, r), r * .85, pick([[118, 30, 22], [146, 40, 26], [92, 28, 20]]), "crown", T0 + 1.05 + k * 1.3, [x, y]);
+    const crown = [];
+    for (const [x, y, r, k] of placed) if (Math.random() < .3)   // deep-red under-layer, set first, gives depth
+      crown.push({ x: x + rnd(-r, r), y: y + rnd(-r, r), r: r * .85, c: pick([[118, 30, 22], [146, 40, 26], [92, 28, 20]]), key: rnd(0, .45) });
     for (const [x, y, r, k] of placed) {
-      const z = Math.random(), col = z < .06 ? pick(CROWN.leaf) : z < .1 ? pick(CROWN.dark)
+      const z = Math.random(), c = z < .045 ? pick(CROWN.leaf) : z < .08 ? pick(CROWN.dark)
         : k < .22 ? pick(CROWN.core) : k < .62 ? pick(Math.random() < .25 ? CROWN.core : CROWN.mid) : pick(Math.random() < .3 ? CROWN.mid : CROWN.edge);
-      bead(x, y, r, col, "crown", T0 + 1.15 + k * 1.35 + rnd(0, .22), [cx + (x - cx) * .55, ccY + (y - ccY) * .55]);
+      crown.push({ x, y, r, c, key: .25 + rnd(0, 1) + k * .2 });
     }
-    beads.sort((p, q) => (p.kind === "name") - (q.kind === "name"));
+    crown.sort((p, q) => p.key - q.key).forEach((q, i) => {   // set one by one, scattered over the crown like hands placing chips
+      const b = bead(q.x, q.y, q.r, q.c, T.crown + i / crown.length * T.crownDur, 2 + (Math.random() * 4 | 0)); b.kind = "crown"; beads.push(b); });
     btn.style.left = `${cx - rw * 1.3}px`; btn.style.top = `${ccY - rw * 1.3}px`; btn.style.width = btn.style.height = `${rw * 2.6}px`;
     btn.style.fontSize = `${Math.max(13, rw * .3)}px`;
+    beads.sort((p, q) => p.delay - q.delay);
   }
-  function draw(t) {
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H);
-    let busy = false;
-    for (const b of beads) {
-      const dur = b.kind === "name" ? 1.15 : b.kind === "crown" ? .55 : .4;
-      let p = (t - b.delay) / dur; if (p < 1) busy = true; if (p <= 0) continue; p = Math.min(1, p);
-      let x = b.x, y = b.y, s = 1, a = 1;
-      if (b.kind === "name") { const e = ease(p); x = b.sx + (b.x - b.sx) * e; y = b.sy + (b.y - b.sy) * e - Math.sin(p * Math.PI) * 30; a = Math.min(1, p * 3); s = .5 + .5 * e; }
-      else if (b.kind === "crown") { const e = back(p); x = b.sx + (b.x - b.sx) * ease(p); y = b.sy + (b.y - b.sy) * ease(p); s = Math.max(0, e); a = Math.min(1, p * 2.5); }
-      else { s = back(p); a = Math.min(1, p * 3); }
-      const w = b.img.width / dpr * s; if (w <= 0) continue;
-      ctx.globalAlpha = a; ctx.drawImage(b.img, x - w / 2, y - w / 2, w, w);
+
+  // the trunk is painted like her glass paint: dark, glossy, brushed; p runs 0..1
+  function paintTree(g, p) {
+    const { cx, baseY, trunkTop, TH } = L; if (p <= 0) return;
+    g.save(); g.lineCap = "round"; g.lineJoin = "round";
+    const pg = clamp(p / .25, 0, 1);       // grass first, spreading from the root
+    g.save(); g.translate(cx, baseY + TH * .014); g.scale(1, .075);          // soft ground shadow
+    const sh = g.createRadialGradient(0, 0, 0, 0, 0, TH * .42);
+    sh.addColorStop(0, `rgba(40,24,14,${.18 * pg})`); sh.addColorStop(1, "rgba(40,24,14,0)");
+    g.fillStyle = sh; g.fillRect(-TH * .42, -TH * .42, TH * .84, TH * .84); g.restore();
+    for (const b of L.blades) { if (b.at > pg) continue; const k = clamp((pg - b.at) * 4, 0, 1);
+      g.strokeStyle = b.c; g.lineWidth = b.w; g.beginPath(); g.moveTo(b.x, baseY + TH * .012); g.quadraticCurveTo(b.x + b.lean * b.h * .4, baseY + TH * .012 - b.h * .6 * k, b.x + b.lean * b.h, baseY + TH * .012 - b.h * k); g.stroke(); }
+    const pt = clamp((p - .1) / .45, 0, 1);  // trunk rises from the ground
+    if (pt > 0) {
+      const yTop = baseY - (baseY - trunkTop + TH * .02) * ease(pt);
+      g.save(); g.beginPath(); g.rect(cx - TH * .2, yTop, TH * .4, baseY - yTop + TH * .03); g.clip();
+      const grd = g.createLinearGradient(cx - TH * .05, 0, cx + TH * .05, 0);
+      grd.addColorStop(0, "#160d08"); grd.addColorStop(.38, "#3a2619"); grd.addColorStop(.55, "#5a3d29"); grd.addColorStop(.72, "#2c1c12"); grd.addColorStop(1, "#120a06");
+      g.fillStyle = grd; g.beginPath();
+      g.moveTo(cx - TH * .09, baseY + TH * .012); g.quadraticCurveTo(cx - TH * .03, baseY - TH * .05, cx - TH * .03, baseY - TH * .2);
+      g.lineTo(cx - TH * .022, trunkTop); g.lineTo(cx + TH * .022, trunkTop); g.lineTo(cx + TH * .03, baseY - TH * .2);
+      g.quadraticCurveTo(cx + TH * .03, baseY - TH * .05, cx + TH * .095, baseY + TH * .012); g.closePath(); g.fill();
+      for (let i = -5; i <= 5; i++) {        // brush streaks in the paint
+        g.strokeStyle = i % 2 ? "rgba(10,6,4,.25)" : "rgba(160,118,84,.16)"; g.lineWidth = i % 3 ? .8 : 1.4; g.beginPath();
+        g.moveTo(cx + i * TH * .008, baseY + TH * .01); g.bezierCurveTo(cx + i * TH * .004 + TH * .004, baseY - TH * .12, cx + i * TH * .003 - TH * .003, baseY - TH * .26, cx + i * TH * .0035, trunkTop); g.stroke(); }
+      const gl = g.createLinearGradient(cx - TH * .02, 0, cx + TH * .02, 0);   // a glossy highlight, as on fired glass paint
+      gl.addColorStop(0, "rgba(255,230,200,0)"); gl.addColorStop(.6, "rgba(255,230,200,.16)"); gl.addColorStop(1, "rgba(255,230,200,0)");
+      g.fillStyle = gl; g.fillRect(cx - TH * .02, trunkTop, TH * .04, baseY - trunkTop);
+      g.restore(); g.save();
+      g.fillStyle = "#1e130c";                                   // roots: tapering, hugging the ground
+      [[-1, .15, .02], [1, .13, .018], [-1, .07, .012], [1, .06, .01]].forEach(([sd, l, w]) => {
+        const rx = cx + sd * TH * .05, tx = cx + sd * TH * (.06 + l), ty = baseY + TH * .013;
+        g.beginPath(); g.moveTo(rx, baseY - TH * .02 - w * TH * .5);
+        g.quadraticCurveTo(cx + sd * TH * (.07 + l * .45), baseY - TH * .004, tx, ty);
+        g.quadraticCurveTo(cx + sd * TH * (.06 + l * .4), baseY + TH * .01, rx, baseY + TH * .012); g.closePath(); g.fill(); });
+      g.restore();
     }
-    ctx.globalAlpha = 1; return busy;
+    const pl = clamp((p - .45) / .55, 0, 1);  // limbs reach out, then their twigs
+    if (pl > 0) for (const l of L.limbs) limb(g, l.x, l.y, l.ang, l.len, l.w, 1, ease(clamp(pl * 1.15 - l.seed * .02, 0, 1)));
+    g.restore();
   }
-  const freeze = +(new URLSearchParams(location.search).get("introt") || 0);
+  function limb(g, x, y, ang, len, wd, depth, q) {
+    if (q <= 0) return;
+    const a = ang * Math.PI / 180, ex = x + Math.sin(a) * len, ey = y - Math.cos(a) * len, n = 10, m = Math.ceil(n * q);
+    g.strokeStyle = "#24170f";
+    for (let i = 0; i < m; i++) {
+      const t1 = i / n, t2 = Math.min(q, (i + 1) / n), bend = Math.sin(t2 * 3) * len * .06 * Math.sign(ang || 1);
+      g.lineWidth = wd * (1 - t1 * .75); g.beginPath();
+      g.moveTo(x + (ex - x) * t1 + Math.sin(t1 * 3) * len * .06 * Math.sign(ang || 1), y + (ey - y) * t1); g.lineTo(x + (ex - x) * t2 + bend, y + (ey - y) * t2); g.stroke();
+    }
+    if (depth && q > .55) [-1, 1].forEach(sd => limb(g, x + (ex - x) * .55, y + (ey - y) * .55, ang + sd * 26, len * .5, wd * .45, depth - 1, (q - .55) / .45));
+  }
+
+  function render(t) {
+    // chips that have finished landing are baked into a layer; only the ones landing now are drawn each frame
+    while (next < beads.length && beads[next].delay + .24 <= t) {
+      const b = beads[next++], w = b.img.width / dpr; lctx.drawImage(b.img, b.x - w / 2, b.y - w / 2, w, w);
+    }
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H);
+    paintTree(ctx, (t - T.paint) / T.paintDur);
+    ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.drawImage(layer, 0, 0); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    for (let i = next; i < beads.length && beads[i].delay <= t; i++) {
+      const b = beads[i], p = clamp((t - b.delay) / .24, 0, 1), s = 1 + (1 - ease(p)) * .7, w = b.img.width / dpr * s;
+      ctx.globalAlpha = ease(p); ctx.drawImage(b.img, b.x - w / 2, b.y - w / 2 - (1 - ease(p)) * 6, w, w);   // pressed into place
+    }
+    ctx.globalAlpha = 1;
+    if (t >= T.lit) btn.classList.add("lit");
+    return next < beads.length || t < T.paint + T.paintDur;
+  }
+  const freeze = +(new URLSearchParams(location.search).get("introt") || 0);   // test hook: ?introt=5 renders one moment
   function frame(now) {
+    if (bursting) return burstFrame((now - t0) / 1000);
     const t = freeze || (now - t0) / 1000;
-    if (bursting) return burstFrame(t);
-    const busy = draw(t);
-    if (!btn.classList.contains("lit") && t > 4.7) btn.classList.add("lit");
-    if (busy && !freeze) raf = requestAnimationFrame(frame); else settled = true;
+    if (render(t) && !freeze) raf = requestAnimationFrame(frame); else done = !freeze || t >= T.lit;
   }
+  function finish() { cancelAnimationFrame(raf); render(99); done = true; }
   function start() {
     layout();
-    if (reduce) { draw(99); btn.classList.add("lit"); settled = true; return; }
+    if (reduce) return finish();
     t0 = performance.now(); raf = requestAnimationFrame(frame);
   }
-  // click: the glass scatters from the glowing centre, then the curtain lifts
-  let bt0 = 0;
-  function burstFrame(t) {
-    const dt = t - bt0; ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H);
+  // click: the glass scatters from the glowing centre, the painted tree fades, then the curtain lifts
+  function burstFrame(dt) {
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H);
+    ctx.globalAlpha = Math.max(0, 1 - dt / .5); paintTree(ctx, 1);
     for (const b of beads) {
       const x = b.x + b.vx * dt, y = b.y + b.vy * dt + 900 * dt * dt, w = b.img.width / dpr;
       ctx.globalAlpha = Math.max(0, 1 - dt / .9); ctx.drawImage(b.img, x - w / 2, y - w / 2, w, w);
@@ -435,7 +482,9 @@ const intro = $("#intro");
   }
   let entering = false;
   function enter() {
-    if (entering) return; entering = true;
+    if (entering) return;
+    if (!done) return finish();               // first click during the show skips to the finished tree
+    entering = true;
     if (reduce) return leave();
     for (const b of beads) {
       const dx = b.x - L.cx, dy = b.y - L.ccY, d = Math.hypot(dx, dy) || 1, sp = rnd(260, 620) * (b.kind === "name" ? .5 : 1);
@@ -444,7 +493,7 @@ const intro = $("#intro");
     btn.classList.add("gone");
     const f = document.createElement("div"); f.className = "flash";
     f.style.left = `${L.cx - 130}px`; f.style.top = `${L.ccY - 130}px`; intro.appendChild(f);
-    cancelAnimationFrame(raf); bursting = true; t0 = performance.now(); bt0 = 0; raf = requestAnimationFrame(frame);
+    cancelAnimationFrame(raf); bursting = true; t0 = performance.now(); raf = requestAnimationFrame(frame);
     setTimeout(leave, 420);
   }
   function leave() {
@@ -453,10 +502,11 @@ const intro = $("#intro");
     setTimeout(() => { cancelAnimationFrame(raf); intro.hidden = true; }, 1300);
     try { sessionStorage.setItem("entered", "1"); } catch {}
   }
-  btn.addEventListener("click", enter);
+  btn.addEventListener("click", e => { e.stopPropagation(); enter(); });
+  intro.addEventListener("click", () => { if (!done && !entering) finish(); });
   btn.setAttribute("aria-label", "Влез в сайта");
   addEventListener("keydown", e => { if (!intro.hidden && e.key === "Enter") enter(); });
-  addEventListener("resize", () => { if (intro.hidden || bursting) return; cancelAnimationFrame(raf); layout(); draw(99); btn.classList.add("lit"); });
+  addEventListener("resize", () => { if (intro.hidden || bursting) return; cancelAnimationFrame(raf); layout(); finish(); });
   let seen = false; try { seen = sessionStorage.getItem("entered") === "1"; } catch {}
   const deep = location.hash && location.hash !== "#kolekcia";
   if (seen || deep) { intro.hidden = true; return; }
