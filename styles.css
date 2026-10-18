@@ -65,53 +65,37 @@ h3{font:400 1.18rem/1.3 var(--title)}
 
 /* intro */
 body.locked{overflow:hidden}
-.intro{position:fixed;inset:0;z-index:100;display:grid;place-items:center;overflow:hidden;
-  background:radial-gradient(120% 90% at 50% 40%,#eee4e0 0%,#e7dcd7 50%,#d6c5bc 100%);transition:clip-path 1.25s cubic-bezier(.77,0,.18,1)}
-.intro canvas{position:absolute;inset:0;filter:blur(1.5px)}
-.intro::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.35;mix-blend-mode:multiply;
+.intro{position:fixed;inset:0;z-index:100;overflow:hidden;
+  background:radial-gradient(120% 90% at 50% 38%,#efe6e2 0%,#e7dcd7 52%,#d8c8bf 100%);transition:clip-path 1.25s cubic-bezier(.77,0,.18,1)}
+.intro canvas{position:absolute;inset:0}
+.intro::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.3;mix-blend-mode:multiply;
   background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .35 0 0 0 0 .25 0 0 0 .18 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
-.intro-in{position:relative;z-index:1;text-align:center;padding:0 var(--gutter)}
-.intro-name{font:400 clamp(3rem,10vw,9.5rem)/1 var(--title);letter-spacing:-.02em;color:var(--umber)}
-.intro-name .w{display:inline-block;white-space:nowrap;perspective:600px}
-/* letters pour in like molten glass, then cool from amber to umber */
-.intro-name .ch{display:inline-block;opacity:0;color:#f6c24e;filter:blur(12px);transform:translateY(.55em) rotateX(-70deg) scale(1.08);transform-origin:50% 100%}
-.intro.play .intro-name .ch{animation:melt 1.5s calc(.25s + var(--i)*.075s) var(--ease) forwards,glint 1s calc(2.6s + var(--i)*.05s) ease-in-out forwards}
-@keyframes melt{
-  45%{opacity:1;filter:blur(0);transform:none;color:#f2a046;text-shadow:0 0 .32em rgba(242,160,70,.85),0 0 .9em rgba(226,116,40,.35)}
-  100%{opacity:1;filter:none;transform:none;color:var(--umber);text-shadow:0 0 0 transparent}}
-@keyframes glint{
-  0%,100%{opacity:1;filter:none;transform:none;color:var(--umber);text-shadow:0 0 0 transparent}
-  45%{color:#c0662c;text-shadow:0 0 .22em rgba(242,160,70,.6)}}
-.intro-tag{font:italic 400 clamp(1.6rem,3.6vw,3rem) var(--voice);color:var(--terracotta);margin-top:.4em;opacity:0;letter-spacing:.02em;transition:opacity 1.6s 2.3s var(--ease),letter-spacing 2.4s 2.3s var(--ease)}
-.intro.play .intro-tag{opacity:1;letter-spacing:.06em}
-/* "Влез": a fused-glass pebble that shatters */
-.enter{position:relative;margin-top:clamp(40px,6vh,70px);width:176px;height:108px;border:0;cursor:pointer;padding:0;
-  border-radius:58% 42% 55% 45% / 48% 58% 42% 52%;
-  background:
-    radial-gradient(38% 30% at 30% 26%,rgba(255,250,235,.9),rgba(255,240,210,0) 70%),
-    radial-gradient(4% 6% at 64% 34%,rgba(255,248,230,.9),transparent 100%),
-    radial-gradient(3% 4.5% at 72% 52%,rgba(255,248,230,.7),transparent 100%),
-    radial-gradient(5% 7% at 22% 62%,rgba(255,236,200,.5),transparent 100%),
-    radial-gradient(60% 55% at 70% 78%,rgba(120,40,15,.55),transparent 70%),
-    radial-gradient(80% 80% at 45% 45%,#f4b45a 0%,#e07b2c 45%,#b4461f 80%,#8a3519 100%);
-  box-shadow:inset 0 -10px 22px rgba(90,25,8,.45),inset 0 8px 18px rgba(255,236,190,.55),0 16px 34px -12px rgba(140,55,20,.55),0 0 46px rgba(240,150,60,.35);
-  color:#fff7ea;font:400 .82rem var(--text);letter-spacing:.34em;text-transform:uppercase;text-shadow:0 1px 2px rgba(90,25,8,.6);
-  opacity:0;transform:scale(.85);transition:opacity 1.2s 2.8s var(--ease),transform 1.2s 2.8s var(--ease)}
-.enter span{position:relative;z-index:1;padding-left:.34em}
-.enter::before{content:"";position:absolute;inset:6% 10% auto auto;width:22%;height:16%;border-radius:50%;background:rgba(255,255,255,.75);filter:blur(3px);transform:rotate(-25deg)}
-.enter::after{content:"";position:absolute;inset:-14px;border-radius:inherit;border:1px solid rgba(224,123,44,.35);opacity:0;animation:pulse 3s 3.8s var(--ease) infinite}
-@keyframes pulse{0%{opacity:.8;transform:scale(.94)}100%{opacity:0;transform:scale(1.22)}}
-.intro.play .enter{opacity:1;transform:none;animation:bob 4.5s 4s ease-in-out infinite}
-@keyframes bob{50%{transform:translateY(-6px) rotate(-2deg)}}
-.enter:hover{filter:brightness(1.08) saturate(1.1)}
-.enter:focus-visible{outline:1px dashed var(--umber);outline-offset:10px}
-.enter.broken{visibility:hidden}
-.shard{position:fixed;z-index:101;pointer-events:none;
-  background:radial-gradient(80% 80% at 45% 45%,#f4b45a 0%,#e07b2c 45%,#b4461f 80%,#8a3519 100%);box-shadow:inset 0 0 6px rgba(255,240,200,.7)}
-.flash{position:fixed;z-index:101;pointer-events:none;width:260px;height:260px;border-radius:50%;
-  background:radial-gradient(circle,rgba(255,236,190,.95),rgba(255,190,100,.4) 40%,transparent 70%)}
-.intro-foot{position:absolute;bottom:calc(26px + env(safe-area-inset-bottom,0px));left:0;right:0;text-align:center;font-size:.68rem;letter-spacing:.28em;text-transform:uppercase;color:var(--bark);opacity:0;transition:opacity 1.2s 3s}
-.intro.play .intro-foot{opacity:.8}
+.intro-in{position:absolute;inset:0;z-index:1;pointer-events:none}
+.intro-name{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.intro-tag{position:absolute;left:0;right:0;text-align:center;font:italic 400 clamp(1.15rem,2.4vw,1.9rem) var(--voice);color:var(--terracotta);
+  opacity:0;letter-spacing:.04em;transition:opacity 1.6s 2.6s var(--ease),letter-spacing 2.4s 2.6s var(--ease)}
+.intro.play .intro-tag{opacity:1;letter-spacing:.14em}
+/* "Влез": light glowing through the crown */
+.enter{position:absolute;pointer-events:auto;border:0;padding:0;cursor:pointer;border-radius:50%;display:grid;place-items:center;
+  color:#4a1f0c;font-family:var(--title);letter-spacing:.24em;text-transform:uppercase;
+  background:radial-gradient(circle,#fff7e6 0%,#ffe4ae 24%,rgba(252,196,112,.85) 44%,rgba(244,160,80,.42) 62%,rgba(236,140,64,.12) 78%,rgba(230,120,50,0) 92%);
+  box-shadow:0 0 0 0 rgba(255,196,110,0);opacity:0;transform:scale(.3);
+  transition:opacity 1.1s var(--ease),transform 1.3s cubic-bezier(.2,1.4,.4,1),filter .4s}
+.enter span{padding-left:.24em;text-shadow:0 1px 0 rgba(255,240,210,.7)}
+.enter::after{content:"";position:absolute;inset:-35%;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle,rgba(255,214,140,.55),rgba(255,180,90,.18) 45%,transparent 70%);mix-blend-mode:screen;opacity:0}
+.enter.lit{opacity:1;transform:none;animation:breathe 3.6s 1.3s ease-in-out infinite}
+.enter.lit::after{animation:halo2 3.6s 1.3s ease-in-out infinite}
+@keyframes breathe{50%{filter:brightness(1.08) saturate(1.08)}}
+@keyframes halo2{0%,100%{opacity:.45;transform:scale(.92)}50%{opacity:1;transform:scale(1.06)}}
+.enter:hover{filter:brightness(1.12)}
+.enter:focus-visible{outline:1px dashed var(--umber);outline-offset:8px}
+.enter.gone{opacity:0;transform:scale(1.6);transition:opacity .35s,transform .5s var(--ease)}
+.flash{position:absolute;z-index:2;pointer-events:none;width:260px;height:260px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,240,200,.95),rgba(255,196,110,.45) 40%,transparent 70%);animation:flashOut .8s ease-out forwards}
+@keyframes flashOut{from{opacity:0;transform:scale(.4)}30%{opacity:1}to{opacity:0;transform:scale(2.2)}}
+.intro-foot{position:absolute;bottom:calc(22px + env(safe-area-inset-bottom,0px));left:0;right:0;text-align:center;font-size:.64rem;letter-spacing:.28em;text-transform:uppercase;color:var(--bark);opacity:0;transition:opacity 1.2s 4.6s}
+.intro.play .intro-foot{opacity:.75}
 .intro.leaving{clip-path:inset(0 0 100% 0)}
 .intro.leaving .intro-in{transform:translateY(-40px);opacity:0;transition:transform 1s var(--ease),opacity .7s}
 
@@ -391,7 +375,7 @@ textarea{resize:vertical}
   html{scroll-behavior:auto}
   *{animation:none!important;transition:none!important}
   .js .rv:not(.in){opacity:1;transform:none}
-  .intro-name .ch{opacity:1;filter:none;transform:none;color:var(--umber)}
+  .enter{opacity:1;transform:none}
 }
 
 /* main page sections */

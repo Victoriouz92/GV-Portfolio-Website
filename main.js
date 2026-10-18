@@ -254,114 +254,198 @@ $("#menuBtn").addEventListener("click", () => {
   $("#mnav").hidden = !open; $("#menuBtn").setAttribute("aria-expanded", open);
 });
 
-/* ---------- intro: drifting glass beads in earth tones, name, "Влез" ---------- */
+/* ---------- intro: the name and a Tree of Life assemble from fused-glass beads; "Влез" glows in the crown ---------- */
 const intro = $("#intro");
 (function introScene() {
-  const cv = $("#introCanvas"), ctx = cv.getContext("2d");
+  const cv = $("#introCanvas"), ctx = cv.getContext("2d"), btn = $("#enterBtn"), tag = $(".intro-tag");
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  // fused-glass chips in the colours of her trees: orange, amber, red, green, honey, brown
-  const GLASS = [[229,100,28],[201,138,36],[196,42,26],[63,140,70],[232,176,40],[110,48,20],[238,128,44],[150,30,22]];
-  let W, H, dpr, chips = [], raf, t0 = performance.now();
-  function chipSprite(c, r, blur) {
-    const pad = Math.ceil(r * .6 + blur * 2), S = Math.ceil(r * 2 + pad * 2);
-    const oc = document.createElement("canvas"); oc.width = oc.height = S;
-    const g = oc.getContext("2d"), m = S / 2;
-    if (blur) g.filter = `blur(${blur}px)`;
-    // irregular pebble / drop outline
-    const n = 7 + (Math.random() * 4 | 0), stretch = .45 + Math.random() * .6, pts = [];
-    for (let i = 0; i < n; i++) {
-      const an = i / n * 6.283, k = r * (.75 + Math.random() * .4);
-      pts.push([m + Math.cos(an) * k, m + Math.sin(an) * k * stretch]);
-    }
-    const path = new Path2D();
-    for (let i = 0; i <= n; i++) {
-      const p0 = pts[i % n], p1 = pts[(i + 1) % n], mx = (p0[0] + p1[0]) / 2, my = (p0[1] + p1[1]) / 2;
-      i ? path.quadraticCurveTo(p0[0], p0[1], mx, my) : path.moveTo(mx, my);
-    }
-    const [R, G, B] = c, lt = (v, f) => Math.min(255, v + (255 - v) * f) | 0, dk = (v, f) => v * f | 0;
-    const body = g.createRadialGradient(m - r * .25, m - r * .3, r * .1, m, m, r * 1.05);
-    body.addColorStop(0, `rgba(${lt(R,.5)},${lt(G,.5)},${lt(B,.5)},.7)`);
-    body.addColorStop(.55, `rgba(${R},${G},${B},.78)`);
-    body.addColorStop(1, `rgba(${dk(R,.45)},${dk(G,.45)},${dk(B,.45)},.95)`);
-    g.fillStyle = body; g.fill(path);
-    g.save(); g.clip(path);
-    g.lineWidth = r * .18; g.strokeStyle = `rgba(${dk(R,.35)},${dk(G,.35)},${dk(B,.35)},.45)`; g.stroke(path); // thick glass edge
-    const glow = g.createRadialGradient(m + r * .3, m + r * .35, 0, m + r * .3, m + r * .35, r * .55);
-    glow.addColorStop(0, `rgba(${lt(R,.7)},${lt(G,.6)},${lt(B,.4)},.55)`); glow.addColorStop(1, "rgba(255,255,255,0)");
-    g.fillStyle = glow; g.fillRect(0, 0, S, S); // light passing through
-    g.restore();
-    g.fillStyle = "rgba(255,252,242,.85)"; g.beginPath(); // specular highlight
-    g.ellipse(m - r * .32, m - r * .34 * stretch, r * .26, r * .12, -.6, 0, 6.283); g.fill();
-    g.fillStyle = "rgba(255,252,242,.5)"; g.beginPath();
-    g.arc(m + r * .38, m + r * .22 * stretch, r * .06, 0, 6.283); g.fill();
-    return oc;
+  const rnd = (a, b) => a + Math.random() * (b - a), pick = arr => arr[Math.random() * arr.length | 0];
+  const ease = t => 1 - Math.pow(1 - t, 3), back = t => 1 + 2.2 * Math.pow(t - 1, 3) + 1.2 * Math.pow(t - 1, 2);
+  // palettes taken from her glass: a copper-to-honey name, an autumn crown, a dark glossy trunk
+  const NAME = [[122, 52, 22], [150, 66, 26], [176, 86, 34], [196, 110, 44], [210, 136, 58], [222, 160, 76]];
+  const CROWN = {
+    core: [[236, 182, 92], [226, 154, 60], [224, 118, 46]],
+    mid: [[226, 102, 40], [212, 74, 34], [232, 142, 58], [198, 60, 30]],
+    edge: [[176, 50, 30], [144, 36, 26], [200, 80, 36], [118, 30, 22]],
+    leaf: [[110, 138, 58], [80, 112, 54]], dark: [[64, 36, 22]]
+  };
+  const BARK = [[38, 24, 17], [52, 33, 22], [70, 45, 30], [30, 19, 13], [96, 66, 44]];
+  const GROUND = [[92, 108, 52], [70, 84, 42], [120, 128, 64], [58, 38, 24]];
+  let W, H, dpr, beads = [], raf, t0 = 0, settled = false, bursting = false, L = {}, sprites = new Map();
+
+  function sprite(c, r, v) {               // one glossy glass bead, cached by colour / size / shape variant
+    const key = c.join() + "|" + r + "|" + v; let s = sprites.get(key); if (s) return s;
+    const S = Math.ceil(r * 2 + 4), m = S / 2, o = document.createElement("canvas"); o.width = o.height = S;
+    const g = o.getContext("2d"), [R, G, B] = c, lt = (x, f) => Math.min(255, x + (255 - x) * f) | 0, dk = (x, f) => x * f | 0;
+    const sx = [1, .9, .84, .8, .88, .82][v], rot = [0, .7, -.9, .4, 1.3, -.3][v];
+    g.translate(m, m); g.rotate(rot); g.scale(1, sx);
+    const body = g.createRadialGradient(-r * .3, -r * .35, r * .08, 0, 0, r);
+    body.addColorStop(0, `rgb(${lt(R, .42)},${lt(G, .4)},${lt(B, .34)})`);
+    body.addColorStop(.5, `rgb(${R},${G},${B})`);
+    body.addColorStop(1, `rgb(${dk(R, .55)},${dk(G, .55)},${dk(B, .55)})`);
+    g.fillStyle = body; g.beginPath(); g.arc(0, 0, r, 0, 6.283); g.fill();
+    const glow = g.createRadialGradient(r * .3, r * .38, 0, r * .3, r * .38, r * .6);   // light passing through the glass
+    glow.addColorStop(0, `rgba(${lt(R, .65)},${lt(G, .55)},${lt(B, .35)},.55)`); glow.addColorStop(1, "rgba(255,255,255,0)");
+    g.fillStyle = glow; g.beginPath(); g.arc(0, 0, r, 0, 6.283); g.fill();
+    g.fillStyle = "rgba(255,250,238,.82)"; g.beginPath(); g.ellipse(-r * .34, -r * .4, r * .28, r * .14, -.6, 0, 6.283); g.fill();
+    sprites.set(key, o); return o;
   }
-  function size() {
-    dpr = Math.min(2, devicePixelRatio || 1);
-    W = cv.width = innerWidth * dpr; H = cv.height = innerHeight * dpr;
-    cv.style.width = innerWidth + "px"; cv.style.height = innerHeight + "px";
-    const n = Math.round(Math.min(80, innerWidth / 16)), sc = innerWidth < 600 ? .7 : 1;
-    chips = Array.from({ length: n }, (_, i) => {
-      const z = Math.random(); // 0 = far, 1 = near
-      const r = (6 + z * z * 34) * dpr * sc, blur = z > .85 ? (z - .85) * 40 * dpr : z < .3 ? (.3 - z) * 10 * dpr : 0;
-      return { x: Math.random() * W, y: Math.random() * H, z, r, img: chipSprite(GLASS[i % GLASS.length], r, blur),
-        a: .6 + z * .4, rot: Math.random() * 6.283, vr: (Math.random() - .5) * .006,
-        vx: (Math.random() - .5) * .15 * dpr, vy: -(.06 + z * .32) * dpr, ph: Math.random() * 6.28 };
-    }).sort((p, q) => p.z - q.z);
+  function bead(x, y, r, c, kind, delay, from) {
+    const rr = Math.max(1, Math.round(r * dpr * 2) / 2);
+    beads.push({ x, y, r, c, kind, delay, sx: from ? from[0] : x, sy: from ? from[1] : y, img: sprite(c, rr, kind === "crown" ? 2 + (Math.random() * 4 | 0) : Math.random() * 2 | 0) });
   }
-  function frame(now) {
-    const t = (now - t0) / 1000, fade = Math.min(1, t / 2.5);
-    ctx.clearRect(0, 0, W, H);
-    for (const c of chips) {
-      if (!reduce) {
-        c.x += c.vx + Math.sin(t * .35 + c.ph) * .18 * dpr * (.4 + c.z); c.y += c.vy; c.rot += c.vr;
-        const e = c.img.width;
-        if (c.y < -e) { c.y = H + e; c.x = Math.random() * W; }
-        if (c.x < -e) c.x = W + e; else if (c.x > W + e) c.x = -e;
+  // hex-grid samples inside whatever is painted on a mask canvas
+  function sampleMask(draw, w, h, sp) {
+    const c = document.createElement("canvas"); c.width = Math.ceil(w); c.height = Math.ceil(h);
+    const g = c.getContext("2d"); draw(g); const d = g.getImageData(0, 0, c.width, c.height).data, out = [];
+    for (let row = 0, y = sp / 2; y < h; y += sp * .866, row++)
+      for (let x = (row % 2 ? sp / 2 : 0) + sp / 4; x < w; x += sp) {
+        const jx = x + rnd(-.22, .22) * sp, jy = y + rnd(-.22, .22) * sp, i = ((jy | 0) * c.width + (jx | 0)) * 4 + 3;
+        if (d[i] > 140) out.push([jx, jy]);
       }
-      // soften chips that drift behind the name so the text stays clear
-      const dx = (c.x - W / 2) / (W * .42), dy = (c.y - H * .45) / (H * .22), near = dx * dx + dy * dy;
-      ctx.globalAlpha = c.a * fade * (near < 1 ? .3 + .7 * near : 1);
-      ctx.setTransform(1, 0, 0, 1, c.x, c.y); ctx.rotate(c.rot + Math.sin(t * .5 + c.ph) * .15);
-      ctx.drawImage(c.img, -c.img.width / 2, -c.img.height / 2);
-    }
-    ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1;
-    if (!reduce) raf = requestAnimationFrame(frame);
+    return out;
   }
-  size(); addEventListener("resize", size);
-  raf = requestAnimationFrame(frame);
-  function shatter(done) {
-    const btn = $("#enterBtn"), r = btn.getBoundingClientRect();
-    if (reduce || !btn.animate) return done();
-    const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
-    const flash = document.createElement("div"); flash.className = "flash";
-    flash.style.left = `${cx - 130}px`; flash.style.top = `${cy - 130}px`; document.body.appendChild(flash);
-    flash.animate([{ opacity: 0, transform: "scale(.4)" }, { opacity: 1, transform: "scale(1)" }, { opacity: 0, transform: "scale(1.5)" }], { duration: 700, easing: "ease-out" }).onfinish = () => flash.remove();
-    btn.classList.add("broken");
-    const N = 18;
-    for (let i = 0; i < N; i++) {
-      const s = document.createElement("div"); s.className = "shard";
-      const w = r.width * (.18 + Math.random() * .22), h = r.height * (.18 + Math.random() * .25);
-      s.style.width = `${w}px`; s.style.height = `${h}px`;
-      const ang = (i / N) * Math.PI * 2 + Math.random() * .4;
-      const ox = Math.cos(ang) * r.width * .22, oy = Math.sin(ang) * r.height * .22;
-      s.style.left = `${cx + ox - w / 2}px`; s.style.top = `${cy + oy - h / 2}px`;
-      const p = () => `${Math.round(Math.random() * 100)}% ${Math.round(Math.random() * 100)}%`;
-      s.style.clipPath = `polygon(${p()}, ${p()}, ${p()}${Math.random() > .5 ? ", " + p() : ""})`;
-      document.body.appendChild(s);
-      const dist = 160 + Math.random() * 260, dx = Math.cos(ang) * dist, dy = Math.sin(ang) * dist + 120;
-      const rot = (Math.random() - .5) * 720;
-      s.animate([{ transform: "translate(0,0) rotate(0)", opacity: 1 },
-        { transform: `translate(${dx * .6}px,${dy * .4 - 60}px) rotate(${rot * .6}deg)`, opacity: 1, offset: .55 },
-        { transform: `translate(${dx}px,${dy}px) rotate(${rot}deg)`, opacity: 0 }],
-        { duration: 900 + Math.random() * 400, easing: "cubic-bezier(.2,.6,.3,1)" }).onfinish = () => s.remove();
+  function layout() {
+    dpr = Math.min(2, devicePixelRatio || 1); W = innerWidth; H = innerHeight;
+    cv.width = W * dpr; cv.height = H * dpr; cv.style.width = W + "px"; cv.style.height = H + "px";
+    beads = []; sprites.clear();
+    const font = '"Great Vibes", "Marck Script", cursive', text = "Лъки Михайлова";
+    // name: size to fit, thicken the hairlines a little so every stroke can hold a bead
+    ctx.font = `100px ${font}`; const w100 = ctx.measureText(text).width;
+    const fs = Math.min(100 * W * .84 / w100, H * .15, 180), sp = Math.max(2, Math.min(4.2, fs * .031));
+    const tw = w100 * fs / 100, mw = tw + fs * .8, mh = fs * 1.7;
+    const pts = sampleMask(g => { g.font = `${fs}px ${font}`; g.lineJoin = "round"; g.lineWidth = fs * .024;
+      g.fillText(text, fs * .4, fs * 1.15); g.strokeText(text, fs * .4, fs * 1.15); }, mw, mh, sp);
+    let x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9; for (const [x, y] of pts) { x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y); }
+    // vertical composition: name, tagline, tree; spare height is shared above and between so nothing floats apart
+    const nameH = y1 - y0, tagH = fs * .55 + 18;
+    let top = Math.max(H * .06, 28);
+    const TH = Math.max(160, Math.min((H - top - nameH - tagH - 70) / .99, W * .9 / .76, 640));
+    const spare = Math.max(0, H - 64 - TH * .99 - tagH - nameH - top - 40);
+    top += spare * .42;
+    const ox = (W - (x1 - x0)) / 2 - x0, oy = top - y0;
+    for (const [x, y] of pts) {
+      const u = (x - x0) / (x1 - x0), ci = Math.min(NAME.length - 1, Math.max(0, Math.round(u * 3.2 + rnd(-.9, 1.6))));
+      const ang = rnd(0, 6.283), dist = rnd(.25, .6) * Math.max(W, H);
+      bead(x + ox, y + oy, sp * rnd(.64, .76), NAME[ci], "name", .25 + u * 1.9 + rnd(0, .18),
+        [x + ox + Math.cos(ang) * dist, y + oy + Math.sin(ang) * dist * .6 + H * .25]);
     }
-    setTimeout(done, 520);
+    const nameBottom = y1 + oy;
+    tag.style.top = `${nameBottom + Math.max(6, fs * .08)}px`;
+    // tree: fits between the tagline and the footer
+    const cx = W / 2, baseY = H - 64 - spare * .3, ccY = baseY - TH * .64, RC = TH * .34, rw = TH * .105;
+    L = { cx, ccY, rw, TH };
+    const bsp = Math.max(2.2, TH * .0105), T0 = 2.15;
+    // trunk, roots and limbs painted as tapered strokes, then filled with dark glossy beads
+    const limbs = [[-62, .3], [-38, .34], [-16, .3], [8, .33], [30, .32], [54, .3]];
+    const trunkTop = baseY - TH * .36;
+    const tree = sampleMask(g => {
+      g.translate(-cx + TH * .6, -baseY + TH * 1.05); g.fillStyle = g.strokeStyle = "#000"; g.lineCap = "round";
+      g.beginPath(); g.moveTo(cx - TH * .085, baseY); g.quadraticCurveTo(cx - TH * .03, baseY - TH * .05, cx - TH * .03, baseY - TH * .2);
+      g.lineTo(cx - TH * .022, trunkTop); g.lineTo(cx + TH * .022, trunkTop); g.lineTo(cx + TH * .03, baseY - TH * .2);
+      g.quadraticCurveTo(cx + TH * .03, baseY - TH * .05, cx + TH * .09, baseY); g.closePath(); g.fill();
+      const limb = (x, y, ang, len, wd, depth) => {
+        const a = ang * Math.PI / 180, ex = x + Math.sin(a) * len, ey = y - Math.cos(a) * len, n = 8;
+        for (let i = 0; i < n; i++) {
+          const t1 = i / n, t2 = (i + 1) / n, bend = Math.sin(t2 * 3) * len * .06 * Math.sign(ang || 1);
+          g.lineWidth = wd * (1 - t1 * .75); g.beginPath();
+          g.moveTo(x + (ex - x) * t1, y + (ey - y) * t1); g.lineTo(x + (ex - x) * t2 + bend, y + (ey - y) * t2); g.stroke();
+        }
+        if (depth) [-1, 1].forEach(sd => limb(x + (ex - x) * .55, y + (ey - y) * .55, ang + sd * 26, len * .5, wd * .45, depth - 1));
+      };
+      for (const [ang, len] of limbs) limb(cx + ang / 62 * TH * .012, trunkTop + TH * .02, ang, len * TH, TH * .034, 1);
+      g.lineWidth = TH * .016; [[-1, .14], [1, .13], [-1, .07]].forEach(([sd, l]) => {
+        g.beginPath(); g.moveTo(cx + sd * TH * .04, baseY - TH * .01); g.quadraticCurveTo(cx + sd * TH * .09, baseY + TH * .004, cx + sd * TH * (.06 + l), baseY + TH * .012); g.stroke(); });
+    }, TH * 1.2, TH * 1.12, bsp);
+    for (const [x, y] of tree) {
+      const X = x + cx - TH * .6, Y = y + baseY - TH * 1.05;
+      const grow = (baseY - Y) / (TH * .62) + Math.abs(X - cx) / TH * .5;   // grows from the root up and out along the limbs
+      bead(X, Y, bsp * rnd(.56, .72), pick(BARK), "bark", T0 + Math.min(1, grow) * 1.25 + rnd(0, .08));
+    }
+    // ground: a soft line of grass-glass with a few fallen leaves
+    const gw = Math.min(TH * .42, W * .4);
+    for (let x = cx - gw; x < cx + gw; x += bsp * .9) {
+      const k = 1 - Math.pow(Math.abs(x - cx) / gw, 2), hgt = k * TH * .028 * rnd(.3, 1);
+      for (let y = 0; y < hgt; y += bsp * .9) bead(x + rnd(-1, 1), baseY + TH * .016 - y, bsp * rnd(.45, .62),
+        Math.random() < .08 ? pick(CROWN.mid) : pick(GROUND), "ground", 1.95 + Math.abs(x - cx) / TH * .9 + rnd(0, .1));
+    }
+    // crown: packed chips, honey near the glowing centre, deep reds at the rim, a few greens for life
+    const rmin = TH * .0062, rmax = TH * .0145, grid = new Map(), cell = rmax * 2, placed = [];
+    const edge = th => RC * (1 + .045 * Math.sin(3 * th + 1.3) + .035 * Math.sin(5 * th + .4) + .02 * Math.sin(9 * th));
+    const fits = (x, y, r) => { const gx = Math.floor(x / cell), gy = Math.floor(y / cell);
+      for (let i = -1; i <= 1; i++) for (let j = -1; j <= 1; j++) for (const q of grid.get((gx + i) + "," + (gy + j)) || [])
+        if ((q[0] - x) ** 2 + (q[1] - y) ** 2 < ((q[2] + r) * .74) ** 2) return false; return true; };
+    const tries = Math.round((RC / rmin) ** 2 * 14);
+    for (let n = 0; n < tries; n++) {
+      const th = rnd(0, 6.283), rad = Math.sqrt(Math.random()) * RC * 1.06, x = cx + Math.cos(th) * rad * 1.08, y = ccY + Math.sin(th) * rad * .94;
+      const e = edge(th); if (rad > e || rad < rw * 1.02) continue;
+      const k = (rad - rw) / (e - rw), r = rmin + (rmax - rmin) * Math.pow(Math.random(), 1.6) * (k < .15 ? .6 : 1);
+      if (!fits(x, y, r)) continue;
+      const key = Math.floor(x / cell) + "," + Math.floor(y / cell); (grid.get(key) || grid.set(key, []).get(key)).push([x, y, r]);
+      placed.push([x, y, r, k]);
+    }
+    for (const [x, y, r, k] of placed) if (Math.random() < .3)   // deep-red under-layer gives the crown depth
+      bead(x + rnd(-r, r), y + rnd(-r, r), r * .85, pick([[118, 30, 22], [146, 40, 26], [92, 28, 20]]), "crown", T0 + 1.05 + k * 1.3, [x, y]);
+    for (const [x, y, r, k] of placed) {
+      const z = Math.random(), col = z < .06 ? pick(CROWN.leaf) : z < .1 ? pick(CROWN.dark)
+        : k < .22 ? pick(CROWN.core) : k < .62 ? pick(Math.random() < .25 ? CROWN.core : CROWN.mid) : pick(Math.random() < .3 ? CROWN.mid : CROWN.edge);
+      bead(x, y, r, col, "crown", T0 + 1.15 + k * 1.35 + rnd(0, .22), [cx + (x - cx) * .55, ccY + (y - ccY) * .55]);
+    }
+    beads.sort((p, q) => (p.kind === "name") - (q.kind === "name"));
+    btn.style.left = `${cx - rw * 1.3}px`; btn.style.top = `${ccY - rw * 1.3}px`; btn.style.width = btn.style.height = `${rw * 2.6}px`;
+    btn.style.fontSize = `${Math.max(13, rw * .3)}px`;
+  }
+  function draw(t) {
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H);
+    let busy = false;
+    for (const b of beads) {
+      const dur = b.kind === "name" ? 1.15 : b.kind === "crown" ? .55 : .4;
+      let p = (t - b.delay) / dur; if (p < 1) busy = true; if (p <= 0) continue; p = Math.min(1, p);
+      let x = b.x, y = b.y, s = 1, a = 1;
+      if (b.kind === "name") { const e = ease(p); x = b.sx + (b.x - b.sx) * e; y = b.sy + (b.y - b.sy) * e - Math.sin(p * Math.PI) * 30; a = Math.min(1, p * 3); s = .5 + .5 * e; }
+      else if (b.kind === "crown") { const e = back(p); x = b.sx + (b.x - b.sx) * ease(p); y = b.sy + (b.y - b.sy) * ease(p); s = Math.max(0, e); a = Math.min(1, p * 2.5); }
+      else { s = back(p); a = Math.min(1, p * 3); }
+      const w = b.img.width / dpr * s; if (w <= 0) continue;
+      ctx.globalAlpha = a; ctx.drawImage(b.img, x - w / 2, y - w / 2, w, w);
+    }
+    ctx.globalAlpha = 1; return busy;
+  }
+  const freeze = +(new URLSearchParams(location.search).get("introt") || 0);
+  function frame(now) {
+    const t = freeze || (now - t0) / 1000;
+    if (bursting) return burstFrame(t);
+    const busy = draw(t);
+    if (!btn.classList.contains("lit") && t > 4.7) btn.classList.add("lit");
+    if (busy && !freeze) raf = requestAnimationFrame(frame); else settled = true;
+  }
+  function start() {
+    layout();
+    if (reduce) { draw(99); btn.classList.add("lit"); settled = true; return; }
+    t0 = performance.now(); raf = requestAnimationFrame(frame);
+  }
+  // click: the glass scatters from the glowing centre, then the curtain lifts
+  let bt0 = 0;
+  function burstFrame(t) {
+    const dt = t - bt0; ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H);
+    for (const b of beads) {
+      const x = b.x + b.vx * dt, y = b.y + b.vy * dt + 900 * dt * dt, w = b.img.width / dpr;
+      ctx.globalAlpha = Math.max(0, 1 - dt / .9); ctx.drawImage(b.img, x - w / 2, y - w / 2, w, w);
+    }
+    ctx.globalAlpha = 1; if (dt < 1) raf = requestAnimationFrame(frame);
   }
   let entering = false;
   function enter() {
     if (entering) return; entering = true;
-    shatter(leave);
+    if (reduce) return leave();
+    for (const b of beads) {
+      const dx = b.x - L.cx, dy = b.y - L.ccY, d = Math.hypot(dx, dy) || 1, sp = rnd(260, 620) * (b.kind === "name" ? .5 : 1);
+      b.vx = dx / d * sp + rnd(-40, 40); b.vy = dy / d * sp - rnd(120, 300);
+    }
+    btn.classList.add("gone");
+    const f = document.createElement("div"); f.className = "flash";
+    f.style.left = `${L.cx - 130}px`; f.style.top = `${L.ccY - 130}px`; intro.appendChild(f);
+    cancelAnimationFrame(raf); bursting = true; t0 = performance.now(); bt0 = 0; raf = requestAnimationFrame(frame);
+    setTimeout(leave, 420);
   }
   function leave() {
     intro.classList.add("leaving");
@@ -369,16 +453,16 @@ const intro = $("#intro");
     setTimeout(() => { cancelAnimationFrame(raf); intro.hidden = true; }, 1300);
     try { sessionStorage.setItem("entered", "1"); } catch {}
   }
-  $("#enterBtn").addEventListener("click", enter);
-  $("#enterBtn").setAttribute("aria-label", "Влез в сайта");
+  btn.addEventListener("click", enter);
+  btn.setAttribute("aria-label", "Влез в сайта");
   addEventListener("keydown", e => { if (!intro.hidden && e.key === "Enter") enter(); });
-  let ci = 0;
-  $$(".intro-name .w").forEach(w => { w.setAttribute("aria-hidden", "true");
-    w.innerHTML = [...w.textContent].map(c => `<span class="ch" style="--i:${ci++}">${c}</span>`).join(""); });
+  addEventListener("resize", () => { if (intro.hidden || bursting) return; cancelAnimationFrame(raf); layout(); draw(99); btn.classList.add("lit"); });
   let seen = false; try { seen = sessionStorage.getItem("entered") === "1"; } catch {}
   const deep = location.hash && location.hash !== "#kolekcia";
-  if (seen || deep) { intro.hidden = true; cancelAnimationFrame(raf); }
-  else { document.body.classList.add("locked"); requestAnimationFrame(() => intro.classList.add("play")); }
+  if (seen || deep) { intro.hidden = true; return; }
+  document.body.classList.add("locked"); requestAnimationFrame(() => intro.classList.add("play"));
+  const ready = document.fonts && document.fonts.load ? Promise.race([document.fonts.load('100px "Great Vibes"', "Лъки"), new Promise(r => setTimeout(r, 1800))]) : Promise.resolve();
+  ready.then(start, start);
 })();
 
 /* ---------- list ---------- */
