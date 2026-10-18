@@ -74,8 +74,8 @@ body.locked{overflow:hidden}
 .intro{cursor:default}
 .intro-name{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .intro-tag{position:absolute;left:0;right:0;text-align:center;font:italic 400 clamp(1.15rem,2.4vw,1.9rem) var(--voice);color:var(--terracotta);
-  opacity:0;letter-spacing:.04em;transition:opacity 1.6s 4.4s var(--ease),letter-spacing 2.4s 4.4s var(--ease)}
-.intro.play .intro-tag{opacity:1;letter-spacing:.14em}
+  opacity:0;letter-spacing:.04em;transition:opacity 1.6s,letter-spacing 2.4s var(--ease)}
+.intro .intro-tag.on{opacity:1;letter-spacing:.14em}
 /* "Влез": light glowing through the crown */
 .enter{position:absolute;pointer-events:auto;border:0;padding:0;cursor:pointer;border-radius:50%;display:grid;place-items:center;
   color:#4a1f0c;font-family:var(--title);letter-spacing:.24em;text-transform:uppercase;
@@ -95,8 +95,8 @@ body.locked{overflow:hidden}
 .flash{position:absolute;z-index:2;pointer-events:none;width:260px;height:260px;border-radius:50%;
   background:radial-gradient(circle,rgba(255,240,200,.95),rgba(255,196,110,.45) 40%,transparent 70%);animation:flashOut .8s ease-out forwards}
 @keyframes flashOut{from{opacity:0;transform:scale(.4)}30%{opacity:1}to{opacity:0;transform:scale(2.2)}}
-.intro-foot{position:absolute;bottom:calc(22px + env(safe-area-inset-bottom,0px));left:0;right:0;text-align:center;font-size:.64rem;letter-spacing:.28em;text-transform:uppercase;color:var(--bark);opacity:0;transition:opacity 1.2s 9.6s}
-.intro.play .intro-foot{opacity:.75}
+.intro-foot{position:absolute;bottom:calc(22px + env(safe-area-inset-bottom,0px));left:0;right:0;text-align:center;font-size:.64rem;letter-spacing:.28em;text-transform:uppercase;color:var(--bark);opacity:0;transition:opacity 1.2s}
+.intro .intro-foot.on{opacity:.75}
 .intro.leaving{clip-path:inset(0 0 100% 0)}
 .intro.leaving .intro-in{transform:translateY(-40px);opacity:0;transition:transform 1s var(--ease),opacity .7s}
 
