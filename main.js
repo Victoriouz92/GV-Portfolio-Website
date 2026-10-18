@@ -268,8 +268,7 @@ const intro = $("#intro");
     leaf: [[110, 138, 58], [80, 112, 54]], dark: [[64, 36, 22]]
   };
   // timeline (seconds)
-  const T = { name: .6, letterGap: .3, letterFill: .55, fly: .85, paint: 6.4, paintDur: 1.9, crown: 8, crownDur: 3.4, lit: 11.6, nameEnd: 5 };
-  const N = {};
+  const T = { nameEnd: 2.5, paint: 3.1, paintDur: 1.9, crown: 4.7, crownDur: 3.4, lit: 8.3 };
   let W, H, dpr, beads = [], raf, t0 = 0, done = false, bursting = false, L = {}, sprites = new Map(), layer, lctx, next = 0;
 
   function sprite(c, r, v) {               // one glossy glass chip, cached by colour / size / shape
@@ -296,53 +295,16 @@ const intro = $("#intro");
     layer = document.createElement("canvas"); layer.width = cv.width; layer.height = cv.height;
     lctx = layer.getContext("2d"); lctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     beads = []; next = 0; sprites.clear();
-    const font = 'italic 500 {S}px "Playfair Display", Georgia, serif', text = "Лъки Михайлова", F = n => font.replace("{S}", n);
-    const lines = W < 640 ? ["Лъки", "Михайлова"] : [text];   // on a phone the name gets two lines so it can be large
-    ctx.font = F(100); const w100 = Math.max(...lines.map(l => ctx.measureText(l).width));
-    const fs = Math.min(100 * W * .86 / w100, H * (lines.length > 1 ? .12 : .16), 200), lh = fs * 1.08;
-    ctx.font = F(fs);
-    const asc = fs * .78, nameH = asc + fs * .22 + lh * (lines.length - 1), tagH = fs * .5 + 18;
-    // vertical composition: name, tagline, tree; spare height is shared so nothing floats apart
+    // the name is real text (molten-glass letters in CSS); measure it to compose the tree below
+    const nameEl = $(".intro-name"), tagH = 60;
     let top = Math.max(H * .07, 30);
+    nameEl.style.top = `${top}px`;
+    const nameH = nameEl.getBoundingClientRect().height;
     const TH = Math.max(160, Math.min((H - top - nameH - tagH - 70) / .99, W * .9 / .76, 640));
     const spare = Math.max(0, H - 64 - TH * .99 - tagH - nameH - top - 40);
-    top += spare * .42;
-    const rows = lines.map((l, li) => { const lw = ctx.measureText(l).width, lx = (W - lw) / 2;
-      return { l, lx, lw, by: top + asc + li * lh, edges: [...l].map((_, i) => lx + ctx.measureText(l.slice(0, i)).width).concat(lx + lw) }; });
-    // the glyphs as a mask: used to fill letters with chips, to fuse them, and for the light sweep
-    N.mask = document.createElement("canvas"); N.mask.width = cv.width; N.mask.height = cv.height;
-    const mg = N.mask.getContext("2d"); mg.setTransform(dpr, 0, 0, dpr, 0, 0); mg.font = F(fs); mg.fillStyle = "#fff";
-    for (const r of rows) mg.fillText(r.l, r.lx, r.by);
-    N.rows = rows; N.F = F(fs); N.fs = fs; N.letters = []; N.sparks = [];
-    const md = mg.getImageData(0, 0, N.mask.width, N.mask.height).data, MW = N.mask.width;
-    const inside = (x, y) => md[((y * dpr | 0) * MW + (x * dpr | 0)) * 4 + 3] > 110;
-    const sp = Math.max(2.4, fs * .052), RAMP = [[128, 30, 22], [158, 40, 26], [186, 56, 30], [206, 80, 34], [222, 112, 42], [232, 146, 58], [236, 176, 88]];
-    const x0 = Math.min(...rows.map(r => r.lx)), xw = Math.max(...rows.map(r => r.lw));
-    let li = 0;
-    rows.forEach(r => [...r.l].forEach((ch, k) => {
-      if (ch === " ") return;
-      const lx0 = r.edges[k] - fs * .12, lx1 = r.edges[k + 1] + fs * .18, pts = [];
-      for (let row = 0, y = r.by - asc - fs * .1; y < r.by + fs * .3; y += sp * .866, row++)
-        for (let x = lx0 + (row % 2 ? sp / 2 : 0); x < lx1; x += sp) {
-          const jx = x + rnd(-.12, .12) * sp, jy = y + rnd(-.12, .12) * sp;
-          if (jx >= r.edges[k] - fs * .06 && jx < r.edges[k + 1] + fs * .06 && inside(jx, jy)) pts.push([jx, jy]);
-        }
-      const t0l = T.name + li * T.letterGap, letter = { r, k, t0: t0l, done: t0l + T.letterFill + T.fly };
-      N.letters.push(letter); li++;
-      pts.sort((p, q) => (q[1] - p[1]) + (p[0] - q[0]) * .35);   // fill from the bottom of the stroke up, like pouring
-      pts.forEach(([x, y], i) => {
-        const u = (x - x0) / xw, ci = clamp(Math.round(u * 4.2 + rnd(-1.2, 1.4)), 0, RAMP.length - 1);
-        const b = bead(x, y, sp * rnd(.6, .7), RAMP[ci], t0l + i / pts.length * T.letterFill, Math.random() * 3 | 0);
-        b.kind = "name"; b.dur = T.fly;
-        const side = Math.random() < .5 ? -1 : 1;     // a swirl of glass rising from below and curling in
-        b.sx = x + side * rnd(.15, .35) * W; b.sy = H * rnd(.75, 1.05);
-        b.cx = x - side * rnd(.05, .2) * W; b.cy = y - rnd(.1, .3) * H;
-        beads.push(b);
-      });
-    }));
-    T.nameEnd = N.letters.length ? N.letters[N.letters.length - 1].done : T.name;
-    const y1 = rows[rows.length - 1].by + fs * .22;
-    tag.style.top = `${y1 + Math.max(8, fs * .12)}px`;
+    top += spare * .42; nameEl.style.top = `${top}px`;
+    const y1 = top + nameH;
+    tag.style.top = `${y1 + 4}px`;
 
     // tree geometry: painted trunk and limbs (drawn progressively), crown of chips
     const cx = W / 2, baseY = H - 64 - spare * .3, ccY = baseY - TH * .64, RC = TH * .34, rw = TH * .105;
@@ -438,72 +400,26 @@ const intro = $("#intro");
     if (depth && q > .55) [-1, 1].forEach(sd => limb(g, x + (ex - x) * .55, y + (ey - y) * .55, ang + sd * 26, len * .5, wd * .45, depth - 1, (q - .55) / .45));
   }
 
-  function nameFx(t) {
-    // under the chips: each letter's glass "grout" fills in as it is laid, so the shape always reads clearly
-    const { fs, rows } = N; ctx.save(); ctx.font = N.F;
-    for (const l of N.letters) {
-      const p = clamp((t - l.t0 - T.fly * .6) / (T.letterFill + T.fly * .4), 0, 1); if (!p) continue;
-      ctx.save(); ctx.beginPath(); ctx.rect(l.r.edges[l.k] - fs * .2, l.r.by - fs * 1.1, l.r.edges[l.k + 1] - l.r.edges[l.k] + fs * .35, fs * 1.5); ctx.clip();
-      ctx.globalAlpha = .92 * p; ctx.fillStyle = "#5c2414"; ctx.fillText(l.r.l, l.r.lx, l.r.by);
-      const g = t - l.done;                      // kiln: the finished letter glows hot, then cools into glass
-      if (g > 0 && g < 1.4) {
-        const k = Math.sin(Math.min(1, g / 1.4) * Math.PI) * (1 - g / 1.4 * .3);
-        ctx.globalAlpha = k * .85; ctx.shadowColor = "rgba(255,150,60,.9)"; ctx.shadowBlur = fs * .18;
-        ctx.fillStyle = "#ffb35c"; ctx.fillText(l.r.l, l.r.lx, l.r.by);
-      }
-      ctx.restore();
-    }
-    ctx.restore();
-  }
-  function nameSweep(t) {                     // one slow band of light across the finished name
-    const p = (t - T.nameEnd - .3) / 1.6; if (p <= 0 || p >= 1) return;
-    const s = N.sweep || (N.sweep = document.createElement("canvas")); s.width = cv.width; s.height = cv.height;
-    const g = s.getContext("2d"), x = (-.2 + p * 1.4) * W * dpr, bw = W * .12 * dpr;
-    const gr = g.createLinearGradient(x - bw, 0, x + bw, 0);
-    gr.addColorStop(0, "rgba(255,220,160,0)"); gr.addColorStop(.5, "rgba(255,236,196,.85)"); gr.addColorStop(1, "rgba(255,220,160,0)");
-    g.fillStyle = gr; g.fillRect(0, 0, s.width, s.height);
-    g.globalCompositeOperation = "destination-in"; g.drawImage(N.mask, 0, 0);
-    ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalCompositeOperation = "lighter"; ctx.globalAlpha = .55; ctx.drawImage(s, 0, 0); ctx.restore();
-  }
-  function sparks(dt) {
-    ctx.save(); ctx.globalCompositeOperation = "lighter";
-    N.sparks = N.sparks.filter(s => (s.life -= dt) > 0);
-    for (const s of N.sparks) {
-      s.x += s.vx * dt; s.y += s.vy * dt; s.vy += 40 * dt;
-      const a = s.life / s.max, r = 1.2 + 2 * a;
-      const g = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, r * 3);
-      g.addColorStop(0, `rgba(255,236,190,${a})`); g.addColorStop(.4, `rgba(255,170,80,${a * .6})`); g.addColorStop(1, "rgba(255,140,60,0)");
-      ctx.fillStyle = g; ctx.fillRect(s.x - r * 3, s.y - r * 3, r * 6, r * 6);
-    }
-    ctx.restore();
-  }
   let lastT = 0;
   function render(t) {
     const dt = Math.max(0, Math.min(.05, t - lastT)); lastT = t;
     // chips that have landed are baked into a layer; only the ones in flight are drawn each frame
     while (next < beads.length && beads[next].delay + beads[next].dur <= t) {
       const b = beads[next++], w = b.img.width / dpr; lctx.drawImage(b.img, b.x - w / 2, b.y - w / 2, w, w);
-      if (b.kind === "name" && Math.random() < .12 && t - b.delay - b.dur < .1) N.sparks.push({ x: b.x, y: b.y, vx: rnd(-30, 30), vy: rnd(-70, -20), life: .7, max: .7 });
     }
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H);
     paintTree(ctx, (t - T.paint) / T.paintDur);
-    nameFx(t);
     ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.drawImage(layer, 0, 0); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     for (let i = next; i < beads.length && beads[i].delay - 1 <= t; i++) {
       const b = beads[i]; if (b.delay > t) continue;
       const p = clamp((t - b.delay) / b.dur, 0, 1), e = ease(p);
       let x = b.x, y = b.y - (1 - e) * 6, s = 1 + (1 - e) * .7, a = e;
-      if (b.kind === "name") {                // fly along a curve, small and bright, landing with a press
-        const u = 1 - e; x = u * u * b.sx + 2 * u * e * b.cx + e * e * b.x; y = u * u * b.sy + 2 * u * e * b.cy + e * e * b.y;
-        s = .45 + .55 * e + (p > .85 ? (1 - p) * 2 : 0); a = Math.min(1, p * 4);
-      }
       const w = b.img.width / dpr * s; ctx.globalAlpha = a; ctx.drawImage(b.img, x - w / 2, y - w / 2, w, w);
     }
     ctx.globalAlpha = 1;
-    nameSweep(t); sparks(dt);
     if (t >= T.nameEnd - .2) tag.classList.add("on");
     if (t >= T.lit) { btn.classList.add("lit"); foot.classList.add("on"); }
-    return next < beads.length || t < T.paint + T.paintDur || t < T.nameEnd + 2 || N.sparks.length;
+    return next < beads.length || t < T.paint + T.paintDur;
   }
   const freeze = +(new URLSearchParams(location.search).get("introt") || 0);   // test hook: ?introt=5 renders one moment
   let clock = 0, last = 0;
@@ -515,6 +431,7 @@ const intro = $("#intro");
   }
   function finish() { cancelAnimationFrame(raf); render(99); done = true; }
   function start() {
+    $(".intro-name").classList.add("on");
     layout();
     if (reduce) return finish();
     render(0); raf = requestAnimationFrame(frame);
@@ -556,11 +473,14 @@ const intro = $("#intro");
   btn.setAttribute("aria-label", "Влез в сайта");
   addEventListener("keydown", e => { if (!intro.hidden && e.key === "Enter") enter(); });
   addEventListener("resize", () => { if (intro.hidden || bursting) return; cancelAnimationFrame(raf); layout(); finish(); });
+  let ci = 0;
+  $$(".intro-name .w").forEach(w => { w.setAttribute("aria-hidden", "true");
+    w.innerHTML = [...w.textContent].map(c => `<span class="ch" style="--i:${ci++}">${c}</span>`).join(""); });
   let seen = false; try { seen = sessionStorage.getItem("entered") === "1"; } catch {}
   const deep = location.hash && location.hash !== "#kolekcia";
   if (seen || deep) { intro.hidden = true; return; }
   document.body.classList.add("locked"); requestAnimationFrame(() => intro.classList.add("play"));
-  const ready = document.fonts && document.fonts.load ? Promise.race([document.fonts.load('italic 500 100px "Playfair Display"', "Лъки"), new Promise(r => setTimeout(r, 1800))]) : Promise.resolve();
+  const ready = document.fonts && document.fonts.load ? Promise.race([document.fonts.load('100px "Prata"', "Лъки"), new Promise(r => setTimeout(r, 1800))]) : Promise.resolve();
   const loaded = document.readyState === "complete" ? Promise.resolve() : new Promise(r => addEventListener("load", r, { once: true }));
   const visible = () => new Promise(r => { if (!document.hidden) return r(); document.addEventListener("visibilitychange", function v() { if (!document.hidden) { document.removeEventListener("visibilitychange", v); r(); } }); });
   Promise.all([ready.catch(() => {}), Promise.race([loaded, new Promise(r => setTimeout(r, 4000))])]).then(visible).then(start, start);

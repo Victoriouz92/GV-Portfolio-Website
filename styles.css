@@ -72,7 +72,17 @@ body.locked{overflow:hidden}
   background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .35 0 0 0 0 .25 0 0 0 .18 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
 .intro-in{position:absolute;inset:0;z-index:1;pointer-events:none}
 .intro{cursor:default}
-.intro-name{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.intro-name{position:absolute;left:0;right:0;text-align:center;padding:0 var(--gutter);font:400 clamp(2.8rem,9vw,8.5rem)/1.05 var(--title);letter-spacing:-.02em;color:var(--umber)}
+.intro-name .w{display:inline-block;white-space:nowrap;perspective:600px}
+/* letters pour in like molten glass, then cool from amber to umber */
+.intro-name .ch{display:inline-block;opacity:0;color:#f6c24e;filter:blur(12px);transform:translateY(.55em) rotateX(-70deg) scale(1.08);transform-origin:50% 100%}
+.intro-name.on .ch{animation:melt 1.5s calc(.25s + var(--i)*.075s) var(--ease) forwards,glint 1s calc(2.6s + var(--i)*.05s) ease-in-out forwards}
+@keyframes melt{
+  45%{opacity:1;filter:blur(0);transform:none;color:#f2a046;text-shadow:0 0 .32em rgba(242,160,70,.85),0 0 .9em rgba(226,116,40,.35)}
+  100%{opacity:1;filter:none;transform:none;color:var(--umber);text-shadow:0 0 0 transparent}}
+@keyframes glint{
+  0%,100%{opacity:1;filter:none;transform:none;color:var(--umber);text-shadow:0 0 0 transparent}
+  45%{color:#c0662c;text-shadow:0 0 .22em rgba(242,160,70,.6)}}
 .intro-tag{position:absolute;left:0;right:0;text-align:center;font:italic 400 clamp(1.15rem,2.4vw,1.9rem) var(--voice);color:var(--terracotta);
   opacity:0;letter-spacing:.04em;transition:opacity 1.6s,letter-spacing 2.4s var(--ease)}
 .intro .intro-tag.on{opacity:1;letter-spacing:.14em}
@@ -377,6 +387,7 @@ textarea{resize:vertical}
   *{animation:none!important;transition:none!important}
   .js .rv:not(.in){opacity:1;transform:none}
   .enter{opacity:1;transform:none}
+  .intro-name .ch{opacity:1;filter:none;transform:none;color:var(--umber)}
 }
 
 /* main page sections */
