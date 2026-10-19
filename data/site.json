@@ -5,5 +5,43 @@
   "email": "artgifts.bg@gmail.com",
   "hours": "понеделник – събота, 11:00 – 18:00 · неделя почивен ден",
   "website": "https://artgifts.bg",
-  "viber": "+359 899 160 166"
+  "viber": "+359 899 160 166",
+  "delivery": [
+    {
+      "label": "От галерията",
+      "note": "ул. „Гурко“ 10, София",
+      "type": "pickup",
+      "price": 0
+    },
+    {
+      "label": "Еконт до офис",
+      "note": "до 1 работен ден",
+      "type": "office",
+      "price": 4.04
+    },
+    {
+      "label": "Еконт до адрес",
+      "note": "до 1 работен ден",
+      "type": "address",
+      "price": 6.0
+    },
+    {
+      "label": "Спиди до офис или автомат",
+      "note": "до 1 работен ден",
+      "type": "office",
+      "price": 3.1
+    },
+    {
+      "label": "Спиди до адрес",
+      "note": "до 1 работен ден",
+      "type": "address",
+      "price": 5.6
+    },
+    {
+      "label": "BOX NOW автомат",
+      "note": "избор на автомат от картата",
+      "type": "boxnow",
+      "price": 1.53
+    }
+  ]
 }

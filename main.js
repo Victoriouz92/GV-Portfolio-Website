@@ -13,7 +13,7 @@ const CAT_NOTE = {
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const P = "assets/products/";
-const money = n => `${n} €`;
+const money = n => `${Number.isInteger(+n) ? +n : (+n).toFixed(2).replace(".", ",")} €`; // 68 €, 4,04 €
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const hasSizes = w => Array.isArray(w.sizes) && w.sizes.length > 0;
 const hasPrice = v => v !== null && v !== undefined && v !== "";
@@ -486,6 +486,40 @@ const intro = $("#intro");
 /* ---------- list ---------- */
 let cart = store.get("cart2", []);
 const drawer = $("#drawer");
+/* ---------- delivery: fixed prices from the admin panel, BOX NOW lockers from its own map ---------- */
+const DELIV = (Array.isArray(SITE.delivery) && SITE.delivery.length ? SITE.delivery : [{ label: "От галерията", note: SITE.address || "", type: "pickup", price: 0 }])
+  .map(o => ({ ...o, price: hasPrice(o.price) ? +o.price : null }));
+const WHERE = { office: "Град и офис на куриера", address: "Град и адрес за доставка", boxnow: "Автомат BOX NOW" };
+$("#delivList").innerHTML = DELIV.map((o, i) => `<label><input type="radio" name="delivery" value="${i}"${i ? "" : " checked"}>
+  <span><b>${esc(o.label)}</b>${o.note ? `<small>${esc(o.note)}</small>` : ""}</span><em>${o.price === 0 ? "безплатно" : o.price != null ? money(o.price) : "по тарифа"}</em></label>`).join("");
+const deliv = () => DELIV[+(($("input[name=delivery]:checked") || {}).value || 0)];
+function updateDeliv() {
+  const o = deliv(), t = o.type || "pickup";
+  $("#delivWhere").hidden = t === "pickup";
+  $("#whereLabel").textContent = WHERE[t] || WHERE.address;
+  $("#oWhere").placeholder = t === "boxnow" ? "Изберете от картата или напишете адреса на автомата" : t === "office" ? "напр. Пловдив, офис Централен" : "напр. Варна, ул. „Шипка“ 12, ет. 3";
+  $("#bnBox").hidden = t !== "boxnow";
+  renderList();
+}
+$("#delivList").addEventListener("change", updateDeliv);
+// the official BOX NOW map runs in a frame and posts the chosen locker back to the page
+$("#bnOpen").addEventListener("click", () => {
+  const box = $("#bnMap"); box.hidden = false;
+  if (box.firstChild) return;
+  const q = new URLSearchParams({ gps: "yes", autoselect: "yes", autoclose: "no", countryCode: "bg", language: "bg" });
+  if (SITE.boxnowPartnerId) q.set("partnerId", SITE.boxnowPartnerId);
+  box.innerHTML = `<iframe src="https://map.boxnow.bg/iframe.html?${q}" title="Карта на автоматите BOX NOW" allow="geolocation" loading="lazy"></iframe>`;
+});
+addEventListener("message", e => {
+  if (!/^https:\/\/(map|widget(-v\d+)?)\.boxnow\.bg$/.test(e.origin)) return;
+  let l = e.data; if (typeof l === "string") try { l = JSON.parse(l); } catch { return; }
+  if (!l || typeof l !== "object") return;
+  const txt = [l.boxnowLockerName, l.boxnowLockerAddressLine1, l.boxnowLockerPostalCode].filter(Boolean).join(", ");
+  if (!txt) return;
+  $("#oWhere").value = txt + (l.boxnowLockerId ? ` (автомат № ${l.boxnowLockerId})` : "");
+  $("#bnMap").hidden = true; $("#bnOpen").textContent = "Смени автомата";
+});
+
 function renderList() {
   $("#cartCount").textContent = cart.length;
   $("#cartBtn").classList.toggle("has", cart.length > 0);
@@ -494,7 +528,10 @@ function renderList() {
   $("#cartList").innerHTML = cart.map((c, i) => `<li><img src="${c.img}" alt=""><div><b>${esc(c.name)}</b><small>${esc(c.detail)}</small></div>
     <div class="pr"><span>${c.price != null ? money(c.price) : "по запитване"}</span><button type="button" class="rm" data-rm="${i}">Премахни</button></div></li>`).join("");
   const known = cart.filter(c => c.price != null), sum = known.reduce((s, c) => s + c.price, 0);
-  $("#cartTotal").textContent = known.length ? money(sum) + (known.length < cart.length ? " + запитване" : "") : "по запитване";
+  const ask = known.length < cart.length, ship = deliv().price;
+  $("#sumItems").textContent = known.length ? money(sum) + (ask ? " + запитване" : "") : "по запитване";
+  $("#sumShip").textContent = ship === 0 ? "безплатно" : ship != null ? money(ship) : "по тарифа";
+  $("#cartTotal").textContent = known.length ? money(sum + (ship || 0)) + (ask || ship == null ? " + запитване" : "") : "по запитване";
 }
 function addToList(item) { cart.push(item); store.set("cart2", cart); $("#orderDone").hidden = true; renderList(); openDrawer(); }
 $("#cartList").addEventListener("click", e => {
@@ -512,14 +549,17 @@ $("#orderForm").addEventListener("submit", async e => {
   if (!d.name.trim() || !d.phone.trim()) { note.textContent = "Моля, въведете име и телефон."; return; }
   if (!f.consent.checked) { note.textContent = "Моля, потвърдете, че сте съгласни с обработката на данните."; return; }
   if (d._honey) return;                                  // filled only by spam bots
+  const dv = deliv();
+  d.delivery = `${dv.label}${dv.price ? ` (${money(dv.price)})` : ""}${dv.type !== "pickup" && d.where.trim() ? ` — ${d.where.trim()}` : dv.type === "pickup" && dv.note ? ` — ${dv.note}` : ""}`;
+  if (dv.type !== "pickup" && !d.where.trim()) { note.textContent = dv.type === "boxnow" ? "Моля, изберете автомат BOX NOW." : "Моля, напишете къде да доставим."; $("#oWhere").focus(); return; }
   const lines = cart.map((c, i) => `${i + 1}. ${c.name} — ${c.detail} — ${c.price != null ? money(c.price) : "цена по запитване"}`);
-  const body = ["Запитване от сайта", "", ...lines, "", `Получаване: ${d.delivery}`, ...(d.invoice ? ["Фактура: да"] : []), `Име: ${d.name}`, `Телефон: ${d.phone}`, ...(d.email ? [`Имейл: ${d.email}`] : [])].join("\n");
+  const body = ["Запитване от сайта", "", ...lines, "", `Получаване: ${d.delivery}`, `Общо: ${$("#cartTotal").textContent}`, ...(d.invoice ? ["Фактура: да"] : []), `Име: ${d.name}`, `Телефон: ${d.phone}`, ...(d.email ? [`Имейл: ${d.email}`] : [])].join("\n");
   btn.disabled = true; note.textContent = "Изпращаме…";
   try {
     const res = await fetch(SITE.formEndpoint || `https://formsubmit.co/ajax/${ORDER_EMAIL}`, {
       method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" },
       body: JSON.stringify({ _subject: `Запитване от сайта — ${d.name}`, _template: "table", _captcha: "false",
-        "Име": d.name, "Телефон": d.phone, "Имейл": d.email || "—", "Получаване": d.delivery, "Фактура": d.invoice ? "да" : "не", "Творби": lines.join("\n") }) });
+        "Име": d.name, "Телефон": d.phone, "Имейл": d.email || "—", "Получаване": d.delivery, "Фактура": d.invoice ? "да" : "не", "Творби": lines.join("\n"), "Общо": $("#cartTotal").textContent }) });
     const out = await res.json().catch(() => ({}));
     if (!res.ok || String(out.success) === "false") throw new Error(out.message || res.status);
     cart.length = 0; store.set("cart2", cart); renderList();

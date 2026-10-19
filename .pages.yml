@@ -90,3 +90,23 @@ content:
       - { name: email, label: Имейл (тук идват и запитванията от сайта), type: string }
       - { name: hours, label: Работно време, type: string }
       - { name: website, label: Сайт на галерията, type: string }
+      - name: delivery
+        label: Доставка
+        description: Начините за получаване във формата за поръчка. Цената се добавя автоматично към сбора.
+        type: object
+        list: true
+        fields:
+          - { name: label, label: Име, description: "Например „Еконт до офис“", type: string, required: true }
+          - { name: note, label: Кратка бележка, type: string }
+          - name: type
+            label: Вид
+            type: select
+            required: true
+            options:
+              values:
+                - { value: pickup, label: Вземане от галерията }
+                - { value: office, label: До офис на куриер }
+                - { value: address, label: До адрес }
+                - { value: boxnow, label: BOX NOW автомат (с карта) }
+          - { name: price, label: Цена в евро, description: Празно = „по тарифа“, type: number }
+      - { name: boxnowPartnerId, label: BOX NOW partner ID (по избор), description: От договора с BOX NOW. Тогава картата показва точно вашите автомати., type: string }
