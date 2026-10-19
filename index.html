@@ -100,9 +100,9 @@
     <p class="eyebrow rv">Контакти</p>
     <h2 class="rv">Елате да видите стъклото <i>на живо</i></h2>
     <div class="contact-grid rv">
-      <div><p class="c-label">Галерия</p><p class="c-val">Artgifts.bg</p><p class="fine">ул. „Гурко“, София</p></div>
-      <div><p class="c-label">Имейл</p><p class="c-val"><a href="mailto:info@artgifts.bg" id="contactMail">info@artgifts.bg</a></p><p class="fine">За поръчки и въпроси</p></div>
-      <div><p class="c-label">Онлайн</p><p class="c-val"><a href="https://artgifts.bg" target="_blank" rel="noopener">artgifts.bg ↗</a></p><p class="fine">Галерията в интернет</p></div>
+      <div><p class="c-label">Галерия</p><p class="c-val" data-site="gallery">Artgifts Gallery</p><p class="fine" data-site="address">ул. „Гурко“ 10, София</p></div>
+      <div><p class="c-label">Телефон</p><p class="c-val"><a data-site="phone" href="tel:+359899160166">+359 899 160 166</a></p><p class="fine" data-site="hours">понеделник – събота, 11:00 – 18:00</p></div>
+      <div><p class="c-label">Имейл</p><p class="c-val"><a data-site="email" href="mailto:artgifts.bg@gmail.com">artgifts.bg@gmail.com</a></p><p class="fine">За поръчки и въпроси · <a data-site="website" href="https://artgifts.bg" target="_blank" rel="noopener">artgifts.bg ↗</a></p></div>
     </div>
     <div class="actions left rv"><a class="btn" href="#poruchka">Поръчка по мярка</a></div>
   </section>
@@ -233,6 +233,11 @@
   </div>
 </aside>
 
-<script src="main.js"></script>
+<script>
+/* load the editable content, then the site */
+Promise.all(["data/works.json", "data/site.json"].map(u => fetch(u, { cache: "no-cache" }).then(r => r.json()).catch(() => ({}))))
+  .then(([w, site]) => { window.WORKS_DATA = w.works || []; window.SITE = site || {};
+    const s = document.createElement("script"); s.src = "main.js"; document.body.appendChild(s); });
+</script>
 </body>
 </html>

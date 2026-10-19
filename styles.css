@@ -218,6 +218,8 @@ body.locked{overflow:hidden}
 .work h3 a:hover{color:var(--terracotta)}
 .work .size{font-size:.84rem;color:var(--bark)}
 .work .price{font:400 clamp(1.5rem,2vw,1.85rem)/1 var(--title);color:var(--umber);margin-top:6px;letter-spacing:.01em;white-space:nowrap}
+.work.sold .price{font:500 .7rem var(--text);letter-spacing:.24em;text-transform:uppercase;color:var(--terracotta)}
+.work.sold .mat img.main{filter:saturate(.75)}
 .size-pick{position:relative;display:inline-flex}
 .size-pick select{appearance:none;-webkit-appearance:none;font:inherit;font-size:.84rem;color:var(--umber);cursor:pointer;
   background:transparent;border:1px solid var(--line);border-radius:999px;padding:7px 34px 7px 16px;transition:border-color .3s}

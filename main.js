@@ -1,62 +1,9 @@
-// TODO: replace with the real contact email before launch
-const ORDER_EMAIL = "info@artgifts.bg";
-
-/* Photos live in assets/products/: <id>.jpg (on the wall), <id>-close.jpg (detail),
-   and <id>-2.jpg … for variants, each with a -sm.jpg copy for the grid. */
-const TREE = "Дърво на живота", PANE = "Стъклено пано";
-const YAB_SIZES = [["Малко", "14 × 16 см", 28], ["Средно", "18 × 22 см", 38], ["Голямо", "26 × 36 см", 89], ["Най-голямо", "30 × 40 см", 98]];
-// every piece is its own listing; "series" is the small line above the title
-const WORKS = [
-  // ---- PICTURES (framed) ----
-  { id: "plodorodie", cat: "kartina", series: TREE, name: "Плодородие", size: "30 × 40 см", price: 80, frame: "дървена, 3 см, по избор",
-    text: "Семейно дърво на живота. Изработено върху стъкло със специални професионални бои и цветни стъкла. Двойно темперирано в пещ за стъкло." },
-  { id: "kartina-yabalka", cat: "kartina", series: TREE, name: "Ябълка", frame: "дървена, платина", sizes: YAB_SIZES },
-  { id: "kartina-yabalka-2", cat: "kartina", series: TREE, name: "Ябълкова градина", frame: "дървена, платина", sizes: YAB_SIZES },
-  { id: "kartina-prestizh", cat: "kartina", series: TREE, name: "Престиж", price: 68, frame: "масивна ретро рамка",
-    text: "С масивна ретро рамка. Дърво с широки клони и дебел ствол, стъпило здраво на земята и пуснало дълбоки корени в недрата ѝ. Усещане за зрялост, сила и непоклатимост!" },
-  { id: "kartina-blagodat", cat: "kartina", series: TREE, name: "Благодат", size: "19,5 × 19,5 см с рамката", price: 35,
-    frame: "дървена, със златен кант", text: "Изработено върху керамична плочка." },
-  { id: "kartina-prolet", cat: "kartina", series: TREE, name: "Пролет злато", size: "24 × 36 см", price: 76, frame: "златна, със закопчалка",
-    text: "Носи радост, топлина и много цвят в дома и офиса. Усещане за изисканост, прецизност и блестяща чистота. Предлага се само в този размер." },
-  { id: "kartina-proletno-darvo", cat: "kartina", series: TREE, name: "Пролет", size: "26 × 36 см", price: 89, frame: "дървена, платина" },
-  { id: "kartina-proletno-darvo-2", cat: "kartina", series: TREE, name: "Пролетен цвят", size: "26 × 36 см", price: 89, frame: "дървена, платина" },
-  { id: "kartina-semeino", cat: "kartina", series: TREE, name: "Семейно", size: "25 × 25 см", price: 68, frame: "дървена, със златен кант" },
-  { id: "kartina-barok", cat: "kartina", series: TREE, name: "Барок", size: "19 × 19 см", price: 34, frame: "бяло-златна, с флорални барокови мотиви",
-    text: "Бяло-златна рамка с флорални барокови мотиви. Стволът е дебел и плътен, а короната на дървото е в кръг." },
-  { id: "kartina-byalo", cat: "kartina", series: TREE, name: "Бяло", size: "малък размер", price: 24, frame: "бяла, със златен кант",
-    text: "Малко дърво на живота в бяла рамка със златен кант." },
-  { id: "kartina-cheresha", cat: "kartina", series: TREE, name: "Череша" },
-  { id: "kartina-razvitie", cat: "kartina", series: TREE, name: "Развитие" },
-  { id: "kartina-zlatno-lyato", cat: "kartina", series: TREE, name: "Златно лято", frame: "златна" },
-
-  // ---- PANELS (no frame) ----
-  { id: "pana-buhal", cat: "pana", series: PANE, name: "Бухал", size: "12 × 12 см", price: 20, text: "Символ на мъдрост и благополучие." },
-  { id: "pana-taralezh", cat: "pana", series: PANE, name: "Таралеж с ябълка", size: "12 × 12 см", price: 20,
-    text: "Таралежът е предвестник на есента. Символизира упорития труд, като събира узрели плодове за зимнина! Стъклена картина, която събира слънчевите лъчи и ги пренася в дома ни." },
-  { id: "pana-taralezh-2", cat: "pana", series: PANE, name: "Таралеж в градината", size: "12 × 12 см", price: 20,
-    text: "Таралежът е предвестник на есента. Символизира упорития труд, като събира узрели плодове за зимнина! Стъклена картина, която събира слънчевите лъчи и ги пренася в дома ни." },
-  { id: "pana-taralezh-3", cat: "pana", series: PANE, name: "Таралеж и слънце", size: "12 × 12 см", price: 20,
-    text: "Таралежът е предвестник на есента. Символизира упорития труд, като събира узрели плодове за зимнина! Стъклена картина, която събира слънчевите лъчи и ги пренася в дома ни." },
-  { id: "pana-angel", cat: "pana", series: PANE, name: "Ангел Хранител", size: "12 × 14 см", price: 24,
-    text: "Рамката на паното е направена от висококачествени професионални бои за стъкло. А самият ангел е от сребърна тел, ръчно огънат. Всеки има свой собствен чар и индивидуалност." },
-  { id: "pana-angel-2", cat: "pana", series: PANE, name: "Ангел на светлината", size: "12 × 14 см", price: 24,
-    text: "Рамката на паното е направена от висококачествени професионални бои за стъкло. А самият ангел е от сребърна тел, ръчно огънат. Всеки има свой собствен чар и индивидуалност." },
-  { id: "pana-cherno-kote", cat: "pana", series: PANE, name: "Черно коте за късмет", size: "12 × 12 см", price: 20,
-    text: "Подходящ подарък, за да си кажем: „Ще пречупя каръка и ще започна без страх отново!“ Подарява се още за късмет и за безстрашие." },
-  { id: "pana-yabalka", cat: "pana", series: TREE, name: "Ябълково дръвче", size: "12 × 15 см", price: 24,
-    text: "Освен цялата нарисувана символика има и 8 узрели ябълкови плода! Числото не е случайно — то е символ на успех и безкрайност." },
-  { id: "pana-yabalka-2", cat: "pana", series: TREE, name: "Ябълков цвят", size: "12 × 15 см", price: 24,
-    text: "Освен цялата нарисувана символика има и 8 узрели ябълкови плода! Числото не е случайно — то е символ на успех и безкрайност." },
-  { id: "pana-sharena-maca", cat: "pana", series: PANE, name: "Шарената маца", size: "12 × 12 см", price: 20,
-    text: "Подарява се за нежност, за вярност, за приятелство и за игри и усмивки." },
-  { id: "pana-sartse", cat: "pana", series: PANE, name: "Сърце", size: "12 × 12 см", price: 20,
-    text: "Подарява се за любов, за вярност, за надежда и за да не забравяш себе си и да се обичаш!" },
-  { id: "pana-mazhko-sartse", cat: "pana", series: PANE, name: "Мъжко сърце", size: "12 × 12 см", price: 20,
-    text: "Освен червено тук има и добавен син цвят — връзка с небето и със силния мъжки пол." },
-  { id: "pana-urozhay", cat: "pana", series: TREE, name: "Урожай" },
-  { id: "pana-rache", cat: "pana", series: PANE, name: "Раче", size: "12 × 12 см", price: 20,
-    text: "Усещане за идването на лятото, топлината, морските почивки и плажовете." },
-];
+/* Content lives in data/works.json and data/site.json, so the artist can edit it in the admin panel (Pages CMS).
+   Product photos: assets/products/<id>-wall(-sm).jpg|webp (hung on the wall) and <id>-close.jpg (detail);
+   a piece added in the panel can instead carry its own uploaded photo in "image". */
+const SITE = window.SITE || {};
+const ORDER_EMAIL = SITE.email || "artgifts.bg@gmail.com";
+const WORKS = (window.WORKS_DATA || []).filter(w => w && w.id && w.name);
 const PANE_PERKS = ["Лесно се поставя", "Подхожда на стена във всякакъв цвят", "Почиства се лесно", "Внася цвят, стил и настроение в дома или офиса", "Подходящ подарък за мъже и жени"];
 const CAT_NOTE = {
   kartina: "Дървета на живота, рисувани върху стъкло и сплавени с цветни стъкълца, в дървена рамка.",
@@ -68,9 +15,13 @@ const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const P = "assets/products/";
 const money = n => `${n} €`;
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-const prices = w => w.sizes ? w.sizes.map(s => s[2]) : w.price != null ? [w.price] : [];
-const priceLabel = w => w.sizes ? money(w.sizes[0][2]) : w.price != null ? money(w.price) : "по запитване";
-const sizeLabel = w => w.size || (w.sizes ? w.sizes.map(s => s[1].replace(" см", "")).join(" · ") + " см" : "размер при запитване");
+const hasSizes = w => Array.isArray(w.sizes) && w.sizes.length > 0;
+const hasPrice = v => v !== null && v !== undefined && v !== "";
+const priceLabel = w => hasSizes(w) ? money(w.sizes[0].price) : hasPrice(w.price) ? money(w.price) : "по запитване";
+const sizeLabel = w => w.size || "размер при запитване";
+// physical area in cm², used to order the collection from the largest piece to the smallest
+const area = w => { const m = String(hasSizes(w) ? w.sizes[w.sizes.length - 1].size : w.size || "").replace(",", ".").match(/([\d.]+)\s*[×x]\s*([\d.]+)/);
+  return m ? m[1] * m[2] : 0; };
 const byId = id => WORKS.find(w => w.id === id);
 const FRAMES = { platinum: "Платина", walnut: "Тъмен орех", black: "Черно и сребро" };
 const store = {
@@ -100,21 +51,22 @@ document.addEventListener("pointermove", e => {
 });
 
 /* ---------- cards ---------- */
-const hung = w => w.cat === "kartina" || w.cat === "pana"; // works are cut from the photo and hung on the page wall
+const hung = w => !w.image || w.cat === "kartina"; // works are cut from the photo and hung on the page wall
 const wallSrc = (id, cat, sm) => `${P}${id}-wall${sm ? "-sm" : ""}` + (cat === "pana" ? ".webp?v=2" : ".jpg?v=2"); // panels keep their wire, so they need transparency
+const imgSrc = (w, sm) => w.image ? w.image.replace(/^\//, "") : wallSrc(w.id, w.cat, sm);
 const fullName = w => `${w.series} „${w.name}“`;
 const sizeSelect = (w, cls) => `<label class="${cls}"><span class="vh">Размер</span><select data-sizes="${w.id}">${w.sizes.map((z, k) =>
-  `<option value="${k}">${z[1]}</option>`).join("")}</select></label>`;
+  `<option value="${k}">${esc(z.size)}</option>`).join("")}</select></label>`;
 const card = w => `
-  <article class="work rv${hung(w) ? " hung" : ""}${w.cat === "pana" ? " pane" : ""}">
+  <article class="work rv${hung(w) ? " hung" : ""}${w.cat === "pana" && !w.image ? " pane" : ""}${w.sold ? " sold" : ""}">
     <a class="mat glass" href="#tvorba-${w.id}" aria-label="${esc(fullName(w))}">
-      <img class="main" src="${hung(w) ? wallSrc(w.id, w.cat, 1) : `${P}${w.id}-sm.jpg`}" alt="${esc(fullName(w))}" loading="lazy">
+      <img class="main" src="${imgSrc(w, 1)}" alt="${esc(fullName(w))}" loading="lazy">
     </a>
     <div class="cap">
       <span class="series">${esc(w.series)}</span>
       <h3><a href="#tvorba-${w.id}">${esc(w.name)}</a></h3>
-      ${w.sizes ? sizeSelect(w, "size-pick") : `<span class="size">${esc(w.size || "размер при запитване")}</span>`}
-      <span class="price" data-price="${w.id}">${w.sizes ? money(w.sizes[0][2]) : w.price != null ? money(w.price) : "по запитване"}</span>
+      ${hasSizes(w) ? sizeSelect(w, "size-pick") : `<span class="size">${esc(w.size || "размер при запитване")}</span>`}
+      <span class="price" data-price="${w.id}">${w.sold ? "Продадена" : priceLabel(w)}</span>
     </div>
   </article>`;
 // a size picked on a card updates its price
@@ -122,7 +74,7 @@ document.addEventListener("change", e => {
   const sel = e.target.closest("select[data-sizes]"); if (!sel) return;
   const w = byId(sel.dataset.sizes), z = w.sizes[+sel.value];
   const scope = sel.closest(".work, .wp-info") || document;
-  const pr = scope.querySelector(`[data-price="${w.id}"]`) || $("#wpPrice"); if (pr) pr.textContent = money(z[2]);
+  const pr = scope.querySelector(`[data-price="${w.id}"]`) || $("#wpPrice"); if (pr) pr.textContent = money(z.price);
 });
 
 /* ---------- collection ---------- */
@@ -132,7 +84,7 @@ function renderGrid(cat) {
   const soon = cat === "soon";
   $("#soon").hidden = !soon; $("#grid").hidden = soon;
   $("#catNote").textContent = soon ? "" : CAT_NOTE[cat];
-  if (!soon) $("#grid").innerHTML = WORKS.filter(w => w.cat === cat).map(card).join("");
+  if (!soon) $("#grid").innerHTML = WORKS.filter(w => w.cat === cat).sort((a, b) => (area(b) || -1) - (area(a) || -1)).map(card).join("");
   observe($("#grid"));
 }
 $$(".tabs button").forEach(t => t.addEventListener("click", () => {
@@ -159,6 +111,8 @@ function renderWork(id) {
   if (cur.id === "plodorodie") {
     Object.keys(FRAMES).forEach(f => shots.push({ src: `assets/img/framed-${f}-wall.jpg`, th: `assets/img/swatch-${f}.jpg`, v: 1, hung: true, label: `рамка ${FRAMES[f]}` }));
     shots.push({ src: `${P}plodorodie-close.jpg`, th: `${P}plodorodie-close-sm.jpg`, v: 1 });
+  } else if (cur.image) {
+    shots.push({ src: imgSrc(cur), th: imgSrc(cur), v: 1, hung: cur.cat === "kartina" });
   } else {
     shots.push({ src: wallSrc(cur.id, cur.cat), th: `${P}${cur.id}-sm.jpg`, v: 1, hung: true });
     shots.push({ src: `${P}${cur.id}-close.jpg`, th: `${P}${cur.id}-close-sm.jpg`, v: 1 });
@@ -169,8 +123,10 @@ function renderWork(id) {
   $("#wpPrice").textContent = priceLabel(cur);
   $("#wpPerks").innerHTML = cur.cat === "pana" ? PANE_PERKS.map(t => `<li>${t}</li>`).join("") : "";
   $("#wpText").textContent = cur.text || (cur.cat === "pana" ? CAT_NOTE.pana : "Дърво на живота, рисувано върху стъкло и сплавено в пещ с цветни стъкълца.");
-  $("#wpSizes").innerHTML = cur.sizes ? sizeSelect(cur, "size-pick big") : "";
-  const specs = [["Размер", cur.sizes ? "по избор" : sizeLabel(cur)],
+  $("#wpSizes").innerHTML = hasSizes(cur) ? sizeSelect(cur, "size-pick big") : "";
+  if (cur.sold) $("#wpPrice").textContent = "Продадена";
+  $("#wpAdd").hidden = !!cur.sold;
+  const specs = [["Размер", hasSizes(cur) ? "по избор" : sizeLabel(cur)],
     [cur.cat === "pana" ? "Окачване" : "Рамка", cur.cat === "pana" ? "метална закопчалка-кобилица със спирала" : (cur.frame || "дървена")],
     ["Материал", "стъкло, цветни стъкълца, бои за стъкло"], ["Автор", "Лъки Михайлова"]];
   $("#wpSpecs").innerHTML = specs.map(([a, b]) => `<div><dt>${a}</dt><dd>${esc(b)}</dd></div>`).join("");
@@ -195,10 +151,10 @@ wpMain.addEventListener("pointermove", e => {
 wpMain.addEventListener("pointerleave", () => wpMain.classList.remove("zooming"));
 $("#wpAdd").addEventListener("click", () => {
   const s = shots[shotI];
-  let price = cur.price ?? null, detail = sizeLabel(cur);
-  if (cur.sizes) { const z = cur.sizes[+$("#wpSizes select").value]; detail = z[1]; price = z[2]; }
+  let price = hasPrice(cur.price) ? cur.price : null, detail = sizeLabel(cur);
+  if (hasSizes(cur)) { const z = cur.sizes[+$("#wpSizes select").value]; detail = z.size; price = z.price; }
   if (cur.id === "plodorodie") detail += ` · ${s.label || "рамка Платина"}`;
-  addToList({ name: fullName(cur), detail, price, img: s.th.includes("swatch") ? s.src : `${P}${cur.id}-sm.jpg` });
+  addToList({ name: fullName(cur), detail, price, img: s.th.includes("swatch") ? s.src : cur.image ? imgSrc(cur) : `${P}${cur.id}-sm.jpg` });
 });
 
 /* ---------- commission ---------- */
@@ -545,3 +501,8 @@ $("#copyOrder").addEventListener("click", async () => {
 renderList();
 route();
 $("#yr").textContent = new Date().getFullYear();
+
+/* ---------- contact details from data/site.json ---------- */
+$$("[data-site]").forEach(el => { const v = SITE[el.dataset.site]; if (!v) return;
+  if (el.tagName === "A") el.href = el.dataset.site === "email" ? `mailto:${v}` : el.dataset.site === "phone" ? `tel:${v.replace(/\s/g, "")}` : v;
+  el.textContent = el.dataset.site === "website" ? v.replace(/^https?:\/\//, "") + " ↗" : v; });

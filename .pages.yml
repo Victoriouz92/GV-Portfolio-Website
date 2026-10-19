@@ -1,0 +1,86 @@
+# Admin panel for the artist (Pages CMS — https://app.pagescms.org).
+# Edits are saved straight into this repository, and the site updates by itself.
+media:
+  input: assets/uploads
+  output: assets/uploads
+  categories: [image]
+  rename: safe
+content:
+  - name: works
+    label: Творби
+    description: Картини и пана. Подредбата на сайта е по размер, от най-голямата към най-малката.
+    type: file
+    path: data/works.json
+    format: json
+    fields:
+      - name: works
+        label: Творби
+        type: object
+        list:
+          collapsible:
+            collapsed: true
+            summary: "{name} · {series}"
+        fields:
+          - name: name
+            label: Име
+            description: Например „Плодородие“. Трябва да е различно от другите.
+            type: string
+            required: true
+          - name: series
+            label: Малък надпис над името
+            description: Например „Дърво на живота“ или „Стъклено пано“.
+            type: string
+          - name: cat
+            label: Категория
+            type: select
+            required: true
+            options:
+              values:
+                - { value: kartina, label: Картина (с рамка) }
+                - { value: pana, label: Пано (без рамка) }
+          - name: price
+            label: Цена в евро
+            description: Оставете празно за „по запитване“. Ако има няколко размера, попълнете ги долу.
+            type: number
+          - name: size
+            label: Размер
+            description: Например „30 × 40 см“.
+            type: string
+          - name: sizes
+            label: Няколко размера (по избор)
+            description: Само ако творбата се предлага в различни размери с различни цени.
+            type: object
+            list: true
+            fields:
+              - { name: size, label: Размер, type: string, required: true }
+              - { name: price, label: Цена в евро, type: number, required: true }
+          - name: frame
+            label: Рамка / окачване
+            type: string
+          - name: text
+            label: Описание
+            type: text
+          - name: image
+            label: Снимка
+            description: За нови творби. Старите вече имат обработени снимки — оставете празно.
+            type: image
+          - name: sold
+            label: Продадена
+            type: boolean
+          - name: id
+            label: Код на снимките (не се променя)
+            description: Латиница, без интервали. За нова творба напишете кратък код, например „pana-zayche“.
+            type: string
+            required: true
+  - name: site
+    label: Контакти
+    type: file
+    path: data/site.json
+    format: json
+    fields:
+      - { name: gallery, label: Галерия, type: string }
+      - { name: address, label: Адрес, type: string }
+      - { name: phone, label: Телефон, type: string }
+      - { name: email, label: Имейл (тук идват и запитванията от сайта), type: string }
+      - { name: hours, label: Работно време, type: string }
+      - { name: website, label: Сайт на галерията, type: string }
