@@ -287,6 +287,10 @@ body.locked{overflow:hidden}
 .wp-info{display:grid;gap:22px;align-content:start;padding-top:8px}
 .wp-info .eyebrow{color:var(--terracotta)}
 .p-price{font-size:2.2rem;color:var(--umber)}
+.perks{list-style:none;padding:0;margin:0 0 26px;display:grid;gap:8px;font-size:.92rem;color:var(--bark)}
+.perks:empty{display:none}
+.perks li{display:flex;gap:12px;align-items:baseline}
+.perks li::before{content:"";flex:0 0 7px;height:7px;border-radius:50%;background:var(--terracotta);transform:translateY(-1px)}
 .p-text{color:var(--bark)}
 .wp-actions{display:flex;flex-wrap:wrap;gap:30px;align-items:center}
 .related{margin-top:clamp(100px,12vw,160px)}
