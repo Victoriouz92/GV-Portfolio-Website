@@ -442,3 +442,37 @@ textarea{resize:vertical}
 @keyframes halo{from{filter:drop-shadow(0 0 6px rgba(242,160,70,.4)) drop-shadow(0 0 18px rgba(226,116,40,.22))}
   to{filter:drop-shadow(0 0 14px rgba(255,190,90,.75)) drop-shadow(0 0 40px rgba(226,116,40,.45))}}
 @media (prefers-reduced-motion:reduce){.h1-sm i.glow{animation:none;background-position:50% 0}}
+
+/* enquiry form: consent, spam trap, thank-you */
+.hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+.consent{display:flex;gap:12px;align-items:flex-start;font-size:.8rem;line-height:1.5;color:var(--bark);margin:6px 0 18px;cursor:pointer}
+.consent input{margin-top:3px;accent-color:var(--terracotta);flex:0 0 auto}
+.consent a{color:var(--umber)}
+.order-done{padding:28px 0;outline:none}
+.order-done .mark{font-family:var(--title);font-size:2rem;margin:0 0 8px;color:var(--terracotta)}
+/* quick contact: Viber and call */
+.quick{position:fixed;right:calc(18px + env(safe-area-inset-right,0px));bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:30;display:flex;flex-direction:column;gap:10px}
+.quick[hidden]{display:none}
+.quick a{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;color:#fff;box-shadow:0 10px 24px -8px rgba(51,36,27,.55);transition:transform .3s var(--ease)}
+.quick a:hover{transform:translateY(-3px)}
+.quick svg{width:24px;height:24px}
+.q-viber{background:#7360f2}
+.q-call{background:var(--terracotta)}
+body.locked .quick{display:none}
+@media (min-width:861px){.q-call{display:none!important}}
+.foot-bot .legal{display:flex;gap:18px;flex-wrap:wrap}
+.foot-bot .legal a{color:inherit}
+/* legal pages */
+.legal-doc{max-width:760px;margin:0 auto;padding:clamp(40px,7vw,90px) var(--gutter) 80px;font-size:1rem;line-height:1.75}
+.legal-doc h1{font:400 clamp(2rem,4.6vw,3.2rem)/1.1 var(--title);margin:12px 0 36px}
+.legal-doc h2{font:400 1.45rem/1.3 var(--title);margin:44px 0 12px}
+.legal-doc h3{font:italic 500 1.35rem var(--voice);margin:30px 0 10px}
+.legal-doc ol,.legal-doc ul{padding-left:1.3em}
+.legal-doc li{margin:6px 0}
+.legal-doc a{color:var(--terracotta)}
+.legal-form{border:1px solid var(--line);padding:22px 26px;background:var(--mat)}
+.legal-form p{margin:6px 0}
+.legal-back{margin-top:60px}
+.todo{background:#f6dfa6;padding:0 4px}
+.legal-page .bar{position:static}
+@media (max-width:600px){.quick a{width:46px;height:46px}.quick svg{width:21px;height:21px}}

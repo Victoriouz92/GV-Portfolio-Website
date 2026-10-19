@@ -2,6 +2,7 @@
 <html lang="bg">
 <head>
 <meta charset="utf-8">
+<base href="/">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Лъки Михайлова — картини и пана от стъкло | Дърво на живота</title>
 <meta name="description" content="Авторски картини и пана от цветно стъкло на Лъки Михайлова — Дървета на живота, сватбени дървета по поръчка и подаръци. Галерия Artgifts, ул. „Гурко“ 10, София.">
@@ -10,7 +11,7 @@
 <meta name="author" content="Лъки Михайлова">
 <meta name="theme-color" content="#e7dcd7">
 <meta name="referrer" content="strict-origin-when-cross-origin">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self'; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self' mailto:; upgrade-insecure-requests">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://formsubmit.co; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self' mailto:; upgrade-insecure-requests">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta property="og:type" content="website">
@@ -37,7 +38,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prata&family=Cormorant+Garamond:ital,wght@1,400;1,500&family=Jost:wght@300;400;500&display=swap&subset=cyrillic" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=4">
+<link rel="stylesheet" href="styles.css?v=5">
 </head>
 <body>
 <noscript><p style="padding:24px;text-align:center">Лъки Михайлова — картини и пана от цветно стъкло. За да разгледате колекцията, включете JavaScript. Галерия Artgifts, ул. „Гурко“ 10, София · +359 899 160 166 · artgifts.bg@gmail.com</p></noscript>
@@ -228,7 +229,7 @@
     <nav><a href="#kolekcia">Колекция</a><a href="#poruchka">По поръчка</a><a href="#avtor">Авторът</a><a href="#kontakti">Контакти</a></nav>
   </div>
   <p class="giant" aria-hidden="true">Лъки Михайлова</p>
-  <div class="foot-bot"><span>Магия от стъкло · София</span><span>© <span id="yr"></span></span></div>
+  <div class="foot-bot"><span>Магия от стъкло · София</span><span class="legal"><a href="usloviya.html">Общи условия и връщане</a><a href="poveritelnost.html">Поверителност</a></span><span>© <span id="yr"></span></span></div>
 </footer>
 
 <aside class="drawer" id="drawer" hidden aria-labelledby="dTitle">
@@ -249,6 +250,8 @@
       <label class="field">Име<input name="name" id="oName" autocomplete="name"></label>
       <label class="field">Телефон<input name="phone" id="oPhone" type="tel" autocomplete="tel"></label>
       <label class="field">Имейл<input name="email" id="oEmail" type="email" autocomplete="email"></label>
+      <input class="hp" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <label class="consent"><input type="checkbox" name="consent" required><span>Съгласен/на съм данните ми да бъдат използвани само за отговор на запитването, според <a href="poveritelnost.html" target="_blank" rel="noopener">Политиката за поверителност</a>.</span></label>
       <button type="submit" class="btn">Изпрати запитване</button>
       <p class="fine" id="orderNote" role="status">Не плащате сега. Ще се свържем с вас за наличност, плащане и доставка.</p>
       <div class="order-out" id="orderOut" hidden>
@@ -257,9 +260,18 @@
         <button type="button" class="link" id="copyOrder">Копирай текста</button>
       </div>
     </form>
+    <div class="order-done" id="orderDone" tabindex="-1" hidden>
+      <p class="mark">Благодарим!</p>
+      <p>Запитването е изпратено. Ще се свържем с вас до един работен ден за наличност, плащане и доставка.</p>
+    </div>
   </div>
 </aside>
 
-<script src="boot.js?v=4" defer></script>
+<div class="quick" id="quick" hidden>
+  <a class="q-viber" id="qViber" href="#" aria-label="Пишете ни във Viber"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11.4 2C6.8 2.1 3.2 3.9 3.2 10.3c0 2.6.7 4.6 2.1 5.9v3.6c0 .5.6.8 1 .4l2.4-2.3c1 .2 2 .3 3 .3 6.6 0 8.6-3.8 8.6-8.1C20.3 4.5 17.1 1.9 11.4 2Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M9.2 7.2c.3-.3.8-.3 1 .1l.7 1.2c.2.4.1.8-.2 1l-.4.3c.3 1 1.1 1.9 2.1 2.3l.3-.4c.3-.3.7-.4 1-.2l1.2.7c.4.2.4.7.1 1-.6.7-1.4 1-2.3.7-2-.7-3.6-2.3-4.3-4.3-.3-.9 0-1.8.8-2.4Z" fill="currentColor"/></svg></a>
+  <a class="q-call" id="qCall" href="#" aria-label="Обадете се"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 3.5 8.8 3c.5-.1 1 .2 1.2.7l1 2.6c.2.4 0 .9-.3 1.2L9.3 8.7a11 11 0 0 0 6 6l1.2-1.4c.3-.3.8-.5 1.2-.3l2.6 1c.5.2.8.7.7 1.2l-.5 2.2c-.1.5-.6.9-1.1.9C10.2 18.3 5.7 13.8 5.7 4.6c0-.5.4-1 .9-1.1Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></a>
+</div>
+
+<script src="boot.js?v=5" defer></script>
 </body>
 </html>

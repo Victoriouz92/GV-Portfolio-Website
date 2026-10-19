@@ -1,10 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
-  <url>
-    <loc>https://luckyglass.eu/</loc>
-    <lastmod>2026-10-19</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
-    <image:image><image:loc>https://luckyglass.eu/assets/img/collection.jpg</image:loc></image:image>
-  </url>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://luckyglass.eu/</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://luckyglass.eu/tvorba/plodorodie/</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://luckyglass.eu/tvorba/kartina-yabalka/</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://luckyglass.eu/tvorba/kartina-yabalka-2/</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://luckyglass.eu/tvorba/kartina-prestizh/</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://luckyglass.eu/tvorba/kartina-blagodat/</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://luckyglass.eu/tvorba/kartina-prolet/</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://luckyglass.eu/tvorba/kartina-proletno-darvo/</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://luckyglass.eu/tvorba/kartina-proletno-darvo-2/</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://luckyglass.eu/tvorba/kartina-semeino/</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://luckyglass.eu/tvorba/kartina-barok/</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://luckyglass.eu/tvorba/kartina-byalo/</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://luckyglass.eu/tvorba/kartina-cheresha/</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://luckyglass.eu/tvorba/kartina-razvitie/</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://luckyglass.eu/tvorba/kartina-zlatno-lyato/</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://luckyglass.eu/tvorba/pana-buhal/</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://luckyglass.eu/tvorba/pana-taralezh/</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://luckyglass.eu/tvorba/pana-taralezh-2/</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://luckyglass.eu/tvorba/pana-taralezh-3/</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://luckyglass.eu/tvorba/pana-angel/</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://luckyglass.eu/tvorba/pana-angel-2/</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://luckyglass.eu/tvorba/pana-cherno-kote/</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://luckyglass.eu/tvorba/pana-yabalka/</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://luckyglass.eu/tvorba/pana-yabalka-2/</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://luckyglass.eu/tvorba/pana-sharena-maca/</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://luckyglass.eu/tvorba/pana-sartse/</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://luckyglass.eu/tvorba/pana-mazhko-sartse/</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://luckyglass.eu/tvorba/pana-urozhay/</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://luckyglass.eu/tvorba/pana-rache/</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://luckyglass.eu/usloviya.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://luckyglass.eu/poveritelnost.html</loc><lastmod>2026-10-19</lastmod></url>
 </urlset>

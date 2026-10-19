@@ -55,16 +55,19 @@ const hung = w => !w.image || w.cat === "kartina"; // works are cut from the pho
 const wallSrc = (id, cat, sm) => `${P}${id}-wall${sm ? "-sm" : ""}.webp?v=3`; // WebP keeps the transparency around the panels' wire
 const imgSrc = (w, sm) => w.image ? esc(String(w.image).replace(/^\//, "")) : wallSrc(w.id, w.cat, sm);
 const fullName = w => `${w.series} „${w.name}“`;
+// every work has its own address (/tvorba/<id>/) so search engines and shared links can point at it
+const PATHS = !!document.querySelector("base") && /^https?:$/.test(location.protocol);
+const workHref = id => PATHS ? `tvorba/${id}/` : `#tvorba-${id}`;
 const sizeSelect = (w, cls) => `<label class="${cls}"><span class="vh">Размер</span><select data-sizes="${w.id}">${w.sizes.map((z, k) =>
   `<option value="${k}">${esc(z.size)}</option>`).join("")}</select></label>`;
 const card = w => `
   <article class="work rv${hung(w) ? " hung" : ""}${w.cat === "pana" && !w.image ? " pane" : ""}${w.sold ? " sold" : ""}">
-    <a class="mat glass" href="#tvorba-${w.id}" aria-label="${esc(fullName(w))}">
+    <a class="mat glass" href="${workHref(w.id)}" aria-label="${esc(fullName(w))}">
       <img class="main" src="${imgSrc(w, 1)}" alt="${esc(fullName(w))}" loading="lazy">
     </a>
     <div class="cap">
       <span class="series">${esc(w.series)}</span>
-      <h3><a href="#tvorba-${w.id}">${esc(w.name)}</a></h3>
+      <h3><a href="${workHref(w.id)}">${esc(w.name)}</a></h3>
       ${hasSizes(w) ? sizeSelect(w, "size-pick") : `<span class="size">${esc(w.size || "размер при запитване")}</span>`}
       <span class="price" data-price="${w.id}">${w.sold ? "Продадена" : priceLabel(w)}</span>
     </div>
@@ -200,13 +203,15 @@ $$("[data-goto]").forEach(a => a.addEventListener("click", () => {
 const SECTIONS = ["kolekcia", "avtor", "kontakti", "svatba"];
 let curView = null;
 function route() {
-  const h = location.hash.slice(1) || "kolekcia";
+  const pm = location.pathname.match(/\/tvorba\/([\w-]+)\/?$/);
+  const h = pm ? `tvorba-${pm[1]}` : location.hash.slice(1) || "kolekcia";
   let view = "nachalo", section = null;
   if (h.startsWith("tvorba-")) view = renderWork(h.slice(7)) ? "tvorba" : "nachalo";
   else if (h === "poruchka") view = "poruchka";
   else section = SECTIONS.includes(h) ? h : "kolekcia";
   const navKey = view === "tvorba" ? "kolekcia" : view === "poruchka" ? "poruchka" : section;
   $$("[data-nav]").forEach(a => a.dataset.nav === navKey ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current"));
+  const canon = $('link[rel="canonical"]'); if (canon) canon.href = "https://luckyglass.eu/" + (view === "tvorba" ? `tvorba/${cur.id}/` : "");
   document.title = view === "tvorba" ? `${fullName(cur)} — Лъки Михайлова` : view === "poruchka" ? "По поръчка — Лъки Михайлова" : "Лъки Михайлова — Магия от стъкло";
   $("#mnav").hidden = true; $("#menuBtn").setAttribute("aria-expanded", "false");
   const go = () => {
@@ -223,6 +228,15 @@ function route() {
   } else go();
 }
 addEventListener("hashchange", route);
+addEventListener("popstate", route);
+// inside the site, moving between /tvorba/<id>/ and the sections happens without reloading the page
+document.addEventListener("click", e => {
+  if (!PATHS || e.defaultPrevented || e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+  const a = e.target.closest("a[href]"); if (!a || a.target) return;
+  const href = a.getAttribute("href");
+  if (href.startsWith("tvorba/")) { e.preventDefault(); history.pushState(null, "", "/" + href); route(); }
+  else if (href.startsWith("#") && location.pathname !== "/") { e.preventDefault(); history.pushState(null, "", "/" + href); route(); }
+});
 $("#menuBtn").addEventListener("click", () => {
   const open = $("#mnav").hidden;
   $("#mnav").hidden = !open; $("#menuBtn").setAttribute("aria-expanded", open);
@@ -451,7 +465,7 @@ const intro = $("#intro");
   $$(".intro-name .w").forEach(w => { w.setAttribute("aria-hidden", "true");
     w.innerHTML = [...w.textContent].map(c => `<span class="ch" style="--i:${ci++}">${c}</span>`).join(""); });
   let seen = false; try { seen = sessionStorage.getItem("entered") === "1"; } catch {}
-  const deep = location.hash && location.hash !== "#kolekcia";
+  const deep = (location.hash && location.hash !== "#kolekcia") || /\/tvorba\//.test(location.pathname);
   if (seen || deep) { intro.hidden = true; return; }
   document.body.classList.add("locked"); requestAnimationFrame(() => intro.classList.add("play"));
   const ready = document.fonts && document.fonts.load ? Promise.race([document.fonts.load('100px "Prata"', "Лъки"), new Promise(r => setTimeout(r, 1800))]) : Promise.resolve();
@@ -473,7 +487,7 @@ function renderList() {
   const known = cart.filter(c => c.price != null), sum = known.reduce((s, c) => s + c.price, 0);
   $("#cartTotal").textContent = known.length ? money(sum) + (known.length < cart.length ? " + запитване" : "") : "по запитване";
 }
-function addToList(item) { cart.push(item); store.set("cart2", cart); renderList(); openDrawer(); }
+function addToList(item) { cart.push(item); store.set("cart2", cart); $("#orderDone").hidden = true; renderList(); openDrawer(); }
 $("#cartList").addEventListener("click", e => {
   const b = e.target.closest("[data-rm]"); if (!b) return;
   cart.splice(+b.dataset.rm, 1); store.set("cart2", cart); renderList();
@@ -483,16 +497,30 @@ function closeDrawer() { drawer.hidden = true; document.body.style.overflow = ""
 $("#cartBtn").addEventListener("click", openDrawer);
 $$("[data-close-drawer]").forEach(b => b.addEventListener("click", closeDrawer));
 addEventListener("keydown", e => { if (e.key === "Escape" && !drawer.hidden) closeDrawer(); });
-$("#orderForm").addEventListener("submit", e => {
+$("#orderForm").addEventListener("submit", async e => {
   e.preventDefault();
-  const d = Object.fromEntries(new FormData(e.target)), note = $("#orderNote");
+  const f = e.target, d = Object.fromEntries(new FormData(f)), note = $("#orderNote"), btn = f.querySelector("button[type=submit]");
   if (!d.name.trim() || !d.phone.trim()) { note.textContent = "Моля, въведете име и телефон."; return; }
-  const body = ["Запитване от сайта", "",
-    ...cart.map((c, i) => `${i + 1}. ${c.name} — ${c.detail} — ${c.price != null ? money(c.price) : "цена по запитване"}`),
-    "", `Получаване: ${d.delivery}`, `Име: ${d.name}`, `Телефон: ${d.phone}`, ...(d.email ? [`Имейл: ${d.email}`] : [])].join("\n");
-  $("#orderText").value = body; $("#orderMail").textContent = ORDER_EMAIL; $("#orderOut").hidden = false;
-  note.textContent = "Отваряме имейл с готовото запитване.";
-  location.href = `mailto:${ORDER_EMAIL}?subject=${encodeURIComponent("Запитване от сайта")}&body=${encodeURIComponent(body)}`;
+  if (!f.consent.checked) { note.textContent = "Моля, потвърдете, че сте съгласни с обработката на данните."; return; }
+  if (d._honey) return;                                  // filled only by spam bots
+  const lines = cart.map((c, i) => `${i + 1}. ${c.name} — ${c.detail} — ${c.price != null ? money(c.price) : "цена по запитване"}`);
+  const body = ["Запитване от сайта", "", ...lines, "", `Получаване: ${d.delivery}`, `Име: ${d.name}`, `Телефон: ${d.phone}`, ...(d.email ? [`Имейл: ${d.email}`] : [])].join("\n");
+  btn.disabled = true; note.textContent = "Изпращаме…";
+  try {
+    const res = await fetch(SITE.formEndpoint || `https://formsubmit.co/ajax/${ORDER_EMAIL}`, {
+      method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" },
+      body: JSON.stringify({ _subject: `Запитване от сайта — ${d.name}`, _template: "table", _captcha: "false",
+        "Име": d.name, "Телефон": d.phone, "Имейл": d.email || "—", "Получаване": d.delivery, "Творби": lines.join("\n") }) });
+    const out = await res.json().catch(() => ({}));
+    if (!res.ok || String(out.success) === "false") throw new Error(out.message || res.status);
+    cart.length = 0; store.set("cart2", cart); renderList();
+    $("#orderDone").hidden = false; $("#orderDone").focus();
+  } catch {
+    // the form service is unreachable: hand the visitor a ready e-mail and the text to copy
+    $("#orderText").value = body; $("#orderMail").textContent = ORDER_EMAIL; $("#orderOut").hidden = false;
+    note.textContent = "Не успяхме да изпратим автоматично. Отваряме имейл с готовото запитване.";
+    location.href = `mailto:${ORDER_EMAIL}?subject=${encodeURIComponent("Запитване от сайта")}&body=${encodeURIComponent(body)}`;
+  } finally { btn.disabled = false; }
 });
 $("#copyOrder").addEventListener("click", async () => {
   try { await navigator.clipboard.writeText($("#orderText").value); $("#copyOrder").textContent = "Копирано"; }
@@ -512,7 +540,7 @@ $$("[data-site]").forEach(el => { const v = SITE[el.dataset.site]; if (!v) retur
   const base = "https://luckyglass.eu/";
   const items = WORKS.map((w, i) => {
     const price = hasSizes(w) ? w.sizes.map(z => z.price) : hasPrice(w.price) ? [w.price] : [];
-    const p = { "@type": "Product", name: fullName(w), description: w.text || CAT_NOTE[w.cat], url: `${base}#tvorba-${w.id}`,
+    const p = { "@type": "Product", name: fullName(w), description: w.text || CAT_NOTE[w.cat], url: `${base}tvorba/${w.id}/`,
       image: base + (w.image ? String(w.image).replace(/^\//, "") : `assets/products/${w.id}-wall.webp`),
       brand: { "@type": "Brand", name: "Лъки Михайлова" }, material: "стъкло", category: w.cat === "pana" ? "Стъклено пано" : "Картина от стъкло" };
     if (price.length) p.offers = { "@type": price.length > 1 ? "AggregateOffer" : "Offer", priceCurrency: "EUR",
@@ -523,4 +551,12 @@ $$("[data-site]").forEach(el => { const v = SITE[el.dataset.site]; if (!v) retur
   const s = document.createElement("script"); s.type = "application/ld+json";
   s.textContent = JSON.stringify({ "@context": "https://schema.org", "@type": "ItemList", name: "Колекция", itemListElement: items });
   document.head.appendChild(s);
+})();
+
+/* ---------- quick contact: Viber and a call, always at hand ---------- */
+(() => {
+  const phone = (SITE.viber || SITE.phone || "").replace(/[^\d+]/g, ""); if (!phone) return;
+  $("#qViber").href = `viber://chat?number=${encodeURIComponent(phone)}`;
+  $("#qCall").href = `tel:${phone}`;
+  $("#quick").hidden = false;
 })();

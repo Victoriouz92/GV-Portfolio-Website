@@ -81,6 +81,7 @@ content:
       - { name: gallery, label: Галерия, type: string }
       - { name: address, label: Адрес, type: string }
       - { name: phone, label: Телефон, type: string }
+      - { name: viber, label: Viber (номер), type: string }
       - { name: email, label: Имейл (тук идват и запитванията от сайта), type: string }
       - { name: hours, label: Работно време, type: string }
       - { name: website, label: Сайт на галерията, type: string }
