@@ -209,11 +209,21 @@ body.locked{overflow:hidden}
 .work.pane .mat img.main,.wp-main.pane img{box-shadow:none;filter:var(--hang-f)}
 .work.pane:hover .mat img.main,.work.pane:focus-visible .mat img.main{box-shadow:none;filter:drop-shadow(0 4px 4px rgba(40,24,14,.14)) drop-shadow(0 30px 34px rgba(40,24,14,.24))}
 .wp-main.hung img{position:absolute;inset:0;margin:auto;width:auto;height:auto;max-width:100%;max-height:100%;box-shadow:var(--hang)}
-.work .cap{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 16px;padding-top:20px}
-.lot{grid-column:1/-1;font-size:.64rem;letter-spacing:.22em;text-transform:uppercase;color:var(--terracotta);margin-bottom:6px}
-.work h3{grid-column:1/-1}
-.work .size{font-size:.82rem;color:var(--bark)}
-.work .price{font-size:.9rem;white-space:nowrap}
+/* caption: centred, series above the title, size, then a clear price */
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.work .cap{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;padding-top:24px}
+.work .series{font-size:.64rem;letter-spacing:.24em;text-transform:uppercase;color:var(--terracotta)}
+.work h3{font:400 clamp(1.25rem,1.7vw,1.6rem)/1.2 var(--title);margin:2px 0 4px}
+.work h3 a{color:inherit;text-decoration:none}
+.work h3 a:hover{color:var(--terracotta)}
+.work .size{font-size:.84rem;color:var(--bark)}
+.work .price{font:400 clamp(1.5rem,2vw,1.85rem)/1 var(--title);color:var(--umber);margin-top:6px;letter-spacing:.01em;white-space:nowrap}
+.size-pick{position:relative;display:inline-flex}
+.size-pick select{appearance:none;-webkit-appearance:none;font:inherit;font-size:.84rem;color:var(--umber);cursor:pointer;
+  background:transparent;border:1px solid var(--line);border-radius:999px;padding:7px 34px 7px 16px;transition:border-color .3s}
+.size-pick select:hover,.size-pick select:focus-visible{border-color:var(--umber);outline:none}
+.size-pick::after{content:"";position:absolute;right:15px;top:50%;width:6px;height:6px;border:solid var(--bark);border-width:0 1.2px 1.2px 0;transform:translateY(-70%) rotate(45deg);pointer-events:none}
+.size-pick.big select{font-size:.95rem;padding:11px 42px 11px 20px}
 
 .curated{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:clamp(24px,3vw,48px);margin-top:clamp(40px,5vw,64px);align-items:start}
 .curated .work:nth-child(1){grid-column:1/7}
@@ -276,7 +286,7 @@ body.locked{overflow:hidden}
 .wp-hint{margin-top:10px}
 .wp-info{display:grid;gap:22px;align-content:start;padding-top:8px}
 .wp-info .eyebrow{color:var(--terracotta)}
-.p-price{font-size:1.6rem;color:var(--umber)}
+.p-price{font-size:2.2rem;color:var(--umber)}
 .p-text{color:var(--bark)}
 .wp-actions{display:flex;flex-wrap:wrap;gap:30px;align-items:center}
 .related{margin-top:clamp(100px,12vw,160px)}
@@ -374,8 +384,8 @@ textarea{resize:vertical}
 }
 @media (max-width:540px){
   .grid,.curated{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:40px 14px}
-  .work h3{font-size:1rem}
-  .work .cap{grid-template-columns:minmax(0,1fr)}
+  .work h3{font-size:1.15rem}
+  .work .price{font-size:1.35rem}
   .tabs{gap:18px}
   .meanings{grid-template-columns:1fr}
   .announce{font-size:.58rem;letter-spacing:.12em}

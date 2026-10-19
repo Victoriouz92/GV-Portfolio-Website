@@ -3,44 +3,56 @@ const ORDER_EMAIL = "info@artgifts.bg";
 
 /* Photos live in assets/products/: <id>.jpg (on the wall), <id>-close.jpg (detail),
    and <id>-2.jpg … for variants, each with a -sm.jpg copy for the grid. */
+const TREE = "Дърво на живота", PANE = "Стъклено пано";
+const YAB_SIZES = [["Малко", "14 × 16 см", 28], ["Средно", "18 × 22 см", 38], ["Голямо", "26 × 36 см", 89], ["Най-голямо", "30 × 40 см", 98]];
+// every piece is its own listing; "series" is the small line above the title
 const WORKS = [
-  { id: "plodorodie", cat: "kartina", name: "Дърво на плодородието", size: "30 × 40 см", price: 80, frame: "дървена, 3 см, по избор",
-    text: "Семейно дърво на живота. Изработено върху стъкло със специални професионални бои и цветни стъкла. Двойно темперирано в пещ за стъкло." },
   // ---- PICTURES (framed) ----
-  { id: "kartina-yabalka", cat: "kartina", name: "Дърво на живота — Ябълка", photos: 2, frame: "дървена, платина",
-    sizes: [["Малко", "14 × 16 см", 28], ["Средно", "18 × 22 см", 38], ["Голямо", "26 × 36 см", 89], ["Най-голямо", "30 × 40 см", 98]] },
-  { id: "kartina-prestizh", cat: "kartina", name: "Дърво на живота — Престиж", price: 68, frame: "масивна ретро рамка",
+  { id: "plodorodie", cat: "kartina", series: TREE, name: "Плодородие", size: "30 × 40 см", price: 80, frame: "дървена, 3 см, по избор",
+    text: "Семейно дърво на живота. Изработено върху стъкло със специални професионални бои и цветни стъкла. Двойно темперирано в пещ за стъкло." },
+  { id: "kartina-yabalka", cat: "kartina", series: TREE, name: "Ябълка", frame: "дървена, платина", sizes: YAB_SIZES },
+  { id: "kartina-yabalka-2", cat: "kartina", series: TREE, name: "Ябълкова градина", frame: "дървена, платина", sizes: YAB_SIZES },
+  { id: "kartina-prestizh", cat: "kartina", series: TREE, name: "Престиж", price: 68, frame: "масивна ретро рамка",
     text: "Дърво с широки клони и дебел ствол, стъпило здраво на земята и пуснало дълбоки корени. Усещане за зрялост, сила и непоклатимост." },
-  { id: "kartina-prolet", cat: "kartina", name: "Дърво на живота — Пролет", size: "24 × 36 см", price: 76, frame: "златна, със закопчалка",
-    text: "Носи радост, топлина и много цвят в дома и офиса. Усещане за изисканост, прецизност и блестяща чистота. Предлага се само в този размер." },
-  { id: "kartina-proletno-darvo", cat: "kartina", name: "Пролетно дърво", size: "26 × 36 см", price: 89, photos: 2, frame: "дървена, платина" },
-  { id: "kartina-blagodat", cat: "kartina", name: "Дърво на живота — Благодат", size: "19,5 × 19,5 см с рамката", price: 35,
+  { id: "kartina-blagodat", cat: "kartina", series: TREE, name: "Благодат", size: "19,5 × 19,5 см с рамката", price: 35,
     frame: "дървена, със златен кант", text: "Изработено върху керамична плочка." },
-  { id: "kartina-semeino", cat: "kartina", name: "Семейно дърво" },
-  { id: "kartina-barok", cat: "kartina", name: "Дърво на живота — Барок", frame: "барокова" },
-  { id: "kartina-byalo", cat: "kartina", name: "Дърво на живота — Бяло", frame: "бяла" },
-  { id: "kartina-cheresha", cat: "kartina", name: "Дърво на живота — Череша" },
-  { id: "kartina-razvitie", cat: "kartina", name: "Дърво на живота — Развитие" },
-  { id: "kartina-zlatno-lyato", cat: "kartina", name: "Дърво на живота — Златно лято", frame: "златна" },
+  { id: "kartina-prolet", cat: "kartina", series: TREE, name: "Пролет злато", size: "24 × 36 см", price: 76, frame: "златна, със закопчалка",
+    text: "Носи радост, топлина и много цвят в дома и офиса. Усещане за изисканост, прецизност и блестяща чистота. Предлага се само в този размер." },
+  { id: "kartina-proletno-darvo", cat: "kartina", series: TREE, name: "Пролет", size: "26 × 36 см", price: 89, frame: "дървена, платина" },
+  { id: "kartina-proletno-darvo-2", cat: "kartina", series: TREE, name: "Пролетен цвят", size: "26 × 36 см", price: 89, frame: "дървена, платина" },
+  { id: "kartina-semeino", cat: "kartina", series: TREE, name: "Семейно" },
+  { id: "kartina-barok", cat: "kartina", series: TREE, name: "Барок", frame: "барокова" },
+  { id: "kartina-byalo", cat: "kartina", series: TREE, name: "Бяло", frame: "бяла" },
+  { id: "kartina-cheresha", cat: "kartina", series: TREE, name: "Череша" },
+  { id: "kartina-razvitie", cat: "kartina", series: TREE, name: "Развитие" },
+  { id: "kartina-zlatno-lyato", cat: "kartina", series: TREE, name: "Златно лято", frame: "златна" },
 
   // ---- PANELS (no frame) ----
-  { id: "pana-buhal", cat: "pana", name: "Бухал", size: "12 × 12 см", price: 20, text: "Символ на мъдрост и благополучие." },
-  { id: "pana-taralezh", cat: "pana", name: "Таралеж", size: "12 × 12 см", price: 20, photos: 3,
+  { id: "pana-buhal", cat: "pana", series: PANE, name: "Бухал", size: "12 × 12 см", price: 20, text: "Символ на мъдрост и благополучие." },
+  { id: "pana-taralezh", cat: "pana", series: PANE, name: "Таралеж с ябълка", size: "12 × 12 см", price: 20,
     text: "Предвестник на есента. Символизира упорития труд на този, който събира узрели плодове за зимнина. Събира слънчевите лъчи и ги пренася в дома ни." },
-  { id: "pana-angel", cat: "pana", name: "Ангел Хранител", size: "12 × 14 см", price: 24, photos: 2,
+  { id: "pana-taralezh-2", cat: "pana", series: PANE, name: "Таралеж в градината", size: "12 × 12 см", price: 20,
+    text: "Предвестник на есента. Символизира упорития труд на този, който събира узрели плодове за зимнина. Събира слънчевите лъчи и ги пренася в дома ни." },
+  { id: "pana-taralezh-3", cat: "pana", series: PANE, name: "Таралеж и слънце", size: "12 × 12 см", price: 20,
+    text: "Предвестник на есента. Символизира упорития труд на този, който събира узрели плодове за зимнина. Събира слънчевите лъчи и ги пренася в дома ни." },
+  { id: "pana-angel", cat: "pana", series: PANE, name: "Ангел Хранител", size: "12 × 14 см", price: 24,
     text: "Рамката на паното е изрисувана с висококачествени професионални бои за стъкло. Ангелът е от сребърна тел, огънат на ръка. Всеки има свой собствен чар и индивидуалност." },
-  { id: "pana-cherno-kote", cat: "pana", name: "Черно коте за късмет", size: "12 × 12 см", price: 20,
+  { id: "pana-angel-2", cat: "pana", series: PANE, name: "Ангел на светлината", size: "12 × 14 см", price: 24,
+    text: "Рамката на паното е изрисувана с висококачествени професионални бои за стъкло. Ангелът е от сребърна тел, огънат на ръка. Всеки има свой собствен чар и индивидуалност." },
+  { id: "pana-cherno-kote", cat: "pana", series: PANE, name: "Черно коте за късмет", size: "12 × 12 см", price: 20,
     text: "Подарява се за късмет и безстрашие. За да си кажем: „Ще пречупя карък и ще започна без страх отново!“" },
-  { id: "pana-yabalka", cat: "pana", name: "Дърво на живота — Ябълка", size: "12 × 15 см", price: 24, photos: 2,
+  { id: "pana-yabalka", cat: "pana", series: TREE, name: "Ябълково дръвче", size: "12 × 15 см", price: 24,
     text: "Освен нарисуваната символика има и 8 узрели ябълкови плода. Числото 8 е символ на успех и безкрайност." },
-  { id: "pana-sharena-maca", cat: "pana", name: "Шарената маца", size: "12 × 12 см", price: 20,
+  { id: "pana-yabalka-2", cat: "pana", series: TREE, name: "Ябълков цвят", size: "12 × 15 см", price: 24,
+    text: "Освен нарисуваната символика има и 8 узрели ябълкови плода. Числото 8 е символ на успех и безкрайност." },
+  { id: "pana-sharena-maca", cat: "pana", series: PANE, name: "Шарената маца", size: "12 × 12 см", price: 20,
     text: "Подарява се за нежност, вярност, приятелство, игри и усмивки." },
-  { id: "pana-sartse", cat: "pana", name: "Сърце", size: "12 × 12 см", price: 20,
+  { id: "pana-sartse", cat: "pana", series: PANE, name: "Сърце", size: "12 × 12 см", price: 20,
     text: "Подарява се за любов, вярност и надежда. И за да не забравяш себе си и да се обичаш!" },
-  { id: "pana-mazhko-sartse", cat: "pana", name: "Мъжко сърце", size: "12 × 12 см", price: 20,
+  { id: "pana-mazhko-sartse", cat: "pana", series: PANE, name: "Мъжко сърце", size: "12 × 12 см", price: 20,
     text: "Освен червено има и добавен син цвят: връзка с небето и със силния мъжки пол." },
-  { id: "pana-urozhay", cat: "pana", name: "Дърво на живота — Урожай" },
-  { id: "pana-rache", cat: "pana", name: "Раче", size: "12 × 12 см", price: 20,
+  { id: "pana-urozhay", cat: "pana", series: TREE, name: "Урожай" },
+  { id: "pana-rache", cat: "pana", series: PANE, name: "Раче", size: "12 × 12 см", price: 20,
     text: "Усещане за идването на лятото, топлината, морските почивки и плажовете." },
 ];
 const CAT_NOTE = {
@@ -54,9 +66,8 @@ const P = "assets/products/";
 const money = n => `${n} €`;
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const prices = w => w.sizes ? w.sizes.map(s => s[2]) : w.price != null ? [w.price] : [];
-const priceLabel = w => w.sizes ? `от ${money(Math.min(...prices(w)))}` : w.price != null ? money(w.price) : "по запитване";
+const priceLabel = w => w.sizes ? money(w.sizes[0][2]) : w.price != null ? money(w.price) : "по запитване";
 const sizeLabel = w => w.size || (w.sizes ? w.sizes.map(s => s[1].replace(" см", "")).join(" · ") + " см" : "размер при запитване");
-const vid = (w, i) => w.id + (i > 1 ? `-${i}` : "");
 const byId = id => WORKS.find(w => w.id === id);
 const FRAMES = { platinum: "Платина", walnut: "Тъмен орех", black: "Черно и сребро" };
 const store = {
@@ -86,22 +97,30 @@ document.addEventListener("pointermove", e => {
 });
 
 /* ---------- cards ---------- */
-const lot = w => String(WORKS.indexOf(w) + 1).padStart(2, "0");
 const hung = w => w.cat === "kartina" || w.cat === "pana"; // works are cut from the photo and hung on the page wall
 const wallSrc = (id, cat, sm) => `${P}${id}-wall${sm ? "-sm" : ""}` + (cat === "pana" ? ".webp?v=2" : ".jpg?v=2"); // panels keep their wire, so they need transparency
+const fullName = w => `${w.series} „${w.name}“`;
+const sizeSelect = (w, cls) => `<label class="${cls}"><span class="vh">Размер</span><select data-sizes="${w.id}">${w.sizes.map((z, k) =>
+  `<option value="${k}">${z[1]}</option>`).join("")}</select></label>`;
 const card = w => `
-  <a class="work rv${hung(w) ? " hung" : ""}${w.cat === "pana" ? " pane" : ""}" href="#tvorba-${w.id}">
-    <span class="mat glass">
-      <img class="main" src="${hung(w) ? wallSrc(w.id, w.cat, 1) : `${P}${w.id}-sm.jpg`}" alt="${esc(w.name)}" loading="lazy">
-      <img class="alt" src="${P}${w.id}-close-sm.jpg" alt="" loading="lazy" width="720" height="964">
-    </span>
-    <span class="cap">
-      <span class="lot">№ ${lot(w)}${(w.photos || 1) > 1 ? ` · ${w.photos} варианта` : ""}</span>
-      <h3>${esc(w.name)}</h3>
-      <span class="size">${sizeLabel(w)}</span>
-      <span class="price">${priceLabel(w)}</span>
-    </span>
-  </a>`;
+  <article class="work rv${hung(w) ? " hung" : ""}${w.cat === "pana" ? " pane" : ""}">
+    <a class="mat glass" href="#tvorba-${w.id}" aria-label="${esc(fullName(w))}">
+      <img class="main" src="${hung(w) ? wallSrc(w.id, w.cat, 1) : `${P}${w.id}-sm.jpg`}" alt="${esc(fullName(w))}" loading="lazy">
+    </a>
+    <div class="cap">
+      <span class="series">${esc(w.series)}</span>
+      <h3><a href="#tvorba-${w.id}">${esc(w.name)}</a></h3>
+      ${w.sizes ? sizeSelect(w, "size-pick") : `<span class="size">${esc(w.size || "размер при запитване")}</span>`}
+      <span class="price" data-price="${w.id}">${w.sizes ? money(w.sizes[0][2]) : w.price != null ? money(w.price) : "по запитване"}</span>
+    </div>
+  </article>`;
+// a size picked on a card updates its price
+document.addEventListener("change", e => {
+  const sel = e.target.closest("select[data-sizes]"); if (!sel) return;
+  const w = byId(sel.dataset.sizes), z = w.sizes[+sel.value];
+  const scope = sel.closest(".work, .wp-info") || document;
+  const pr = scope.querySelector(`[data-price="${w.id}"]`) || $("#wpPrice"); if (pr) pr.textContent = money(z[2]);
+});
 
 /* ---------- collection ---------- */
 let curCat = "kartina";
@@ -128,7 +147,7 @@ function showShot(i) {
   const s = shots[i];
   const next = new Image(); next.src = s.src;
   next.onload = () => { wpMain.classList.toggle("hung", !!s.hung); wpMain.classList.toggle("pane", !!s.hung && cur.cat === "pana"); wpImg.src = s.src; wpImg.style.opacity = 1; lens.style.backgroundImage = `url("${s.src}")`; };
-  wpImg.alt = cur.name;
+  wpImg.alt = fullName(cur);
   $$("#wpThumbs button").forEach((b, k) => b.setAttribute("aria-pressed", k === i));
 }
 function renderWork(id) {
@@ -137,22 +156,19 @@ function renderWork(id) {
   if (cur.id === "plodorodie") {
     Object.keys(FRAMES).forEach(f => shots.push({ src: `assets/img/framed-${f}-wall.jpg`, th: `assets/img/swatch-${f}.jpg`, v: 1, hung: true, label: `рамка ${FRAMES[f]}` }));
     shots.push({ src: `${P}plodorodie-close.jpg`, th: `${P}plodorodie-close-sm.jpg`, v: 1 });
-  } else for (let i = 1; i <= (cur.photos || 1); i++) {
-    const h = hung(cur);
-    shots.push({ src: h ? wallSrc(vid(cur, i), cur.cat) : `${P}${vid(cur, i)}.jpg`, th: `${P}${vid(cur, i)}-sm.jpg`, v: i, hung: h });
-    shots.push({ src: `${P}${vid(cur, i)}-close.jpg`, th: `${P}${vid(cur, i)}-close-sm.jpg`, v: i });
+  } else {
+    shots.push({ src: wallSrc(cur.id, cur.cat), th: `${P}${cur.id}-sm.jpg`, v: 1, hung: true });
+    shots.push({ src: `${P}${cur.id}-close.jpg`, th: `${P}${cur.id}-close-sm.jpg`, v: 1 });
   }
   $("#wpThumbs").innerHTML = shots.map((s, i) => `<button type="button" data-shot="${i}" aria-label="Снимка ${i + 1}${s.label ? ", " + s.label : ""}"><img src="${s.th}" alt=""></button>`).join("");
-  $("#wpCat").textContent = `№ ${lot(cur)} · ` + (cur.cat === "pana" ? "Стъклено пано · без рамка" : "Стъклена картина · с рамка");
+  $("#wpCat").textContent = cur.series + (cur.cat === "pana" ? " · без рамка" : " · стъклена картина с рамка");
   $("#wpName").textContent = cur.name;
   $("#wpPrice").textContent = priceLabel(cur);
   $("#wpText").textContent = cur.text || (cur.cat === "pana" ? CAT_NOTE.pana : "Дърво на живота, рисувано върху стъкло и сплавено в пещ с цветни стъкълца.");
-  $("#wpSizes").innerHTML = cur.sizes ? `<fieldset><legend>Размер</legend><div class="chips">${cur.sizes.map((s, k) =>
-    `<label><input type="radio" name="psize" value="${k}" ${k ? "" : "checked"}><span>${s[1].replace(" см", "")} · ${money(s[2])}</span></label>`).join("")}</div></fieldset>` : "";
+  $("#wpSizes").innerHTML = cur.sizes ? sizeSelect(cur, "size-pick big") : "";
   const specs = [["Размер", cur.sizes ? "по избор" : sizeLabel(cur)],
     [cur.cat === "pana" ? "Окачване" : "Рамка", cur.cat === "pana" ? "метална закачалка-кобилица" : (cur.frame || "дървена")],
     ["Материал", "стъкло, цветни стъкълца, бои за стъкло"], ["Автор", "Лъки Михайлова"]];
-  if ((cur.photos || 1) > 1) specs.push(["Варианти", `${cur.photos} — вижте снимките`]);
   $("#wpSpecs").innerHTML = specs.map(([a, b]) => `<div><dt>${a}</dt><dd>${esc(b)}</dd></div>`).join("");
   const rel = WORKS.filter(w => w.cat === cur.cat && w.id !== cur.id && w.id !== "plodorodie");
   const start = Math.max(0, rel.findIndex(w => WORKS.indexOf(w) > WORKS.indexOf(cur)));
@@ -162,7 +178,6 @@ function renderWork(id) {
   return true;
 }
 $("#wpThumbs").addEventListener("click", e => { const b = e.target.closest("[data-shot]"); if (b) showShot(+b.dataset.shot); });
-$("#wpSizes").addEventListener("change", () => { $("#wpPrice").textContent = money(cur.sizes[+$("input[name=psize]:checked").value][2]); });
 wpMain.addEventListener("pointermove", e => {
   if (e.pointerType === "touch") return;
   const r = wpMain.getBoundingClientRect(), ir = wpImg.getBoundingClientRect(), Z = 3;
@@ -177,10 +192,9 @@ wpMain.addEventListener("pointerleave", () => wpMain.classList.remove("zooming")
 $("#wpAdd").addEventListener("click", () => {
   const s = shots[shotI];
   let price = cur.price ?? null, detail = sizeLabel(cur);
-  if (cur.sizes) { const z = cur.sizes[+$("input[name=psize]:checked").value]; detail = `${z[0].toLowerCase()}, ${z[1]}`; price = z[2]; }
+  if (cur.sizes) { const z = cur.sizes[+$("#wpSizes select").value]; detail = z[1]; price = z[2]; }
   if (cur.id === "plodorodie") detail += ` · ${s.label || "рамка Платина"}`;
-  if ((cur.photos || 1) > 1) detail += ` · вариант ${s.v}`;
-  addToList({ name: cur.name, detail, price, img: s.th.includes("swatch") ? s.src : `${P}${vid(cur, s.v)}-sm.jpg` });
+  addToList({ name: fullName(cur), detail, price, img: s.th.includes("swatch") ? s.src : `${P}${cur.id}-sm.jpg` });
 });
 
 /* ---------- commission ---------- */
@@ -233,7 +247,7 @@ function route() {
   else section = SECTIONS.includes(h) ? h : "kolekcia";
   const navKey = view === "tvorba" ? "kolekcia" : view === "poruchka" ? "poruchka" : section;
   $$("[data-nav]").forEach(a => a.dataset.nav === navKey ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current"));
-  document.title = view === "tvorba" ? `${cur.name} — Лъки Михайлова` : view === "poruchka" ? "По поръчка — Лъки Михайлова" : "Лъки Михайлова — Магия от стъкло";
+  document.title = view === "tvorba" ? `${fullName(cur)} — Лъки Михайлова` : view === "poruchka" ? "По поръчка — Лъки Михайлова" : "Лъки Михайлова — Магия от стъкло";
   $("#mnav").hidden = true; $("#menuBtn").setAttribute("aria-expanded", "false");
   const go = () => {
     if (section) {
