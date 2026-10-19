@@ -422,6 +422,11 @@ textarea{resize:vertical}
 .stock span{display:inline-flex;align-items:center;gap:8px;color:var(--olive);margin-right:10px}
 .stock span::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--olive)}
 .stock a{color:var(--umber)}
+.ship-info{list-style:none;padding:18px 0 0;margin:0 0 26px;border-top:1px solid var(--line);display:grid;gap:6px;font-size:.84rem;color:var(--bark)}
+.ship-info:empty{display:none}
+.ship-info li{display:flex;gap:10px;align-items:baseline}
+.ship-info li::before{content:"—";color:var(--clay)}
+.trust{opacity:.85}
 .stock-mini{display:block;font-size:.74rem;letter-spacing:.06em;color:var(--olive);margin-top:2px}
 .total{display:flex;justify-content:space-between;align-items:baseline}
 .total span{font-size:.66rem;letter-spacing:.24em;text-transform:uppercase;color:var(--bark)}

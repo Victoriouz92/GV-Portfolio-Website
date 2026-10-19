@@ -133,6 +133,9 @@ function renderWork(id) {
   $("#wpSizes").innerHTML = hasSizes(cur) ? sizeSelect(cur, "size-pick big") : "";
   if (cur.sold) $("#wpPrice").textContent = "Продадена";
   $("#wpAdd").hidden = !stockOf(cur);
+  const cheapest = Math.min(...DELIV.filter(o => o.type !== "pickup" && o.price != null).map(o => o.price));
+  $("#wpShip").innerHTML = stockOf(cur) ? [isFinite(cheapest) ? `Доставка от ${money(cheapest)} · 1–2 работни дни` : "", "Безплатно вземане от галерията в София",
+    "Плащане с карта, наложен платеж или превод", "14 дни за връщане"].filter(Boolean).map(t => `<li>${t}</li>`).join("") : "";
   $("#wpStock").innerHTML = stockOf(cur) ? `<span>${stockLabel(cur)}</span> Търсите повече бройки? <a href="#kontakti">Пишете ни</a>` : "<span>Продадена</span> Може да се изработи подобна — <a href=\"#poruchka\">по поръчка</a>";
   const specs = [["Размер", hasSizes(cur) ? "по избор" : sizeLabel(cur)],
     [cur.cat === "pana" ? "Окачване" : "Рамка", cur.cat === "pana" ? "метална закопчалка-кобилица със спирала" : (cur.frame || "дървена")],
@@ -586,14 +589,14 @@ function renderList() {
   $("#cartBtn").classList.toggle("has", cart.length > 0);
   $("#cartEmpty").hidden = cart.length > 0;
   $("#orderForm").hidden = !cart.length;
-  $("#cartList").innerHTML = cart.map((c, i) => `<li><img src="${c.img}" alt=""><div><b>${esc(c.name)}</b><small>${esc(c.detail)}${c.id ? " · 1 бр." : ""}</small></div>
+  $("#cartList").innerHTML = cart.map((c, i) => `<li><img src="${esc(c.img)}" alt=""><div><b>${esc(c.name)}</b><small>${esc(c.detail)}${c.id ? " · 1 бр." : ""}</small></div>
     <div class="pr"><span>${c.price != null ? money(c.price) : "по запитване"}</span><button type="button" class="rm" data-rm="${i}">Премахни</button></div></li>`).join("");
   const t = totals(), ask = cart.some(c => c.price == null);
   $("#sumItems").textContent = t.any ? money(t.items) + (ask ? " + по запитване" : "") : "по запитване";
   $("#sumShip").textContent = shipLabel(t.ship);
   $("#cartTotal").textContent = t.any ? money(t.sum) + (t.exact ? "" : " + …") : "по запитване";
   const m = payM().id;
-  $("#payBtn").textContent = m === "card" ? `Плати ${t.exact ? money(t.sum) : ""}`.trim() : `Поръчай${t.exact ? " · " + money(t.sum) : ""}`;
+  $("#payBtn").textContent = m === "card" ? `Плати ${t.exact ? money(t.sum) : ""}`.trim() : `Поръчай и плати${t.exact ? " · " + money(t.sum) : ""}`;
   if (elements && t.exact) elements.update({ amount: Math.max(50, cents(t.sum)) });
 }
 function addToList(item) { cart.push(item); store.set("cart2", cart); $("#orderDone").hidden = true; $("#cartNote").textContent = ""; renderList(); openDrawer(); }
@@ -601,8 +604,9 @@ $("#cartList").addEventListener("click", e => {
   const b = e.target.closest("[data-rm]"); if (!b) return;
   cart.splice(+b.dataset.rm, 1); store.set("cart2", cart); $("#cartNote").textContent = ""; renderList();
 });
-function openDrawer() { drawer.hidden = false; document.body.style.overflow = "hidden"; }
-function closeDrawer() { drawer.hidden = true; document.body.style.overflow = ""; }
+let lastFocus = null;
+function openDrawer() { if (drawer.hidden) lastFocus = document.activeElement; drawer.hidden = false; document.body.style.overflow = "hidden"; $("#drawer .x").focus({ preventScroll: true }); }
+function closeDrawer() { drawer.hidden = true; document.body.style.overflow = ""; if (lastFocus && lastFocus.focus) lastFocus.focus({ preventScroll: true }); }
 $("#cartBtn").addEventListener("click", openDrawer);
 $$("[data-close-drawer]").forEach(b => b.addEventListener("click", closeDrawer));
 $("#drawer").addEventListener("click", e => { if (e.target.closest(".panel a[href^='#']")) closeDrawer(); });
@@ -638,7 +642,9 @@ $("#orderForm").addEventListener("submit", async e => {
     "Фактура": d.invoice ? "да" : "не", "Творби": lines.join("\n"), "Общо": $("#cartTotal").textContent };
   const send = extra => fetch(SITE.formEndpoint || `https://formsubmit.co/ajax/${ORDER_EMAIL}`, {
     method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" },
-    body: JSON.stringify({ _subject: `Поръчка ${no} от сайта — ${d.name}`, _template: "table", _captcha: "false", ...fields, ...extra }) })
+    body: JSON.stringify({ _subject: `Поръчка ${no} от сайта — ${d.name}`, _template: "table", _captcha: "false", email: d.email,
+      _autoresponse: `Благодарим за поръчката! Номерът ѝ е ${no}. Ще се свържем с вас до един работен ден, за да я потвърдим. Лъки Михайлова · luckyglass.eu · ${SITE.phone || ""}`,
+      ...fields, ...extra }) })
     .then(async r => { const o = await r.json().catch(() => ({})); if (!r.ok || String(o.success) === "false") throw new Error(o.message || r.status); });
   btn.disabled = true;
   try {
@@ -702,7 +708,7 @@ $$("[data-site]").forEach(el => { const v = SITE[el.dataset.site]; if (!v) retur
       brand: { "@type": "Brand", name: "Лъки Михайлова" }, material: "стъкло", category: w.cat === "pana" ? "Стъклено пано" : "Картина от стъкло" };
     if (price.length) p.offers = { "@type": price.length > 1 ? "AggregateOffer" : "Offer", priceCurrency: "EUR",
       ...(price.length > 1 ? { lowPrice: Math.min(...price), highPrice: Math.max(...price) } : { price: price[0] }),
-      availability: w.sold ? "https://schema.org/SoldOut" : "https://schema.org/InStock", seller: { "@id": `${base}#gallery` } };
+      availability: stockOf(w) ? "https://schema.org/InStock" : "https://schema.org/SoldOut", seller: { "@id": `${base}#gallery` } };
     return { "@type": "ListItem", position: i + 1, item: p };
   });
   const s = document.createElement("script"); s.type = "application/ld+json";

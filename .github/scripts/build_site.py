@@ -27,6 +27,15 @@ def main():
     copy_tree()
     index = open("index.html", encoding="utf-8").read()
     works = json.load(open("data/works.json", encoding="utf-8"))["works"]
+    site = json.load(open("data/site.json", encoding="utf-8"))
+    rates = [d["price"] for d in site.get("delivery", []) if d.get("type") != "pickup" and d.get("price") not in (None, "")]
+    shipping = {"@type": "OfferShippingDetails", "shippingDestination": {"@type": "DefinedRegion", "addressCountry": "BG"},
+                "shippingRate": {"@type": "MonetaryAmount", "value": min(rates), "currency": "EUR"},
+                "deliveryTime": {"@type": "ShippingDeliveryTime",
+                                 "handlingTime": {"@type": "QuantitativeValue", "minValue": 0, "maxValue": 1, "unitCode": "DAY"},
+                                 "transitTime": {"@type": "QuantitativeValue", "minValue": 1, "maxValue": 2, "unitCode": "DAY"}}} if rates else None
+    returns = {"@type": "MerchantReturnPolicy", "applicableCountry": "BG", "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+               "merchantReturnDays": 14, "returnMethod": "https://schema.org/ReturnByMail", "returnFees": "https://schema.org/ReturnShippingFees"}
     notes = {"kartina": "Дърво на живота, рисувано върху стъкло и сплавено с цветни стъкълца, в дървена рамка.",
              "pana": "Стъклено пано без рамка, на метална закопчалка-кобилица."}
     urls = [SITE]
@@ -49,7 +58,9 @@ def main():
             product["offers"] = ({"@type": "AggregateOffer", "lowPrice": min(prices), "highPrice": max(prices)} if len(prices) > 1
                                  else {"@type": "Offer", "price": prices[0]}) | {
                 "priceCurrency": "EUR", "url": url,
-                "availability": "https://schema.org/SoldOut" if w.get("sold") else "https://schema.org/InStock"}
+                "availability": "https://schema.org/SoldOut" if w.get("sold") or w.get("stock") == 0 else "https://schema.org/InStock",
+                "itemCondition": "https://schema.org/NewCondition", "hasMerchantReturnPolicy": returns,
+                "seller": {"@type": "Organization", "name": "АРТГИФТС БГ ЕООД"}} | ({"shippingDetails": shipping} if shipping else {})
         page = index
         page = re.sub(r"<title>.*?</title>", f"<title>{esc(title)}</title>", page, count=1, flags=re.S)
         page = set_meta(page, "description", meta_desc, "name")
