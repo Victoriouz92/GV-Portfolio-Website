@@ -54,11 +54,6 @@ content:
             fields:
               - { name: size, label: Размер, type: string, required: true }
               - { name: price, label: Цена в евро, type: number, required: true }
-              - { name: pay, label: Stripe линк за плащане, description: "По избор. Линк от Stripe → Payment Links, започва с https://buy.stripe.com/", type: string }
-          - name: pay
-            label: Stripe линк за плащане
-            description: По избор. Създава се в Stripe → Payment Links и започва с https://buy.stripe.com/. Ако е празно, бутонът „Купи с карта“ не се показва. При няколко размера линкът се слага към всеки размер.
-            type: string
           - name: frame
             label: Рамка / окачване
             type: string
@@ -69,6 +64,10 @@ content:
             label: Снимка
             description: За нови творби. Старите вече имат обработени снимки — оставете празно.
             type: image
+          - name: stock
+            label: Наличност (бройки)
+            description: Празно = 1 брой. Когато се продаде последната, отметнете „Продадена“.
+            type: number
           - name: sold
             label: Продадена
             type: boolean
@@ -110,3 +109,5 @@ content:
                 - { value: boxnow, label: BOX NOW автомат (с карта) }
           - { name: price, label: Цена в евро, description: Празно = „по тарифа“, type: number }
       - { name: boxnowPartnerId, label: BOX NOW partner ID (по избор), description: От договора с BOX NOW. Тогава картата показва точно вашите автомати., type: string }
+      - { name: stripeKey, label: Stripe publishable key, description: "Започва с pk_live_. Виж stripe-worker/README.md", type: string }
+      - { name: stripeApi, label: Адрес на сървъра за плащане, description: "Адресът на Cloudflare Worker-а, напр. https://luckyglass-pay.….workers.dev", type: string }

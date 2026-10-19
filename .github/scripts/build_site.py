@@ -7,7 +7,7 @@ from datetime import date
 
 SITE = "https://luckyglass.eu/"
 OUT = "_site"
-SKIP = {".git", ".github", OUT, "node_modules"}
+SKIP = {".git", ".github", OUT, "node_modules", "stripe-worker"}
 
 def esc(s): return html.escape(str(s or ""), quote=True)
 

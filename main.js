@@ -58,13 +58,9 @@ const fullName = w => `${w.series} „${w.name}“`;
 // every work has its own address (/tvorba/<id>/) so search engines and shared links can point at it
 const PATHS = !!document.querySelector("base") && /^https?:$/.test(location.protocol);
 const workHref = id => PATHS ? `tvorba/${id}/` : `#tvorba-${id}`;
-// card payment through a Stripe Payment Link pasted in the admin panel; only Stripe's own checkout address is accepted
-const STRIPE = /^https:\/\/buy\.stripe\.com\/[\w-]+$/;
-const payLink = (w, k) => { const u = String((hasSizes(w) ? (w.sizes[k] || {}).pay : w.pay) || "").trim(); return !w.sold && STRIPE.test(u) ? u : ""; };
-function updatePay() {
-  const u = cur && payLink(cur, +(($("#wpSizes select") || {}).value || 0));
-  $("#wpPay").hidden = !u; if (u) $("#wpPay").href = u;
-}
+// every work is one piece unless the admin panel says otherwise
+const stockOf = w => w.sold ? 0 : hasPrice(w.stock) ? Math.max(0, +w.stock) : 1;
+const stockLabel = w => stockOf(w) ? `${stockOf(w)} бр. в наличност` : "Продадена";
 const sizeSelect = (w, cls) => `<label class="${cls}"><span class="vh">Размер</span><select data-sizes="${w.id}">${w.sizes.map((z, k) =>
   `<option value="${k}">${esc(z.size)}</option>`).join("")}</select></label>`;
 const card = w => `
@@ -77,6 +73,7 @@ const card = w => `
       <h3><a href="${workHref(w.id)}">${esc(w.name)}</a></h3>
       ${hasSizes(w) ? sizeSelect(w, "size-pick") : `<span class="size">${esc(w.size || "размер при запитване")}</span>`}
       <span class="price" data-price="${w.id}">${w.sold ? "Продадена" : priceLabel(w)}</span>
+      ${w.sold ? "" : `<span class="stock-mini">${stockLabel(w)}</span>`}
     </div>
   </article>`;
 // a size picked on a card updates its price
@@ -85,7 +82,6 @@ document.addEventListener("change", e => {
   const w = byId(sel.dataset.sizes), z = w.sizes[+sel.value];
   const scope = sel.closest(".work, .wp-info") || document;
   const pr = scope.querySelector(`[data-price="${w.id}"]`) || $("#wpPrice"); if (pr) pr.textContent = money(z.price);
-  if (scope.matches(".wp-info")) updatePay();
 });
 
 /* ---------- collection ---------- */
@@ -136,8 +132,8 @@ function renderWork(id) {
   $("#wpText").textContent = cur.text || (cur.cat === "pana" ? CAT_NOTE.pana : "Дърво на живота, рисувано върху стъкло и сплавено в пещ с цветни стъкълца.");
   $("#wpSizes").innerHTML = hasSizes(cur) ? sizeSelect(cur, "size-pick big") : "";
   if (cur.sold) $("#wpPrice").textContent = "Продадена";
-  $("#wpAdd").hidden = !!cur.sold;
-  updatePay();
+  $("#wpAdd").hidden = !stockOf(cur);
+  $("#wpStock").innerHTML = stockOf(cur) ? `<span>${stockLabel(cur)}</span> Търсите повече бройки? <a href="#kontakti">Пишете ни</a>` : "<span>Продадена</span> Може да се изработи подобна — <a href=\"#poruchka\">по поръчка</a>";
   const specs = [["Размер", hasSizes(cur) ? "по избор" : sizeLabel(cur)],
     [cur.cat === "pana" ? "Окачване" : "Рамка", cur.cat === "pana" ? "метална закопчалка-кобилица със спирала" : (cur.frame || "дървена")],
     ["Материал", "стъкло, цветни стъкълца, бои за стъкло"], ["Автор", "Лъки Михайлова"]];
@@ -163,10 +159,11 @@ wpMain.addEventListener("pointermove", e => {
 wpMain.addEventListener("pointerleave", () => wpMain.classList.remove("zooming"));
 $("#wpAdd").addEventListener("click", () => {
   const s = shots[shotI];
-  let price = hasPrice(cur.price) ? cur.price : null, detail = sizeLabel(cur);
-  if (hasSizes(cur)) { const z = cur.sizes[+$("#wpSizes select").value]; detail = z.size; price = z.price; }
+  let price = hasPrice(cur.price) ? cur.price : null, detail = sizeLabel(cur), size = null;
+  if (hasSizes(cur)) { size = +$("#wpSizes select").value; const z = cur.sizes[size]; detail = z.size; price = z.price; }
+  if (cart.filter(c => c.id === cur.id).length >= stockOf(cur)) { openDrawer(); $("#cartNote").textContent = `„${cur.name}“ вече е в количката — наличността е ${stockOf(cur)} бр.`; return; }
   if (cur.id === "plodorodie") detail += ` · ${s.label || "рамка Платина"}`;
-  addToList({ name: fullName(cur), detail, price, img: s.th.includes("swatch") ? s.src : cur.image ? imgSrc(cur) : `${P}${cur.id}-sm.webp` });
+  addToList({ id: cur.id, size, name: fullName(cur), detail, price, img: s.th.includes("swatch") ? s.src : cur.image ? imgSrc(cur) : `${P}${cur.id}-sm.webp` });
 });
 
 /* ---------- commission ---------- */
@@ -483,25 +480,59 @@ const intro = $("#intro");
   Promise.all([ready.catch(() => {}), Promise.race([loaded, new Promise(r => setTimeout(r, 4000))])]).then(visible).then(start, start);
 })();
 
-/* ---------- list ---------- */
+/* ---------- cart & checkout ---------- */
 let cart = store.get("cart2", []);
 const drawer = $("#drawer");
-/* ---------- delivery: fixed prices from the admin panel, BOX NOW lockers from its own map ---------- */
+// delivery: fixed prices from the admin panel, BOX NOW lockers from its own map
 const DELIV = (Array.isArray(SITE.delivery) && SITE.delivery.length ? SITE.delivery : [{ label: "От галерията", note: SITE.address || "", type: "pickup", price: 0 }])
   .map(o => ({ ...o, price: hasPrice(o.price) ? +o.price : null }));
 const WHERE = { office: "Град и офис на куриера", address: "Град и адрес за доставка", boxnow: "Автомат BOX NOW" };
-$("#delivList").innerHTML = DELIV.map((o, i) => `<label><input type="radio" name="delivery" value="${i}"${i ? "" : " checked"}>
-  <span><b>${esc(o.label)}</b>${o.note ? `<small>${esc(o.note)}</small>` : ""}</span><em>${o.price === 0 ? "безплатно" : o.price != null ? money(o.price) : "по тарифа"}</em></label>`).join("");
+const shipLabel = p => p === 0 ? "безплатно" : p != null ? money(p) : "по тарифа";
+// card payments: Stripe's own secure field, switched on once the key and the small payment server are set in site.json.
+// ?karta=demo shows it with Stripe's public test key, so the design can be checked before the account is connected.
+const DEMO = /[?&]karta=demo\b/.test(location.search);
+const STRIPE_KEY = DEMO ? "pk_test_TYooMQauvdEDq54NiTphI7jx" : SITE.stripeKey, STRIPE_API = SITE.stripeApi;
+const CARD_ON = !!(DEMO || (STRIPE_KEY && STRIPE_API));
+const PAY = [
+  { id: "card", label: "С карта онлайн", note: "Visa, Mastercard, Apple Pay, Google Pay", ok: () => CARD_ON },
+  { id: "cod", label: "Наложен платеж", note: "плащате на куриера при получаване", ok: t => t === "office" || t === "address" },
+  { id: "cod", label: "При получаване", note: "с карта, по линк от BOX NOW преди отварянето на автомата", ok: t => t === "boxnow" },
+  { id: "gallery", label: "При вземане от галерията", note: "в брой или с карта", ok: t => t === "pickup" },
+  { id: "bank", label: "Банков превод", note: "изпращаме данните за превода с потвърждението", ok: () => true }];
+const opt = (name, i, o, right, on) => `<label class="opt"><input type="radio" name="${name}" value="${i}"${on ? " checked" : ""}>
+  <span class="dot" aria-hidden="true"></span><span class="ot"><b>${esc(o.label)}</b>${o.note ? `<small>${esc(o.note)}</small>` : ""}</span>${right ? `<em>${right}</em>` : ""}</label>`;
+$("#delivList").innerHTML = DELIV.map((o, i) => opt("delivery", i, o, shipLabel(o.price), !i)).join("");
 const deliv = () => DELIV[+(($("input[name=delivery]:checked") || {}).value || 0)];
+const payM = () => { const t = deliv().type || "pickup", v = ($("input[name=pay]:checked") || {}).value; return PAY.find(m => m.id === v && m.ok(t)) || PAY[PAY.length - 1]; };
+const totals = () => {
+  const known = cart.filter(c => c.price != null), items = known.reduce((s, c) => s + c.price, 0), ship = deliv().price;
+  return { items, ship, sum: items + (ship || 0), exact: known.length === cart.length && ship != null, any: known.length > 0 };
+};
+function renderPay() {
+  const t = deliv().type || "pickup", was = ($("input[name=pay]:checked") || {}).value;
+  const list = PAY.filter(m => m.ok(t)), keep = list.some(m => m.id === was) ? was : list[0].id;
+  $("#payList").innerHTML = list.map(m => opt("pay", m.id, m, "", m.id === keep)).join("");
+  updatePay();
+}
+function updatePay() {
+  const card = payM().id === "card", { exact } = totals();
+  $("#cardBox").hidden = !card;
+  if (card && !exact) $("#orderNote").textContent = "Някоя цена е „по запитване“ — за картово плащане изберете творби с цена или друг начин на плащане.";
+  else if ($("#orderNote").dataset.auto) $("#orderNote").textContent = "";
+  $("#orderNote").dataset.auto = card && !exact ? "1" : "";
+  if (card) mountCard();
+  renderList();
+}
 function updateDeliv() {
   const o = deliv(), t = o.type || "pickup";
   $("#delivWhere").hidden = t === "pickup";
   $("#whereLabel").textContent = WHERE[t] || WHERE.address;
   $("#oWhere").placeholder = t === "boxnow" ? "Изберете от картата или напишете адреса на автомата" : t === "office" ? "напр. Пловдив, офис Централен" : "напр. Варна, ул. „Шипка“ 12, ет. 3";
   $("#bnBox").hidden = t !== "boxnow";
-  renderList();
+  renderPay();
 }
 $("#delivList").addEventListener("change", updateDeliv);
+$("#payList").addEventListener("change", updatePay);
 // the official BOX NOW map runs in a frame and posts the chosen locker back to the page
 $("#bnOpen").addEventListener("click", () => {
   const box = $("#bnMap"); box.hidden = false;
@@ -520,61 +551,138 @@ addEventListener("message", e => {
   $("#bnMap").hidden = true; $("#bnOpen").textContent = "Смени автомата";
 });
 
+/* Stripe Payment Element, styled to match the site: sand, umber ink, Jost, soft rounded fields */
+let stripe = null, elements = null, cardLoading = null;
+const cents = n => Math.round(n * 100);
+function mountCard() {
+  if (cardLoading) return cardLoading;
+  cardLoading = new Promise((ok, no) => {
+    const sc = document.createElement("script"); sc.src = "https://js.stripe.com/v3/"; sc.onload = ok; sc.onerror = no; document.head.appendChild(sc);
+  }).then(() => {
+    stripe = window.Stripe(STRIPE_KEY, { locale: "bg" });
+    elements = stripe.elements({
+      mode: "payment", currency: "eur", amount: Math.max(50, cents(totals().sum)), locale: "bg",
+      fonts: [{ cssSrc: "https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500&display=swap" }],
+      appearance: {
+        theme: "flat", labels: "above",
+        variables: { fontFamily: "Jost, 'Avenir Next', sans-serif", fontSizeBase: "16px", fontWeightNormal: "300", colorPrimary: "#9a4a2e",
+          colorBackground: "#f4ece8", colorText: "#33241b", colorTextSecondary: "#6e5a4c", colorTextPlaceholder: "#a8968a",
+          colorDanger: "#a3361f", borderRadius: "14px", spacingUnit: "4px", gridRowSpacing: "14px", focusBoxShadow: "0 0 0 3px rgba(154,74,46,.16)" },
+        rules: {
+          ".Input": { border: "1px solid rgba(51,36,27,.16)", boxShadow: "none", padding: "14px 16px" },
+          ".Input:focus": { border: "1px solid #9a4a2e", boxShadow: "0 0 0 3px rgba(154,74,46,.14)" },
+          ".Label": { fontSize: "11px", fontWeight: "400", letterSpacing: "0.2em", textTransform: "uppercase", color: "#6e5a4c", marginBottom: "8px" },
+          ".Tab": { border: "1px solid rgba(51,36,27,.16)", borderRadius: "14px", boxShadow: "none", backgroundColor: "#f4ece8" },
+          ".Tab--selected": { borderColor: "#33241b", backgroundColor: "#fbf7f5", boxShadow: "none" },
+          ".Tab:hover": { color: "#33241b" }, ".TabIcon--selected": { fill: "#9a4a2e" }, ".TabLabel": { fontWeight: "400" } } } });
+    $("#cardEl").innerHTML = "";
+    elements.create("payment", { layout: { type: "tabs", defaultCollapsed: false }, fields: { billingDetails: { name: "never", email: "never", phone: "never" } } }).mount("#cardEl");
+  }).catch(() => { cardLoading = null; $("#cardEl").innerHTML = `<p class="fine">Полето за карта не се зареди. Проверете връзката или изберете друг начин на плащане.</p>`; });
+  return cardLoading;
+}
+
 function renderList() {
   $("#cartCount").textContent = cart.length;
   $("#cartBtn").classList.toggle("has", cart.length > 0);
   $("#cartEmpty").hidden = cart.length > 0;
   $("#orderForm").hidden = !cart.length;
-  $("#cartList").innerHTML = cart.map((c, i) => `<li><img src="${c.img}" alt=""><div><b>${esc(c.name)}</b><small>${esc(c.detail)}</small></div>
+  $("#cartList").innerHTML = cart.map((c, i) => `<li><img src="${c.img}" alt=""><div><b>${esc(c.name)}</b><small>${esc(c.detail)}${c.id ? " · 1 бр." : ""}</small></div>
     <div class="pr"><span>${c.price != null ? money(c.price) : "по запитване"}</span><button type="button" class="rm" data-rm="${i}">Премахни</button></div></li>`).join("");
-  const known = cart.filter(c => c.price != null), sum = known.reduce((s, c) => s + c.price, 0);
-  const ask = known.length < cart.length, ship = deliv().price;
-  $("#sumItems").textContent = known.length ? money(sum) + (ask ? " + запитване" : "") : "по запитване";
-  $("#sumShip").textContent = ship === 0 ? "безплатно" : ship != null ? money(ship) : "по тарифа";
-  $("#cartTotal").textContent = known.length ? money(sum + (ship || 0)) + (ask || ship == null ? " + запитване" : "") : "по запитване";
+  const t = totals(), ask = cart.some(c => c.price == null);
+  $("#sumItems").textContent = t.any ? money(t.items) + (ask ? " + по запитване" : "") : "по запитване";
+  $("#sumShip").textContent = shipLabel(t.ship);
+  $("#cartTotal").textContent = t.any ? money(t.sum) + (t.exact ? "" : " + …") : "по запитване";
+  const m = payM().id;
+  $("#payBtn").textContent = m === "card" ? `Плати ${t.exact ? money(t.sum) : ""}`.trim() : `Поръчай${t.exact ? " · " + money(t.sum) : ""}`;
+  if (elements && t.exact) elements.update({ amount: Math.max(50, cents(t.sum)) });
 }
-function addToList(item) { cart.push(item); store.set("cart2", cart); $("#orderDone").hidden = true; renderList(); openDrawer(); }
+function addToList(item) { cart.push(item); store.set("cart2", cart); $("#orderDone").hidden = true; $("#cartNote").textContent = ""; renderList(); openDrawer(); }
 $("#cartList").addEventListener("click", e => {
   const b = e.target.closest("[data-rm]"); if (!b) return;
-  cart.splice(+b.dataset.rm, 1); store.set("cart2", cart); renderList();
+  cart.splice(+b.dataset.rm, 1); store.set("cart2", cart); $("#cartNote").textContent = ""; renderList();
 });
 function openDrawer() { drawer.hidden = false; document.body.style.overflow = "hidden"; }
 function closeDrawer() { drawer.hidden = true; document.body.style.overflow = ""; }
 $("#cartBtn").addEventListener("click", openDrawer);
 $$("[data-close-drawer]").forEach(b => b.addEventListener("click", closeDrawer));
+$("#drawer").addEventListener("click", e => { if (e.target.closest(".panel a[href^='#']")) closeDrawer(); });
 addEventListener("keydown", e => { if (e.key === "Escape" && !drawer.hidden) closeDrawer(); });
+const orderNo = () => "LG-" + Date.now().toString(36).slice(-6).toUpperCase();
+function orderDone(no, text) {
+  cart.length = 0; store.set("cart2", cart); renderList();
+  $("#orderNote").textContent = ""; $("#doneNo").textContent = `Поръчка № ${no}`; $("#doneText").textContent = text;
+  $("#orderDone").hidden = false; $("#orderDone").focus();
+}
+const DONE = {
+  card: "Плащането е успешно. Ще получите потвърждение по имейл и ще ви се обадим за доставката.",
+  cod: "Поръчката е приета. Ще ви се обадим до един работен ден, за да я потвърдим, и я изпращаме. Плащате при получаване.",
+  gallery: "Поръчката е приета. Ще ви се обадим до един работен ден, когато творбата ви чака в галерията.",
+  bank: "Поръчката е приета. До един работен ден ще ви изпратим данните за банковия превод на имейла ви." };
 $("#orderForm").addEventListener("submit", async e => {
   e.preventDefault();
-  const f = e.target, d = Object.fromEntries(new FormData(f)), note = $("#orderNote"), btn = f.querySelector("button[type=submit]");
-  if (!d.name.trim() || !d.phone.trim()) { note.textContent = "Моля, въведете име и телефон."; return; }
-  if (!f.consent.checked) { note.textContent = "Моля, потвърдете, че сте съгласни с обработката на данните."; return; }
-  if (d._honey) return;                                  // filled only by spam bots
+  const f = e.target, d = Object.fromEntries(new FormData(f)), note = $("#orderNote"), btn = $("#payBtn"), m = payM(), t = totals();
+  const fail = (msg, el) => { note.textContent = msg; note.dataset.auto = ""; if (el) el.focus(); };
   const dv = deliv();
-  d.delivery = `${dv.label}${dv.price ? ` (${money(dv.price)})` : ""}${dv.type !== "pickup" && d.where.trim() ? ` — ${d.where.trim()}` : dv.type === "pickup" && dv.note ? ` — ${dv.note}` : ""}`;
-  if (dv.type !== "pickup" && !d.where.trim()) { note.textContent = dv.type === "boxnow" ? "Моля, изберете автомат BOX NOW." : "Моля, напишете къде да доставим."; $("#oWhere").focus(); return; }
+  if (dv.type !== "pickup" && !d.where.trim()) return fail(dv.type === "boxnow" ? "Моля, изберете автомат BOX NOW." : "Моля, напишете къде да доставим.", $("#oWhere"));
+  if (!d.name.trim()) return fail("Моля, въведете име и фамилия.", $("#oName"));
+  if (!/\d{6,}/.test(d.phone.replace(/\D/g, ""))) return fail("Моля, въведете телефон за връзка.", $("#oPhone"));
+  if (!/^\S+@\S+\.\S+$/.test(d.email.trim())) return fail("Моля, въведете имейл — там ще получите потвърждението.", $("#oEmail"));
+  if (!f.consent.checked) return fail("Моля, приемете Общите условия.");
+  if (d._honey) return;                                  // filled only by spam bots
+  if (m.id === "card" && !t.exact) return fail("Някоя цена е „по запитване“ — изберете друг начин на плащане.");
+  const no = orderNo();
+  const where = dv.type !== "pickup" ? ` — ${d.where.trim()}` : dv.note ? ` — ${dv.note}` : "";
+  const delivery = `${dv.label} (${shipLabel(dv.price)})${where}`;
   const lines = cart.map((c, i) => `${i + 1}. ${c.name} — ${c.detail} — ${c.price != null ? money(c.price) : "цена по запитване"}`);
-  const body = ["Запитване от сайта", "", ...lines, "", `Получаване: ${d.delivery}`, `Общо: ${$("#cartTotal").textContent}`, ...(d.invoice ? ["Фактура: да"] : []), `Име: ${d.name}`, `Телефон: ${d.phone}`, ...(d.email ? [`Имейл: ${d.email}`] : [])].join("\n");
-  btn.disabled = true; note.textContent = "Изпращаме…";
+  const fields = { "Поръчка": no, "Плащане": m.label, "Име": d.name, "Телефон": d.phone, "Имейл": d.email, "Доставка": delivery,
+    "Фактура": d.invoice ? "да" : "не", "Творби": lines.join("\n"), "Общо": $("#cartTotal").textContent };
+  const send = extra => fetch(SITE.formEndpoint || `https://formsubmit.co/ajax/${ORDER_EMAIL}`, {
+    method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" },
+    body: JSON.stringify({ _subject: `Поръчка ${no} от сайта — ${d.name}`, _template: "table", _captcha: "false", ...fields, ...extra }) })
+    .then(async r => { const o = await r.json().catch(() => ({})); if (!r.ok || String(o.success) === "false") throw new Error(o.message || r.status); });
+  btn.disabled = true;
   try {
-    const res = await fetch(SITE.formEndpoint || `https://formsubmit.co/ajax/${ORDER_EMAIL}`, {
-      method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" },
-      body: JSON.stringify({ _subject: `Запитване от сайта — ${d.name}`, _template: "table", _captcha: "false",
-        "Име": d.name, "Телефон": d.phone, "Имейл": d.email || "—", "Получаване": d.delivery, "Фактура": d.invoice ? "да" : "не", "Творби": lines.join("\n"), "Общо": $("#cartTotal").textContent }) });
-    const out = await res.json().catch(() => ({}));
-    if (!res.ok || String(out.success) === "false") throw new Error(out.message || res.status);
-    cart.length = 0; store.set("cart2", cart); renderList();
-    $("#orderDone").hidden = false; $("#orderDone").focus();
-  } catch {
+    if (m.id === "card") {
+      note.textContent = "Обработваме плащането…";
+      await mountCard();
+      const { error: inErr } = await elements.submit(); if (inErr) throw { user: inErr.message };
+      if (DEMO) throw { user: "Това е демо на полето за карта — плащането не е истинско. Изберете друг начин, за да поръчате." };
+      const r = await fetch(STRIPE_API, { method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ order: no, items: cart.filter(c => c.id).map(c => ({ id: c.id, size: c.size })), delivery: DELIV.indexOf(dv),
+          name: d.name, email: d.email, phone: d.phone, where: d.where.trim(), invoice: !!d.invoice }) });
+      const pi = await r.json().catch(() => ({}));
+      if (!r.ok || !pi.clientSecret) throw { user: pi.error || "Плащането не може да започне. Опитайте отново или изберете друг начин." };
+      if (cents(t.sum) !== pi.amount) throw { user: "Цените току-що са обновени. Презаредете страницата и опитайте отново." };
+      const { error } = await stripe.confirmPayment({ elements, clientSecret: pi.clientSecret, redirect: "if_required",
+        confirmParams: { return_url: `${location.origin}/?poruchka=${no}`, payment_method_data: { billing_details: { name: d.name, email: d.email, phone: d.phone } } } });
+      if (error) throw { user: error.message };
+      await send({ "Плащане": `С карта онлайн — ПЛАТЕНО (${pi.id})` }).catch(() => {});  // Stripe keeps the full record either way
+      return orderDone(no, DONE.card);
+    }
+    note.textContent = "Изпращаме поръчката…";
+    await send({});
+    orderDone(no, DONE[m.id]);
+  } catch (err) {
+    if (err && err.user) return fail(err.user);
     // the form service is unreachable: hand the visitor a ready e-mail and the text to copy
+    const body = [`Поръчка ${no}`, "", ...Object.entries(fields).map(([k, v]) => `${k}: ${v}`)].join("\n");
     $("#orderText").value = body; $("#orderMail").textContent = ORDER_EMAIL; $("#orderOut").hidden = false;
-    note.textContent = "Не успяхме да изпратим автоматично. Отваряме имейл с готовото запитване.";
-    location.href = `mailto:${ORDER_EMAIL}?subject=${encodeURIComponent("Запитване от сайта")}&body=${encodeURIComponent(body)}`;
+    fail("Не успяхме да изпратим автоматично. Отваряме имейл с готовата поръчка.");
+    location.href = `mailto:${ORDER_EMAIL}?subject=${encodeURIComponent(`Поръчка ${no} от сайта`)}&body=${encodeURIComponent(body)}`;
   } finally { btn.disabled = false; }
 });
 $("#copyOrder").addEventListener("click", async () => {
   try { await navigator.clipboard.writeText($("#orderText").value); $("#copyOrder").textContent = "Копирано"; }
   catch { $("#orderText").select(); }
 });
+// back from a bank or wallet page that Stripe redirected to
+(() => {
+  const q = new URLSearchParams(location.search), no = q.get("poruchka");
+  if (!no || q.get("redirect_status") !== "succeeded") return;
+  history.replaceState(null, "", location.pathname + location.hash);
+  openDrawer(); orderDone(no, DONE.card);
+})();
+updateDeliv();
 renderList();
 route();
 $("#yr").textContent = new Date().getFullYear();

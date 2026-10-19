@@ -11,7 +11,7 @@
 <meta name="author" content="Лъки Михайлова">
 <meta name="theme-color" content="#e7dcd7">
 <meta name="referrer" content="strict-origin-when-cross-origin">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://formsubmit.co; frame-src https://map.boxnow.bg; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self' mailto:; upgrade-insecure-requests">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://js.stripe.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://formsubmit.co https://api.stripe.com https://*.workers.dev; frame-src https://map.boxnow.bg https://js.stripe.com https://hooks.stripe.com; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self' mailto:; upgrade-insecure-requests">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta property="og:type" content="website">
@@ -38,7 +38,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prata&family=Cormorant+Garamond:ital,wght@1,400;1,500&family=Jost:wght@300;400;500&display=swap&subset=cyrillic" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=8">
+<link rel="stylesheet" href="styles.css?v=9">
 </head>
 <body>
 <noscript><p style="padding:24px;text-align:center">Лъки Михайлова — картини и пана от цветно стъкло. За да разгледате колекцията, включете JavaScript. Галерия Artgifts, ул. „Гурко“ 10, София · +359 899 160 166 · artgifts.bg@gmail.com</p></noscript>
@@ -65,7 +65,7 @@
     <a href="#avtor" data-nav="avtor">Авторът</a>
     <a href="#kontakti" data-nav="kontakti">Контакти</a>
   </nav>
-  <button type="button" class="list-btn" id="cartBtn">Списък <span id="cartCount">0</span></button>
+  <button type="button" class="list-btn" id="cartBtn">Количка <span id="cartCount">0</span></button>
   <button type="button" class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="mnav">Меню</button>
 </header>
 <nav class="mnav" id="mnav" hidden aria-label="Меню">
@@ -158,11 +158,11 @@
         <div id="wpSizes"></div>
         <dl class="specs" id="wpSpecs"></dl>
         <div class="wp-actions">
-          <a class="btn" id="wpPay" href="#" rel="noopener" hidden>Купи с карта</a>
-          <button type="button" class="btn" id="wpAdd">Добави в списъка</button>
+          <button type="button" class="btn" id="wpAdd">Добави в количката</button>
           <a class="link" href="#poruchka">Искам подобна по поръчка</a>
         </div>
-        <p class="fine">Всяка творба е единствена. Възможни са фини разлики спрямо снимките.</p>
+        <p class="stock" id="wpStock"></p>
+        <p class="fine">Всяка творба е ръчно изработена. Възможни са фини разлики спрямо снимките.</p>
       </div>
     </div>
     <div class="related">
@@ -211,7 +211,7 @@
           </div>
         </fieldset>
         <label class="field">Повод, дата, бележки<textarea id="wedNote" rows="2"></textarea></label>
-        <button type="submit" class="btn">Добави в списъка</button>
+        <button type="submit" class="btn">Добави в количката</button>
         <p class="fine">Цената се уточнява лично, според размера и детайлите.</p>
       </form>
     </div>
@@ -236,34 +236,48 @@
 <aside class="drawer" id="drawer" hidden aria-labelledby="dTitle">
   <div class="scrim" data-close-drawer></div>
   <div class="panel">
-    <header><h2 id="dTitle">Списък</h2><button type="button" class="x" data-close-drawer aria-label="Затвори">×</button></header>
+    <header><h2 id="dTitle">Количка</h2><button type="button" class="x" data-close-drawer aria-label="Затвори">×</button></header>
     <ul class="cart" id="cartList"></ul>
-    <p class="fine" id="cartEmpty">Все още нищо не сте избрали.</p>
-    <form id="orderForm" class="order" novalidate>
-      <fieldset>
-        <legend>Получаване</legend>
-        <div class="deliv" id="delivList"></div>
-      </fieldset>
-      <div class="where" id="delivWhere" hidden>
-        <div class="bn" id="bnBox" hidden>
-          <button type="button" class="link" id="bnOpen">Изберете автомат на картата</button>
-          <div class="bn-map" id="bnMap" hidden></div>
+    <p class="fine cart-note" id="cartNote" role="status"></p>
+    <p class="fine" id="cartEmpty">Количката е празна.</p>
+    <form id="orderForm" class="order checkout" novalidate>
+      <section class="co-step">
+        <h3><span>1</span>Доставка</h3>
+        <div class="opts" id="delivList"></div>
+        <div class="where" id="delivWhere" hidden>
+          <div class="bn" id="bnBox" hidden>
+            <button type="button" class="pill" id="bnOpen">Изберете автомат на картата</button>
+            <div class="bn-map" id="bnMap" hidden></div>
+          </div>
+          <label class="fld"><span id="whereLabel">Адрес за доставка</span><textarea name="where" id="oWhere" rows="2" autocomplete="street-address"></textarea></label>
         </div>
-        <label class="field"><span id="whereLabel">Адрес за доставка</span><textarea name="where" id="oWhere" rows="2" autocomplete="street-address"></textarea></label>
-      </div>
-      <label class="field">Име<input name="name" id="oName" autocomplete="name"></label>
-      <label class="field">Телефон<input name="phone" id="oPhone" type="tel" autocomplete="tel"></label>
-      <label class="field">Имейл<input name="email" id="oEmail" type="email" autocomplete="email"></label>
+      </section>
+      <section class="co-step">
+        <h3><span>2</span>Вашите данни</h3>
+        <label class="fld"><span>Име и фамилия</span><input name="name" id="oName" autocomplete="name"></label>
+        <div class="fld-row">
+          <label class="fld"><span>Телефон</span><input name="phone" id="oPhone" type="tel" autocomplete="tel" inputmode="tel"></label>
+          <label class="fld"><span>Имейл</span><input name="email" id="oEmail" type="email" autocomplete="email"></label>
+        </div>
+        <label class="check"><input type="checkbox" name="invoice"><span>Нужна ми е фактура <small>— данните на фирмата ще поискаме при потвърждението</small></span></label>
+      </section>
+      <section class="co-step">
+        <h3><span>3</span>Плащане</h3>
+        <div class="opts" id="payList"></div>
+        <div class="card-box" id="cardBox" hidden>
+          <div id="cardEl" class="card-el"><p class="fine">Зареждаме защитеното поле за карта…</p></div>
+          <p class="secure"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>Плащането е защитено и се обработва от Stripe. Ние не виждаме данните на картата ви.</p>
+        </div>
+      </section>
       <div class="sum">
         <p><span>Творби</span><span id="sumItems">—</span></p>
         <p><span>Доставка</span><span id="sumShip">—</span></p>
-        <p class="total"><span>Общо, ориентировъчно</span><b id="cartTotal">—</b></p>
+        <p class="total"><span>Общо</span><b id="cartTotal">—</b></p>
       </div>
-      <label class="consent"><input type="checkbox" name="invoice"><span>Нужна ми е фактура</span></label>
       <input class="hp" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true">
-      <label class="consent"><input type="checkbox" name="consent" required><span>Съгласен/на съм данните ми да бъдат използвани само за отговор на запитването, според <a href="poveritelnost.html" target="_blank" rel="noopener">Политиката за поверителност</a>.</span></label>
-      <button type="submit" class="btn">Изпрати запитване</button>
-      <p class="fine" id="orderNote" role="status">Не плащате сега. Ще се свържем с вас за наличност, плащане и доставка.</p>
+      <label class="check"><input type="checkbox" name="consent" required><span>Приемам <a href="usloviya.html" target="_blank" rel="noopener">Общите условия</a> и <a href="poveritelnost.html" target="_blank" rel="noopener">Политиката за поверителност</a>.</span></label>
+      <button type="submit" class="btn pay-btn" id="payBtn">Поръчай</button>
+      <p class="fine" id="orderNote" role="status"></p>
       <div class="order-out" id="orderOut" hidden>
         <p class="fine">Ако имейлът не се отвори, копирайте текста и го изпратете на <b id="orderMail"></b>.</p>
         <textarea id="orderText" rows="6" readonly></textarea>
@@ -272,7 +286,8 @@
     </form>
     <div class="order-done" id="orderDone" tabindex="-1" hidden>
       <p class="mark">Благодарим!</p>
-      <p>Запитването е изпратено. Ще се свържем с вас до един работен ден за наличност, плащане и доставка.</p>
+      <p id="doneNo" class="done-no"></p>
+      <p id="doneText">Поръчката е приета. Ще се свържем с вас до един работен ден, за да я потвърдим.</p>
     </div>
   </div>
 </aside>
@@ -282,6 +297,6 @@
   <a class="q-call" id="qCall" href="#" aria-label="Обадете се"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 3.5 8.8 3c.5-.1 1 .2 1.2.7l1 2.6c.2.4 0 .9-.3 1.2L9.3 8.7a11 11 0 0 0 6 6l1.2-1.4c.3-.3.8-.5 1.2-.3l2.6 1c.5.2.8.7.7 1.2l-.5 2.2c-.1.5-.6.9-1.1.9C10.2 18.3 5.7 13.8 5.7 4.6c0-.5.4-1 .9-1.1Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></a>
 </div>
 
-<script src="boot.js?v=8" defer></script>
+<script src="boot.js?v=9" defer></script>
 </body>
 </html>
