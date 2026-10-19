@@ -3,17 +3,44 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Лъки Михайлова — Картини от стъкло</title>
-<meta name="description" content="Авторски картини и пана от цветно стъкло на Лъки Михайлова. Дървета на живота и сватбени дървета по поръчка.">
-<meta property="og:title" content="Лъки Михайлова — Картини от стъкло">
-<meta property="og:description" content="Картини и пана от цветно стъкло, рисувани и сплавени на ръка.">
-<meta property="og:image" content="assets/img/collection.jpg">
+<title>Лъки Михайлова — картини и пана от стъкло | Дърво на живота</title>
+<meta name="description" content="Авторски картини и пана от цветно стъкло на Лъки Михайлова — Дървета на живота, сватбени дървета по поръчка и подаръци. Галерия Artgifts, ул. „Гурко“ 10, София.">
+<link rel="canonical" href="https://luckyglass.eu/">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="author" content="Лъки Михайлова">
+<meta name="theme-color" content="#e7dcd7">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self'; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self' mailto:; upgrade-insecure-requests">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Лъки Михайлова · Магия от стъкло">
+<meta property="og:locale" content="bg_BG">
+<meta property="og:url" content="https://luckyglass.eu/">
+<meta property="og:title" content="Лъки Михайлова — картини и пана от стъкло">
+<meta property="og:description" content="Дървета на живота от цветно стъкло, рисувани и сплавени на ръка. Сватбени дървета и подаръци по поръчка.">
+<meta property="og:image" content="https://luckyglass.eu/assets/img/collection.jpg">
+<meta property="og:image:alt" content="Дървета на живота от стъкло на стената в галерията">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[
+ {"@type":"Person","@id":"https://luckyglass.eu/#artist","name":"Лъки Михайлова","alternateName":"Lucky Mihaylova","jobTitle":"Художник на стъкло","url":"https://luckyglass.eu/"},
+ {"@type":["Store","ArtGallery"],"@id":"https://luckyglass.eu/#gallery","name":"Лъки Михайлова · Магия от стъкло","url":"https://luckyglass.eu/","image":"https://luckyglass.eu/assets/img/collection.jpg",
+  "telephone":"+359899160166","email":"artgifts.bg@gmail.com","priceRange":"20 € – 98 €","currenciesAccepted":"EUR",
+  "address":{"@type":"PostalAddress","streetAddress":"ул. „Гурко“ 10","addressLocality":"София","addressCountry":"BG"},
+  "openingHoursSpecification":[{"@type":"OpeningHoursSpecification","dayOfWeek":["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],"opens":"11:00","closes":"18:00"}],
+  "founder":{"@id":"https://luckyglass.eu/#artist"}},
+ {"@type":"WebSite","@id":"https://luckyglass.eu/#site","url":"https://luckyglass.eu/","name":"Лъки Михайлова · Магия от стъкло","inLanguage":"bg"}
+]}
+</script>
+<link rel="preload" href="data/works.json" as="fetch" crossorigin>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prata&family=Cormorant+Garamond:ital,wght@1,400;1,500&family=Jost:wght@300;400;500&display=swap&subset=cyrillic" rel="stylesheet">
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="styles.css?v=4">
 </head>
 <body>
+<noscript><p style="padding:24px;text-align:center">Лъки Михайлова — картини и пана от цветно стъкло. За да разгледате колекцията, включете JavaScript. Галерия Artgifts, ул. „Гурко“ 10, София · +359 899 160 166 · artgifts.bg@gmail.com</p></noscript>
 <a class="skip" href="#main">Към съдържанието</a>
 
 <div class="intro" id="intro" role="dialog" aria-label="Добре дошли">
@@ -65,7 +92,7 @@
 
   <section class="band olive commission-band" id="svatba">
     <div class="band-in split">
-      <figure class="plain hung"><img src="assets/img/framed-wedding-platinum-wall.jpg" alt="Сватбено Дърво на живота" loading="lazy"></figure>
+      <figure class="plain hung"><img src="assets/img/framed-wedding-platinum-wall.webp" alt="Сватбено Дърво на живота" loading="lazy"></figure>
       <div>
         <p class="eyebrow rv">По поръчка</p>
         <h2 class="rv">Сватбено Дърво на живота</h2>
@@ -187,7 +214,7 @@
       </form>
     </div>
     <figure class="wedding-fig">
-      <img id="wedImg" class="hung" src="assets/img/framed-wedding-platinum-wall.jpg" alt="Преглед на поръчката">
+      <img id="wedImg" class="hung" src="assets/img/framed-wedding-platinum-wall.webp" alt="Преглед на поръчката">
       <figcaption id="wedCap" hidden></figcaption>
     </figure>
   </section>
@@ -233,11 +260,6 @@
   </div>
 </aside>
 
-<script>
-/* load the editable content, then the site */
-Promise.all(["data/works.json", "data/site.json"].map(u => fetch(u, { cache: "no-cache" }).then(r => r.json()).catch(() => ({}))))
-  .then(([w, site]) => { window.WORKS_DATA = w.works || []; window.SITE = site || {};
-    const s = document.createElement("script"); s.src = "main.js"; document.body.appendChild(s); });
-</script>
+<script src="boot.js?v=4" defer></script>
 </body>
 </html>

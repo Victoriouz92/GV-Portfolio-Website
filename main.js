@@ -1,5 +1,5 @@
 /* Content lives in data/works.json and data/site.json, so the artist can edit it in the admin panel (Pages CMS).
-   Product photos: assets/products/<id>-wall(-sm).jpg|webp (hung on the wall) and <id>-close.jpg (detail);
+   Product photos (WebP): assets/products/<id>-wall(-sm).webp (cut out, hung on the page wall), <id>-close(-sm).webp (detail), <id>-sm.webp (thumb);
    a piece added in the panel can instead carry its own uploaded photo in "image". */
 const SITE = window.SITE || {};
 const ORDER_EMAIL = SITE.email || "artgifts.bg@gmail.com";
@@ -52,8 +52,8 @@ document.addEventListener("pointermove", e => {
 
 /* ---------- cards ---------- */
 const hung = w => !w.image || w.cat === "kartina"; // works are cut from the photo and hung on the page wall
-const wallSrc = (id, cat, sm) => `${P}${id}-wall${sm ? "-sm" : ""}` + (cat === "pana" ? ".webp?v=2" : ".jpg?v=2"); // panels keep their wire, so they need transparency
-const imgSrc = (w, sm) => w.image ? w.image.replace(/^\//, "") : wallSrc(w.id, w.cat, sm);
+const wallSrc = (id, cat, sm) => `${P}${id}-wall${sm ? "-sm" : ""}.webp?v=3`; // WebP keeps the transparency around the panels' wire
+const imgSrc = (w, sm) => w.image ? esc(String(w.image).replace(/^\//, "")) : wallSrc(w.id, w.cat, sm);
 const fullName = w => `${w.series} „${w.name}“`;
 const sizeSelect = (w, cls) => `<label class="${cls}"><span class="vh">Размер</span><select data-sizes="${w.id}">${w.sizes.map((z, k) =>
   `<option value="${k}">${esc(z.size)}</option>`).join("")}</select></label>`;
@@ -109,13 +109,13 @@ function renderWork(id) {
   cur = byId(id); if (!cur) return false;
   shots = [];
   if (cur.id === "plodorodie") {
-    Object.keys(FRAMES).forEach(f => shots.push({ src: `assets/img/framed-${f}-wall.jpg`, th: `assets/img/swatch-${f}.jpg`, v: 1, hung: true, label: `рамка ${FRAMES[f]}` }));
-    shots.push({ src: `${P}plodorodie-close.jpg`, th: `${P}plodorodie-close-sm.jpg`, v: 1 });
+    Object.keys(FRAMES).forEach(f => shots.push({ src: `assets/img/framed-${f}-wall.webp`, th: `assets/img/swatch-${f}.webp`, v: 1, hung: true, label: `рамка ${FRAMES[f]}` }));
+    shots.push({ src: `${P}plodorodie-close.webp`, th: `${P}plodorodie-close-sm.webp`, v: 1 });
   } else if (cur.image) {
     shots.push({ src: imgSrc(cur), th: imgSrc(cur), v: 1, hung: cur.cat === "kartina" });
   } else {
-    shots.push({ src: wallSrc(cur.id, cur.cat), th: `${P}${cur.id}-sm.jpg`, v: 1, hung: true });
-    shots.push({ src: `${P}${cur.id}-close.jpg`, th: `${P}${cur.id}-close-sm.jpg`, v: 1 });
+    shots.push({ src: wallSrc(cur.id, cur.cat), th: `${P}${cur.id}-sm.webp`, v: 1, hung: true });
+    shots.push({ src: `${P}${cur.id}-close.webp`, th: `${P}${cur.id}-close-sm.webp`, v: 1 });
   }
   $("#wpThumbs").innerHTML = shots.map((s, i) => `<button type="button" data-shot="${i}" aria-label="Снимка ${i + 1}${s.label ? ", " + s.label : ""}"><img src="${s.th}" alt=""></button>`).join("");
   $("#wpCat").textContent = cur.series + (cur.cat === "pana" ? " · без рамка" : " · стъклена картина с рамка");
@@ -154,7 +154,7 @@ $("#wpAdd").addEventListener("click", () => {
   let price = hasPrice(cur.price) ? cur.price : null, detail = sizeLabel(cur);
   if (hasSizes(cur)) { const z = cur.sizes[+$("#wpSizes select").value]; detail = z.size; price = z.price; }
   if (cur.id === "plodorodie") detail += ` · ${s.label || "рамка Платина"}`;
-  addToList({ name: fullName(cur), detail, price, img: s.th.includes("swatch") ? s.src : cur.image ? imgSrc(cur) : `${P}${cur.id}-sm.jpg` });
+  addToList({ name: fullName(cur), detail, price, img: s.th.includes("swatch") ? s.src : cur.image ? imgSrc(cur) : `${P}${cur.id}-sm.webp` });
 });
 
 /* ---------- commission ---------- */
@@ -168,7 +168,7 @@ function renderWSizes() {
 }
 function updateWed() {
   const k = val("wkind"), f = val("wframe"), img = $("#wedImg");
-  const src = k === "svatba" ? `assets/img/framed-wedding-${f}-wall.jpg` : k === "darvo" ? `assets/img/framed-${f}-wall.jpg` : `${P}pana-yabalka-wall.webp?v=2`;
+  const src = k === "svatba" ? `assets/img/framed-wedding-${f}-wall.webp` : k === "darvo" ? `assets/img/framed-${f}-wall.webp` : `${P}pana-yabalka-wall.webp?v=3`;
   if (img.getAttribute("src") !== src) {
     img.style.opacity = 0;
     const n = new Image(); n.src = src; n.onload = () => { img.classList.toggle("hung", k !== "pano"); img.classList.toggle("pane", k === "pano"); img.src = src; img.style.opacity = 1; };
@@ -506,3 +506,21 @@ $("#yr").textContent = new Date().getFullYear();
 $$("[data-site]").forEach(el => { const v = SITE[el.dataset.site]; if (!v) return;
   if (el.tagName === "A") el.href = el.dataset.site === "email" ? `mailto:${v}` : el.dataset.site === "phone" ? `tel:${v.replace(/\s/g, "")}` : v;
   el.textContent = el.dataset.site === "website" ? v.replace(/^https?:\/\//, "") + " ↗" : v; });
+
+/* ---------- structured data for search engines: the catalogue as products with prices ---------- */
+(() => {
+  const base = "https://luckyglass.eu/";
+  const items = WORKS.map((w, i) => {
+    const price = hasSizes(w) ? w.sizes.map(z => z.price) : hasPrice(w.price) ? [w.price] : [];
+    const p = { "@type": "Product", name: fullName(w), description: w.text || CAT_NOTE[w.cat], url: `${base}#tvorba-${w.id}`,
+      image: base + (w.image ? String(w.image).replace(/^\//, "") : `assets/products/${w.id}-wall.webp`),
+      brand: { "@type": "Brand", name: "Лъки Михайлова" }, material: "стъкло", category: w.cat === "pana" ? "Стъклено пано" : "Картина от стъкло" };
+    if (price.length) p.offers = { "@type": price.length > 1 ? "AggregateOffer" : "Offer", priceCurrency: "EUR",
+      ...(price.length > 1 ? { lowPrice: Math.min(...price), highPrice: Math.max(...price) } : { price: price[0] }),
+      availability: w.sold ? "https://schema.org/SoldOut" : "https://schema.org/InStock", seller: { "@id": `${base}#gallery` } };
+    return { "@type": "ListItem", position: i + 1, item: p };
+  });
+  const s = document.createElement("script"); s.type = "application/ld+json";
+  s.textContent = JSON.stringify({ "@context": "https://schema.org", "@type": "ItemList", name: "Колекция", itemListElement: items });
+  document.head.appendChild(s);
+})();
