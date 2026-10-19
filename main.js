@@ -513,13 +513,13 @@ $("#orderForm").addEventListener("submit", async e => {
   if (!f.consent.checked) { note.textContent = "Моля, потвърдете, че сте съгласни с обработката на данните."; return; }
   if (d._honey) return;                                  // filled only by spam bots
   const lines = cart.map((c, i) => `${i + 1}. ${c.name} — ${c.detail} — ${c.price != null ? money(c.price) : "цена по запитване"}`);
-  const body = ["Запитване от сайта", "", ...lines, "", `Получаване: ${d.delivery}`, `Име: ${d.name}`, `Телефон: ${d.phone}`, ...(d.email ? [`Имейл: ${d.email}`] : [])].join("\n");
+  const body = ["Запитване от сайта", "", ...lines, "", `Получаване: ${d.delivery}`, ...(d.invoice ? ["Фактура: да"] : []), `Име: ${d.name}`, `Телефон: ${d.phone}`, ...(d.email ? [`Имейл: ${d.email}`] : [])].join("\n");
   btn.disabled = true; note.textContent = "Изпращаме…";
   try {
     const res = await fetch(SITE.formEndpoint || `https://formsubmit.co/ajax/${ORDER_EMAIL}`, {
       method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" },
       body: JSON.stringify({ _subject: `Запитване от сайта — ${d.name}`, _template: "table", _captcha: "false",
-        "Име": d.name, "Телефон": d.phone, "Имейл": d.email || "—", "Получаване": d.delivery, "Творби": lines.join("\n") }) });
+        "Име": d.name, "Телефон": d.phone, "Имейл": d.email || "—", "Получаване": d.delivery, "Фактура": d.invoice ? "да" : "не", "Творби": lines.join("\n") }) });
     const out = await res.json().catch(() => ({}));
     if (!res.ok || String(out.success) === "false") throw new Error(out.message || res.status);
     cart.length = 0; store.set("cart2", cart); renderList();
