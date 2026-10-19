@@ -2,5 +2,5 @@
 Promise.all(["data/works.json", "data/site.json"].map(u => fetch(u, { cache: "no-cache" }).then(r => r.json()).catch(() => ({}))))
   .then(([w, site]) => {
     window.WORKS_DATA = w.works || []; window.SITE = site || {};
-    const s = document.createElement("script"); s.src = "main.js?v=5"; document.body.appendChild(s);
+    const s = document.createElement("script"); s.src = "main.js?v=6"; document.body.appendChild(s);
   });

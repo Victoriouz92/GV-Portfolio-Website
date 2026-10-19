@@ -54,6 +54,11 @@ content:
             fields:
               - { name: size, label: Размер, type: string, required: true }
               - { name: price, label: Цена в евро, type: number, required: true }
+              - { name: pay, label: Stripe линк за плащане, description: "По избор. Линк от Stripe → Payment Links, започва с https://buy.stripe.com/", type: string }
+          - name: pay
+            label: Stripe линк за плащане
+            description: По избор. Създава се в Stripe → Payment Links и започва с https://buy.stripe.com/. Ако е празно, бутонът „Купи с карта“ не се показва. При няколко размера линкът се слага към всеки размер.
+            type: string
           - name: frame
             label: Рамка / окачване
             type: string

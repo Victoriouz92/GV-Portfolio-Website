@@ -295,6 +295,8 @@ body.locked{overflow:hidden}
 .perks li::before{content:"";flex:0 0 7px;height:7px;border-radius:50%;background:var(--terracotta);transform:translateY(-1px)}
 .p-text{color:var(--bark)}
 .wp-actions{display:flex;flex-wrap:wrap;gap:30px;align-items:center}
+.wp-actions #wpPay:not([hidden])~#wpAdd{background:transparent;color:var(--umber)}
+.wp-actions #wpPay:not([hidden])~#wpAdd:hover{background:var(--umber);color:var(--cream)}
 .related{margin-top:clamp(100px,12vw,160px)}
 .related h2{margin-bottom:clamp(30px,4vw,52px);padding-bottom:22px;border-bottom:1px solid var(--line)}
 

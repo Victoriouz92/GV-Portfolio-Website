@@ -58,6 +58,13 @@ const fullName = w => `${w.series} „${w.name}“`;
 // every work has its own address (/tvorba/<id>/) so search engines and shared links can point at it
 const PATHS = !!document.querySelector("base") && /^https?:$/.test(location.protocol);
 const workHref = id => PATHS ? `tvorba/${id}/` : `#tvorba-${id}`;
+// card payment through a Stripe Payment Link pasted in the admin panel; only Stripe's own checkout address is accepted
+const STRIPE = /^https:\/\/buy\.stripe\.com\/[\w-]+$/;
+const payLink = (w, k) => { const u = String((hasSizes(w) ? (w.sizes[k] || {}).pay : w.pay) || "").trim(); return !w.sold && STRIPE.test(u) ? u : ""; };
+function updatePay() {
+  const u = cur && payLink(cur, +(($("#wpSizes select") || {}).value || 0));
+  $("#wpPay").hidden = !u; if (u) $("#wpPay").href = u;
+}
 const sizeSelect = (w, cls) => `<label class="${cls}"><span class="vh">Размер</span><select data-sizes="${w.id}">${w.sizes.map((z, k) =>
   `<option value="${k}">${esc(z.size)}</option>`).join("")}</select></label>`;
 const card = w => `
@@ -78,6 +85,7 @@ document.addEventListener("change", e => {
   const w = byId(sel.dataset.sizes), z = w.sizes[+sel.value];
   const scope = sel.closest(".work, .wp-info") || document;
   const pr = scope.querySelector(`[data-price="${w.id}"]`) || $("#wpPrice"); if (pr) pr.textContent = money(z.price);
+  if (scope.matches(".wp-info")) updatePay();
 });
 
 /* ---------- collection ---------- */
@@ -129,6 +137,7 @@ function renderWork(id) {
   $("#wpSizes").innerHTML = hasSizes(cur) ? sizeSelect(cur, "size-pick big") : "";
   if (cur.sold) $("#wpPrice").textContent = "Продадена";
   $("#wpAdd").hidden = !!cur.sold;
+  updatePay();
   const specs = [["Размер", hasSizes(cur) ? "по избор" : sizeLabel(cur)],
     [cur.cat === "pana" ? "Окачване" : "Рамка", cur.cat === "pana" ? "метална закопчалка-кобилица със спирала" : (cur.frame || "дървена")],
     ["Материал", "стъкло, цветни стъкълца, бои за стъкло"], ["Автор", "Лъки Михайлова"]];
