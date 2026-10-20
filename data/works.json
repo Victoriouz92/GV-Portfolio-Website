@@ -160,6 +160,16 @@
       "name": "Череша",
       "series": "Дърво на живота",
       "cat": "kartina",
+      "sizes": [
+        {
+          "size": "18,5 × 20,5 см",
+          "price": 38
+        },
+        {
+          "size": "22,5 × 25 см",
+          "price": 38
+        }
+      ],
       "sold": false,
       "id": "kartina-cheresha"
     },
