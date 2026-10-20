@@ -57,6 +57,10 @@ content:
           - name: frame
             label: Рамка / окачване
             type: string
+          - name: material
+            label: Материал (по избор)
+            description: Само ако е различен от обичайния — например при творба върху порцеланова плочка.
+            type: string
           - name: text
             label: Описание
             type: text
