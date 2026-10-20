@@ -508,6 +508,9 @@ textarea{resize:vertical}
 .process-note b{font-weight:500}
 @media (max-width:760px){.steps{grid-template-columns:minmax(0,1fr)}.steps li+li{border-top:1px solid var(--line)}}
 .contacts h2{margin:14px 0 clamp(36px,5vw,60px)}
+.contacts .contact-invitation{font-family:var(--voice);font-size:clamp(2.5rem,7.6vw,6.75rem);font-weight:400;line-height:1.02;letter-spacing:-.025em;text-wrap:initial}
+.contact-invitation span,.contact-invitation i{display:block}
+.contacts .contact-invitation i{color:var(--terracotta);font-size:1em;line-height:1.1}
 .contact-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px 40px;border-top:1px solid var(--line);padding-top:28px}
 .c-label{font-size:.66rem;letter-spacing:.24em;text-transform:uppercase;color:var(--bark)}
 .c-val{font:400 clamp(1.3rem,2vw,1.7rem) var(--title);margin:8px 0 4px}
