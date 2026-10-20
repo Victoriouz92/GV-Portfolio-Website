@@ -7,6 +7,7 @@ const WORKS = (window.WORKS_DATA || []).filter(w => w && w.id && w.name);
 const PANE_PERKS = ["Лесно се поставя", "Подхожда на стена във всякакъв цвят", "Почиства се лесно", "Внася цвят, стил и настроение в дома или офиса", "Подходящ подарък за мъже и жени"];
 const CAT_NOTE = {
   kartina: "Дървета на живота, рисувани върху стъкло и сплавени с цветни стъкълца, в дървена рамка.",
+  plastika: "Обемни творби от стъкло, изработени на ръка от Лъки Михайлова.",
   pana: "Без рамка. Висят на метална закопчалка във формата на кобилица, завършваща със спирала — символ на развитие и желание за извисеност, целящо да затвори кръга.",
 };
 
@@ -88,7 +89,7 @@ document.addEventListener("change", e => {
 let curCat = "kartina";
 function renderGrid(cat) {
   curCat = cat;
-  const soon = cat === "soon";
+  const soon = cat === "soon" || !WORKS.some(w => w.cat === cat);  // a category with no works yet says it is coming
   $("#soon").hidden = !soon; $("#grid").hidden = soon;
   $("#catNote").textContent = soon ? "" : CAT_NOTE[cat];
   if (!soon) $("#grid").innerHTML = WORKS.filter(w => w.cat === cat).sort((a, b) => (area(a) || Infinity) - (area(b) || Infinity)).map(card).join("");
@@ -125,11 +126,11 @@ function renderWork(id) {
     shots.push({ src: `${P}${cur.id}-close.webp`, th: `${P}${cur.id}-close-sm.webp`, v: 1 });
   }
   $("#wpThumbs").innerHTML = shots.map((s, i) => `<button type="button" data-shot="${i}" aria-label="Снимка ${i + 1}${s.label ? ", " + s.label : ""}"><img src="${s.th}" alt=""></button>`).join("");
-  $("#wpCat").textContent = cur.series + (cur.cat === "pana" ? " · без рамка" : " · стъклена картина с рамка");
+  $("#wpCat").textContent = cur.series + ({ pana: " · без рамка", plastika: " · пластика от стъкло" }[cur.cat] || " · стъклена картина с рамка");
   $("#wpName").textContent = cur.name;
   $("#wpPrice").textContent = priceLabel(cur);
   $("#wpPerks").innerHTML = cur.cat === "pana" ? PANE_PERKS.map(t => `<li>${t}</li>`).join("") : "";
-  $("#wpText").textContent = cur.text || (cur.cat === "pana" ? CAT_NOTE.pana : "Дърво на живота, рисувано върху стъкло и сплавено в пещ с цветни стъкълца.");
+  $("#wpText").textContent = cur.text || (cur.cat === "kartina" ? "Дърво на живота, рисувано върху стъкло и сплавено в пещ с цветни стъкълца." : CAT_NOTE[cur.cat]);
   $("#wpSizes").innerHTML = hasSizes(cur) ? sizeSelect(cur, "size-pick big") : "";
   if (cur.sold) $("#wpPrice").textContent = "Продадена";
   $("#wpAdd").hidden = !stockOf(cur);
@@ -137,10 +138,11 @@ function renderWork(id) {
   $("#wpShip").innerHTML = stockOf(cur) ? [isFinite(cheapest) ? `Доставка от ${money(cheapest)} · 1–2 работни дни` : "", "Безплатно вземане от галерията в София",
     "Плащане с карта, наложен платеж или превод", "14 дни за връщане"].filter(Boolean).map(t => `<li>${t}</li>`).join("") : "";
   $("#wpStock").innerHTML = stockOf(cur) ? `<span>${stockLabel(cur)}</span> Търсите повече бройки? <a href="#kontakti">Пишете ни</a>` : "<span>Продадена</span> Може да се изработи подобна — <a href=\"#poruchka\">по поръчка</a>";
+  const sculpture = cur.cat === "plastika";
   const specs = [["Размер", hasSizes(cur) ? "по избор" : sizeLabel(cur)],
-    [cur.cat === "pana" ? "Окачване" : "Рамка", cur.cat === "pana" ? "метална закопчалка-кобилица със спирала" : (cur.frame || "дървена")],
-    ["Материал", cur.material || "темперирано стъкло, цветни стъклени топчета, специализирани бои за стъкло „Marabu“"],
-    ["Техника", "фюзинг — две изпичания в пещ, над 760 °C"], ["Автор", "Лъки Михайлова"]];
+    sculpture ? null : [cur.cat === "pana" ? "Окачване" : "Рамка", cur.cat === "pana" ? "метална закопчалка-кобилица със спирала" : (cur.frame || "дървена")],
+    ["Материал", cur.material || (sculpture ? "стъкло" : "темперирано стъкло, цветни стъклени топчета, специализирани бои за стъкло „Marabu“")],
+    sculpture ? null : ["Техника", "фюзинг — две изпичания в пещ, над 760 °C"], ["Автор", "Лъки Михайлова"]].filter(Boolean);
   $("#wpSpecs").innerHTML = specs.map(([a, b]) => `<div><dt>${a}</dt><dd>${esc(b)}</dd></div>`).join("");
   const rel = WORKS.filter(w => w.cat === cur.cat && w.id !== cur.id && w.id !== "plodorodie");
   const start = Math.max(0, rel.findIndex(w => WORKS.indexOf(w) > WORKS.indexOf(cur)));

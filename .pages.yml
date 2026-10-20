@@ -38,6 +38,7 @@ content:
               values:
                 - { value: kartina, label: Картина (с рамка) }
                 - { value: pana, label: Пано (без рамка) }
+                - { value: plastika, label: Пластика }
           - name: price
             label: Цена в евро
             description: Оставете празно за „по запитване“. Ако има няколко размера, попълнете ги долу.
