@@ -20,8 +20,8 @@ const hasPrice = v => v !== null && v !== undefined && v !== "";
 const priceLabel = w => hasSizes(w) ? money(w.sizes[0].price) : hasPrice(w.price) ? money(w.price) : "по запитване";
 const sizeLabel = w => w.size || "размер при запитване";
 // physical area in cm², used to order the collection from the largest piece to the smallest
-const area = w => { const m = String(hasSizes(w) ? w.sizes[w.sizes.length - 1].size : w.size || "").replace(",", ".").match(/([\d.]+)\s*[×x]\s*([\d.]+)/);
-  return m ? m[1] * m[2] : 0; };
+const area = w => { const t = String(hasSizes(w) ? w.sizes[0].size : w.size || ""), m = t.replace(",", ".").match(/([\d.]+)\s*[×x]\s*([\d.]+)/);
+  return m ? m[1] * m[2] : /малък/i.test(t) ? 1 : 0; };  // "малък размер" sorts with the smallest
 const byId = id => WORKS.find(w => w.id === id);
 const FRAMES = { platinum: "Платина", walnut: "Тъмен орех", black: "Черно и сребро" };
 const store = {
@@ -91,7 +91,7 @@ function renderGrid(cat) {
   const soon = cat === "soon";
   $("#soon").hidden = !soon; $("#grid").hidden = soon;
   $("#catNote").textContent = soon ? "" : CAT_NOTE[cat];
-  if (!soon) $("#grid").innerHTML = WORKS.filter(w => w.cat === cat).sort((a, b) => (area(b) || -1) - (area(a) || -1)).map(card).join("");
+  if (!soon) $("#grid").innerHTML = WORKS.filter(w => w.cat === cat).sort((a, b) => (area(a) || Infinity) - (area(b) || Infinity)).map(card).join("");
   observe($("#grid"));
 }
 $$(".tabs button").forEach(t => t.addEventListener("click", () => {

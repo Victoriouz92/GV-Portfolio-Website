@@ -8,7 +8,7 @@ media:
 content:
   - name: works
     label: Творби
-    description: Картини и пана. Подредбата на сайта е по размер, от най-голямата към най-малката.
+    description: Картини и пана. Подредбата на сайта е по размер, от най-малката към най-голямата.
     type: file
     path: data/works.json
     format: json
