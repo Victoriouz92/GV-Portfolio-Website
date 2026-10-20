@@ -318,6 +318,8 @@
       "name": "Урожай",
       "series": "Дърво на живота",
       "cat": "pana",
+      "price": 24,
+      "size": "12 × 12 см",
       "sold": false,
       "id": "pana-urozhay"
     },
