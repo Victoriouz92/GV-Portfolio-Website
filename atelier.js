@@ -12,7 +12,6 @@
   const canvas = document.getElementById("glassTree");
   const context = canvas.getContext("2d");
   const figure = entrance.querySelector(".atelier-art");
-  const replay = document.getElementById("replayGlass");
   const status = document.getElementById("glassAnnouncement");
   const motion = matchMedia("(prefers-reduced-motion: reduce)");
   const siblings = [...document.body.children].filter(el => el !== entrance && !["SCRIPT", "NOSCRIPT"].includes(el.tagName));
@@ -25,13 +24,14 @@
   const SIZE = 900, DURATION = 4.4;
   const clamp = value => Math.min(1, Math.max(0, value));
   let frame = 0, leaving = false, photograph = null, reflection = null;
-  let started = 0, elapsed = 0, previousTime = 0;
+  let started = 0, elapsed = 0, previousTime = 0, loopTimer = 0, announced = false;
+  const LOOP_PAUSE = 3000; // the light passes, rests for 3 s, then passes again
   const pointer = { x: 450, y: 370, targetX: 450, targetY: 370, strength: 0, targetStrength: 0 };
 
   function leave(event) {
     if (leaving) return;
     leaving = true;
-    clearTimeout(focusTimer);
+    clearTimeout(focusTimer); clearTimeout(loopTimer);
     cancelAnimationFrame(frame);
     try { sessionStorage.setItem("entered", "1"); } catch { /* Navigation works without storage. */ }
     entrance.classList.add("is-leaving");
@@ -152,7 +152,10 @@
     else {
       pointer.strength = pointer.targetStrength;
       render(motion.matches ? DURATION : seconds);
-      if (!motion.matches) status.textContent = "Светлината разкрива стъклото.";
+      if (!motion.matches) {
+        if (!announced) { status.textContent = "Светлината разкрива стъклото."; announced = true; }
+        clearTimeout(loopTimer); loopTimer = setTimeout(start, LOOP_PAUSE);
+      }
     }
   }
 
@@ -164,11 +167,11 @@
   }
 
   function start() {
+    clearTimeout(loopTimer);
     cancelAnimationFrame(frame); frame = 0;
     if (!photograph || leaving) return;
     elapsed = 0; started = performance.now();
     pointer.strength = pointer.targetStrength = 0;
-    status.textContent = "";
     render(motion.matches ? DURATION : 0);
     requestFrame();
   }
@@ -182,26 +185,25 @@
     requestFrame();
   });
   canvas.addEventListener("pointerleave", () => { pointer.targetStrength = 0; requestFrame(); });
-  replay.addEventListener("click", start);
   motion.addEventListener("change", start);
   document.addEventListener("visibilitychange", () => {
     if (!photograph || leaving) return;
     if (document.hidden) {
       elapsed = Math.min(DURATION, elapsed + (performance.now() - started) / 1000);
-      cancelAnimationFrame(frame); frame = 0;
-    } else { started = performance.now(); requestFrame(); }
+      cancelAnimationFrame(frame); frame = 0; clearTimeout(loopTimer);
+    } else if (elapsed >= DURATION) start();
+    else { started = performance.now(); requestFrame(); }
   });
 
-  if (!context || !lightContext) { replay.hidden = true; return; }
+  if (!context || !lightContext) return;
   const image = new Image();
   image.onload = () => {
     if (leaving) return;
     try { prepare(image); }
     catch (error) {
-      figure.classList.remove("is-ready"); replay.hidden = true;
+      figure.classList.remove("is-ready");
       console.warn("Glass lighting unavailable; original artwork displayed.", error);
     }
   };
-  image.onerror = () => { replay.hidden = true; };
   image.src = "assets/products/kartina-blagodat-wall.webp";
 })();
