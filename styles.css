@@ -473,6 +473,7 @@ textarea{resize:vertical}
 .wedding-fig img.pane{filter:var(--hang-f)}
 .author-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(30px,6vw,100px);align-items:start}
 .author h2{margin:14px 0 22px}
+.author-id{font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:var(--terracotta);margin:-8px 0 24px}
 .author .mf{text-align:left;color:var(--umber);margin:0;max-width:20em}
 .author-text p{color:var(--bark);margin-bottom:16px;max-width:34em}
 .author-fig{margin-top:clamp(50px,7vw,90px)}
