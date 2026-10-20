@@ -217,6 +217,20 @@ body.locked{overflow:hidden}
 .work h3 a{color:inherit;text-decoration:none}
 .work h3 a:hover{color:var(--terracotta)}
 .work .size{font-size:.84rem;color:var(--bark)}
+.work .work-author{font:italic 500 1.1rem/1.25 var(--voice);color:var(--bark);margin:0 0 3px}
+/* Sculpture photographs share the page wall without a rectangular mat. */
+.work.sculpture .mat{aspect-ratio:5/6;overflow:visible;isolation:isolate;background:var(--sand)}
+.work.sculpture .mat::after,.wp-main.sculpture::after{display:none}
+.work.sculpture .mat img.main{inset:auto 0 0;margin:auto;width:100%;height:100%;object-fit:contain;object-position:center bottom;mix-blend-mode:multiply;filter:drop-shadow(0 9px 9px #33241b13);transition:transform .7s var(--ease),opacity .35s}
+.work.sculpture:hover .mat img.main{transform:translateY(-4px)}
+img[data-sculpture-ready="pending"]{opacity:0}
+.wp-main.sculpture{background:var(--sand);isolation:isolate}
+.wp-main.sculpture>img{position:absolute;inset:0;margin:auto;width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply;filter:drop-shadow(0 12px 12px #33241b16)}
+.wp-main.sculpture .lens{background-color:var(--sand)}
+.wp-thumbs img[data-sculpture]{mix-blend-mode:multiply;object-fit:contain}
+img[data-sculpture-mode="blend"]{mask-image:linear-gradient(to right,transparent,#000 3%,#000 97%,transparent),linear-gradient(to bottom,transparent,#000 3%,#000 97%,transparent);mask-composite:intersect}
+.wp-main.sculpture+.wp-thumbs button{background:var(--sand)}
+#wpText{white-space:pre-line}
 .work .price{font:400 clamp(1.5rem,2vw,1.85rem)/1 var(--title);color:var(--umber);margin-top:6px;letter-spacing:.01em;white-space:nowrap}
 .work.sold .price{font:500 .7rem var(--text);letter-spacing:.24em;text-transform:uppercase;color:var(--terracotta)}
 .work.sold .mat img.main{filter:saturate(.75)}

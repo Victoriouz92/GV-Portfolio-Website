@@ -38,7 +38,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prata&family=Cormorant+Garamond:ital,wght@1,400;1,500&family=Jost:wght@300;400;500&display=swap&subset=cyrillic" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=12">
+<link rel="stylesheet" href="styles.css?v=16">
 <link rel="stylesheet" href="atelier.css?v=9">
 <link rel="preload" as="image" href="assets/products/kartina-blagodat-wall.webp">
 </head>
@@ -102,7 +102,7 @@
 <div class="view" data-view="nachalo">
   <section class="block page-top" id="kolekcia">
     <header class="head">
-      <div><p class="eyebrow">Колекция</p><h1 class="h1-sm">Стъкло, което <i class="glow">свети</i></h1></div>
+      <div><p class="eyebrow">Колекция</p><h1 class="h1-sm" id="collectionTitle">Стъкло, което <i class="glow">свети</i></h1></div>
       <div class="tabs" role="tablist" aria-label="Категории">
         <button role="tab" aria-selected="true" data-cat="kartina">Картини</button>
         <button role="tab" aria-selected="false" data-cat="pana">Пана</button>
@@ -190,7 +190,7 @@
           <span class="lens" id="lens" aria-hidden="true"></span>
         </div>
         <div class="wp-thumbs" id="wpThumbs"></div>
-        <p class="fine wp-hint">Посочете снимката, за да видите стъклото отблизо.</p>
+        <p class="fine wp-hint" id="wpHint">Посочете снимката, за да видите стъклото отблизо.</p>
       </div>
       <div class="wp-info">
         <p class="eyebrow" id="wpCat"></p>
@@ -202,11 +202,11 @@
         <dl class="specs" id="wpSpecs"></dl>
         <div class="wp-actions">
           <button type="button" class="btn" id="wpAdd">Добави в количката</button>
-          <a class="link" href="#poruchka">Искам подобна по поръчка</a>
+          <a class="link" id="wpEnquiry" href="#poruchka">Искам подобна по поръчка</a>
         </div>
         <p class="stock" id="wpStock"></p>
         <ul class="ship-info" id="wpShip"></ul>
-        <p class="fine">Всяка творба е ръчно изработена. Възможни са фини разлики спрямо снимките.</p>
+        <p class="fine" id="wpVariationNote">Всяка творба е ръчно изработена. Възможни са фини разлики спрямо снимките.</p>
       </div>
     </div>
     <div class="related">
@@ -342,6 +342,7 @@
 </div>
 
 <script src="atelier.js?v=8" defer></script>
-<script src="boot.js?v=17" defer></script>
+<script src="sculpture-photos.js?v=5" defer></script>
+<script src="boot.js?v=21" defer></script>
 </body>
 </html>

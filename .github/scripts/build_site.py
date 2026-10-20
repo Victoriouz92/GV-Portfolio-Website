@@ -37,7 +37,8 @@ def main():
     returns = {"@type": "MerchantReturnPolicy", "applicableCountry": "BG", "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
                "merchantReturnDays": 14, "returnMethod": "https://schema.org/ReturnByMail", "returnFees": "https://schema.org/ReturnShippingFees"}
     notes = {"kartina": "Дърво на живота, рисувано върху стъкло и сплавено с цветни стъкълца, в дървена рамка.",
-             "pana": "Стъклено пано без рамка, на метална закопчалка-кобилица."}
+             "pana": "Стъклено пано без рамка, на метална закопчалка-кобилица.",
+             "plastika": "Авторска пластика от бронз или метал."}
     urls = [SITE]
     for w in works:
         if not w.get("id") or not w.get("name"): continue
@@ -50,10 +51,14 @@ def main():
         price_txt = (f"от {min(prices)} €" if len(prices) > 1 else f"{prices[0]} €") if prices else "цена по запитване"
         size_txt = " · ".join(z["size"] for z in sizes) if sizes else w.get("size", "")
         desc = (w.get("text") or notes.get(w.get("cat"), "")).strip()
-        meta_desc = f"{name} — ръчно изработена творба от стъкло на Лъки Михайлова. {size_txt + '. ' if size_txt else ''}{price_txt}. {desc}"[:300]
+        attribution = f'Автор: {w["author"]}. ' if w.get('author') else '' if w.get('cat') == 'plastika' else 'Автор: Лъки Михайлова. '
+        meta_desc = f"{name}. {attribution}{size_txt + '. ' if size_txt else ''}{price_txt}. {desc}"[:300]
         title = f"{name} — {price_txt} | Лъки Михайлова"
         product = {"@context": "https://schema.org", "@type": "Product", "name": name, "description": desc or meta_desc,
-                   "image": img, "url": url, "brand": {"@type": "Brand", "name": "Лъки Михайлова"}, "material": "стъкло"}
+                   "image": [SITE + p['src'] for p in w['photos']] if w.get('photos') else img,
+                   "url": url, "material": w.get('material') or "стъкло"}
+        if w.get('author') or w.get('cat') != 'plastika':
+            product['brand'] = {"@type": "Brand", "name": w.get('author') or "Лъки Михайлова"}
         if prices:
             product["offers"] = ({"@type": "AggregateOffer", "lowPrice": min(prices), "highPrice": max(prices)} if len(prices) > 1
                                  else {"@type": "Offer", "price": prices[0]}) | {

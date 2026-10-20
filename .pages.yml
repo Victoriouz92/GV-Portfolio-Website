@@ -8,7 +8,7 @@ media:
 content:
   - name: works
     label: Творби
-    description: Картини и пана. Подредбата на сайта е по размер, от най-малката към най-голямата.
+    description: Картини, пана и пластики. Подредбата на сайта е по размер, от най-малката към най-голямата.
     type: file
     path: data/works.json
     format: json
@@ -65,6 +65,27 @@ content:
           - name: text
             label: Описание
             type: text
+          - { name: author, label: Автор (при пластиките), type: string }
+          - { name: support, label: Постамент, type: string }
+          - { name: weight, label: Тегло, type: string }
+          - { name: origin, label: Произход, type: string }
+          - { name: technique, label: Техника (при пластиките), type: string }
+          - { name: stockUnknown, label: Наличен без уточнен брой, type: boolean }
+          - { name: sourceUrl, label: Източник на информацията, type: string }
+          - name: photoMode
+            label: Вписване на снимката във фона
+            type: select
+            options:
+              values:
+                - { value: mask, label: Отделяне на светлия фон }
+                - { value: blend, label: Запазване на светъл постамент }
+          - name: photos
+            label: Продуктова галерия (по избор)
+            type: object
+            list: true
+            fields:
+              - { name: src, label: Снимка, type: image, required: true }
+              - { name: label, label: Изглед (основна / гръб / детайл), type: string }
           - name: image
             label: Снимка
             description: За нови творби. Старите вече имат обработени снимки — оставете празно.

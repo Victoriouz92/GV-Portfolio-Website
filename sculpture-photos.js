@@ -1,0 +1,96 @@
+/* Render the original sculpture photography on the page wall. Source files stay intact. */
+(() => {
+  "use strict";
+  const cache = new Map();
+  const clamp = value => Math.max(0, Math.min(1, value));
+  const median = values => values.sort((a, b) => a - b)[Math.floor(values.length / 2)];
+
+  async function source(url, maxSize = 1200, mode = "mask") {
+    const key = `${mode}:${maxSize}:${url}`;
+    if (cache.has(key)) return cache.get(key);
+    const result = new Promise(resolve => {
+      const image = new Image();
+      image.onload = () => {
+        try {
+          const scale = Math.min(1, maxSize / Math.max(image.naturalWidth, image.naturalHeight));
+          const canvas = document.createElement("canvas");
+          const width = canvas.width = Math.round(image.naturalWidth * scale);
+          const height = canvas.height = Math.round(image.naturalHeight * scale);
+          const g = canvas.getContext("2d", { willReadFrequently: true });
+          g.drawImage(image, 0, 0, width, height);
+          const photo = g.getImageData(0, 0, width, height), rgba = photo.data;
+          // Estimate the photographed wall from corner samples, not the artwork.
+          const samples = [[], [], []];
+          const radius = Math.max(3, Math.round(width * .025));
+          for (const [cx, cy] of [[0, 0], [width - radius, 0], [0, height - radius], [width - radius, height - radius]]) {
+            for (let y = cy; y < cy + radius; y++) for (let x = cx; x < cx + radius; x++) {
+              const i = (y * width + x) * 4;
+              if (Math.min(rgba[i], rgba[i + 1], rgba[i + 2]) < 160) continue;
+              for (let c = 0; c < 3; c++) samples[c].push(rgba[i + c]);
+            }
+          }
+          if (!samples[0].length) { resolve(url); return; }
+          const wall = samples.map(median);
+          const mask = new Uint8Array(width * height), queue = new Int32Array(width * height);
+          let head = 0, tail = 0;
+          function background(p) {
+            const i = p * 4, r = rgba[i], green = rgba[i + 1], b = rgba[i + 2];
+            return Math.min(r, green, b) > 170 && Math.max(r, green, b) - Math.min(r, green, b) < 42 &&
+              Math.max(Math.abs(r - wall[0]), Math.abs(green - wall[1]), Math.abs(b - wall[2])) < 65;
+          }
+          function add(p) {
+            if (!mask[p] && background(p)) { mask[p] = 1; queue[tail++] = p; }
+          }
+          for (let x = 0; x < width; x++) { add(x); add((height - 1) * width + x); }
+          for (let y = 0; y < height; y++) { add(y * width); add(y * width + width - 1); }
+          // Edge-connected masking keeps enclosed light marble and metal highlights.
+          while (head < tail) {
+            const p = queue[head++], x = p % width;
+            if (x) add(p - 1);
+            if (x < width - 1) add(p + 1);
+            if (p >= width) add(p - width);
+            if (p < width * (height - 1)) add(p + width);
+          }
+          // Remove only the photographed wall; preserve the original RGB everywhere else.
+          for (let p = 0; p < mask.length; p++) {
+            const x = p % width, y = Math.floor(p / width);
+            if (mask[p]) {
+              // White marble belongs to the work. Keep the lower support region,
+              // with a feathered transition, while still clearing the wall above it.
+              const protect = mode === "blend" ? clamp((y / height - .7) / .08) *
+                clamp((x / width - .02) / .05) * clamp((.98 - x / width) / .05) : 0;
+              rgba[p * 4 + 3] = Math.round(255 * protect);
+            }
+            if (x < 2 || x > width - 3 || y < 2 || y > height - 3) rgba[p * 4 + 3] = 0;
+          }
+          g.putImageData(photo, 0, 0);
+          resolve(canvas.toDataURL("image/png"));
+        } catch {
+          // Original photography remains usable when canvas processing is unavailable.
+          resolve(url);
+        }
+      };
+      image.onerror = () => resolve(url);
+      image.src = url;
+    });
+    cache.set(key, result);
+    if (cache.size > 48) cache.delete(cache.keys().next().value);
+    return result;
+  }
+
+  function prepare(root) {
+    root.querySelectorAll("img[data-sculpture]:not([data-sculpture-ready])").forEach(img => {
+      img.dataset.sculptureReady = "pending";
+      const url = img.getAttribute("src");
+      const render = async () => {
+        const processed = await source(url, +img.dataset.sculpture || 600, img.dataset.sculptureMode);
+        if (!img.isConnected) return;
+        img.src = processed;
+        img.dataset.sculptureReady = "true";
+      };
+      if (img.complete && img.naturalWidth) render();
+      else { img.addEventListener("load", render, { once: true }); img.addEventListener("error", () => { img.dataset.sculptureReady = "true"; }, { once: true }); }
+    });
+  }
+  window.SculpturePhotos = { source, prepare };
+})();

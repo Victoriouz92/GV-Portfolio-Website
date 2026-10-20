@@ -7,7 +7,7 @@ const WORKS = (window.WORKS_DATA || []).filter(w => w && w.id && w.name);
 const PANE_PERKS = ["Лесно се поставя", "Подхожда на стена във всякакъв цвят", "Почиства се лесно", "Внася цвят, стил и настроение в дома или офиса", "Подходящ подарък за мъже и жени"];
 const CAT_NOTE = {
   kartina: "Дървета на живота, рисувани върху стъкло и сплавени с цветни стъкълца, в дървена рамка.",
-  plastika: "Обемни творби от стъкло, изработени на ръка от Лъки Михайлова.",
+  plastika: "Бронзови пластики и металопластика — авторски фигури, релефи и малки скулптурни композиции.",
   pana: "Без рамка. Висят на метална закопчалка във формата на кобилица, завършваща със спирала — символ на развитие и желание за извисеност, целящо да затвори кръга.",
 };
 
@@ -38,6 +38,7 @@ const io = "IntersectionObserver" in window ? new IntersectionObserver(es => es.
   if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
 }), { rootMargin: "0px 0px -6% 0px" }) : null;
 function observe(root = document) {
+  window.SculpturePhotos?.prepare(root);
   const els = $$(".rv:not(.in)", root);
   els.forEach((el, i) => { el.style.transitionDelay = `${(i % 3) * 90}ms`; io ? io.observe(el) : el.classList.add("in"); });
   setTimeout(() => els.forEach(el => el.classList.add("in")), 1800);
@@ -61,17 +62,18 @@ const PATHS = !!document.querySelector("base") && /^https?:$/.test(location.prot
 const workHref = id => PATHS ? `tvorba/${id}/` : `#tvorba-${id}`;
 // every work is one piece unless the admin panel says otherwise
 const stockOf = w => w.sold ? 0 : hasPrice(w.stock) ? Math.max(0, +w.stock) : 1;
-const stockLabel = w => stockOf(w) ? `${stockOf(w)} бр. в наличност` : "Продадена";
+const stockLabel = w => stockOf(w) ? w.stockUnknown ? "Налично" : `${stockOf(w)} бр. в наличност` : "Продадена";
 const sizeSelect = (w, cls) => `<label class="${cls}"><span class="vh">Размер</span><select data-sizes="${w.id}">${w.sizes.map((z, k) =>
   `<option value="${k}">${esc(z.size)}</option>`).join("")}</select></label>`;
 const card = w => `
-  <article class="work rv${hung(w) ? " hung" : ""}${w.cat === "pana" && !w.image ? " pane" : ""}${w.sold ? " sold" : ""}">
+  <article class="work rv${hung(w) ? " hung" : ""}${w.cat === "plastika" ? " sculpture" : ""}${w.cat === "pana" && !w.image ? " pane" : ""}${w.sold ? " sold" : ""}">
     <a class="mat glass" href="${workHref(w.id)}" aria-label="${esc(fullName(w))}">
-      <img class="main" src="${imgSrc(w, 1)}" alt="${esc(fullName(w))}" loading="lazy">
+      <img class="main" src="${imgSrc(w, 1)}" ${w.cat === "plastika" ? `data-sculpture="600" data-sculpture-mode="${w.photoMode || "mask"}"` : ""} alt="${esc(fullName(w))}" loading="lazy" decoding="async">
     </a>
     <div class="cap">
       <span class="series">${esc(w.series)}</span>
       <h3><a href="${workHref(w.id)}">${esc(w.name)}</a></h3>
+      ${w.cat === "plastika" && w.author ? `<span class="work-author">${esc(w.author)}</span>` : ""}
       ${hasSizes(w) ? sizeSelect(w, "size-pick") : `<span class="size">${esc(w.size || "размер при запитване")}</span>`}
       <span class="price" data-price="${w.id}">${w.sold ? "Продадена" : priceLabel(w)}</span>
       ${w.sold ? "" : `<span class="stock-mini">${stockLabel(w)}</span>`}
@@ -89,6 +91,7 @@ document.addEventListener("change", e => {
 let curCat = "kartina";
 function renderGrid(cat) {
   curCat = cat;
+  $("#collectionTitle").innerHTML = cat === "plastika" ? "Пластики" : 'Стъкло, което <i class="glow">свети</i>';
   const soon = cat === "soon" || !WORKS.some(w => w.cat === cat);  // a category with no works yet says it is coming
   $("#soon").hidden = !soon; $("#grid").hidden = soon;
   $("#catNote").textContent = soon ? "" : CAT_NOTE[cat];
@@ -98,25 +101,35 @@ function renderGrid(cat) {
 $$(".tabs button").forEach(t => t.addEventListener("click", () => {
   $$(".tabs button").forEach(x => x.setAttribute("aria-selected", x === t));
   renderGrid(t.dataset.cat);
+  if (location.pathname === "/") history.replaceState(null, "", t.dataset.cat === "plastika" ? "#plastiki" : "#kolekcia");
 }));
 renderGrid("kartina");
 
 /* ---------- work page with magnifier ---------- */
 const wpMain = $("#wpMain"), wpImg = $("#wpImg"), lens = $("#lens");
 let cur = null, shots = [], shotI = 0;
-function showShot(i) {
+async function showShot(i) {
   shotI = i;
   wpImg.style.opacity = 0;
   const s = shots[i];
-  const next = new Image(); next.src = s.src;
-  next.onload = () => { wpMain.classList.toggle("hung", !!s.hung); wpMain.classList.toggle("pane", !!s.hung && cur.cat === "pana"); wpImg.src = s.src; wpImg.style.opacity = 1; lens.style.backgroundImage = `url("${s.src}")`; };
-  wpImg.alt = fullName(cur);
+  const workId = cur.id;
+  const src = cur.cat === "plastika" && window.SculpturePhotos ? await window.SculpturePhotos.source(s.src, 1200, cur.photoMode) : s.src;
+  if (cur.id !== workId || shotI !== i) return;
+  const next = new Image();
+  next.onload = () => { if (cur.id !== workId || shotI !== i) return; wpMain.classList.toggle("hung", !!s.hung); wpMain.classList.toggle("pane", !!s.hung && cur.cat === "pana"); wpImg.src = src; wpImg.style.opacity = 1; lens.style.backgroundImage = `url("${src}")`; };
+  next.src = src;
+  wpImg.alt = `${fullName(cur)}${s.label ? " — " + s.label : ""}`;
   $$("#wpThumbs button").forEach((b, k) => b.setAttribute("aria-pressed", k === i));
 }
 function renderWork(id) {
   cur = byId(id); if (!cur) return false;
+  $(".work-page > .back").href = cur.cat === "plastika" ? "#plastiki" : "#kolekcia";
   shots = [];
-  if (cur.id === "plodorodie") {
+  wpMain.classList.toggle("sculpture", cur.cat === "plastika");
+  wpImg.dataset.sculptureMode = cur.cat === "plastika" ? cur.photoMode || "mask" : "";
+  if (Array.isArray(cur.photos) && cur.photos.length) {
+    shots = cur.photos.map(s => ({ src: s.src, th: s.src, label: s.label, hung: false }));
+  } else if (cur.id === "plodorodie") {
     Object.keys(FRAMES).forEach(f => shots.push({ src: `assets/img/framed-${f}-wall.webp`, th: `assets/img/swatch-${f}.webp`, v: 1, hung: true, label: `рамка ${FRAMES[f]}` }));
     shots.push({ src: `${P}plodorodie-close.webp`, th: `${P}plodorodie-close-sm.webp`, v: 1 });
   } else if (cur.image) {
@@ -125,9 +138,15 @@ function renderWork(id) {
     shots.push({ src: wallSrc(cur.id, cur.cat), th: `${P}${cur.id}-sm.webp`, v: 1, hung: true });
     shots.push({ src: `${P}${cur.id}-close.webp`, th: `${P}${cur.id}-close-sm.webp`, v: 1 });
   }
-  $("#wpThumbs").innerHTML = shots.map((s, i) => `<button type="button" data-shot="${i}" aria-label="Снимка ${i + 1}${s.label ? ", " + s.label : ""}"><img src="${s.th}" alt=""></button>`).join("");
-  $("#wpCat").textContent = cur.series + ({ pana: " · без рамка", plastika: " · пластика от стъкло" }[cur.cat] || " · стъклена картина с рамка");
+  $("#wpThumbs").hidden = shots.length < 2;
+  $("#wpThumbs").innerHTML = shots.map((s, i) => `<button type="button" data-shot="${i}" aria-label="Снимка ${i + 1}${s.label ? ", " + s.label : ""}"><img src="${s.th}" ${cur.cat === "plastika" ? `data-sculpture="180" data-sculpture-mode="${cur.photoMode || "mask"}"` : ""} alt=""></button>`).join("");
+  window.SculpturePhotos?.prepare($("#wpThumbs"));
+  $("#wpCat").textContent = cur.series + (cur.cat === "plastika" ? "" : cur.cat === "pana" ? " · без рамка" : " · стъклена картина с рамка");
   $("#wpName").textContent = cur.name;
+  $("#wpHint").textContent = cur.cat === "plastika" ? "Посочете снимката, за да разгледате детайлите отблизо." : "Посочете снимката, за да видите стъклото отблизо.";
+  $("#wpEnquiry").textContent = cur.cat === "plastika" ? "Въпрос за творбата" : "Искам подобна по поръчка";
+  $("#wpEnquiry").href = cur.cat === "plastika" ? "#kontakti" : "#poruchka";
+  $("#wpVariationNote").textContent = cur.cat === "plastika" ? "Възможни са фини разлики в оттенъците спрямо снимките." : "Всяка творба е ръчно изработена. Възможни са фини разлики спрямо снимките.";
   $("#wpPrice").textContent = priceLabel(cur);
   $("#wpPerks").innerHTML = cur.cat === "pana" ? PANE_PERKS.map(t => `<li>${t}</li>`).join("") : "";
   $("#wpText").textContent = cur.text || (cur.cat === "kartina" ? "Дърво на живота, рисувано върху стъкло и сплавено в пещ с цветни стъкълца." : CAT_NOTE[cur.cat]);
@@ -141,8 +160,12 @@ function renderWork(id) {
   const sculpture = cur.cat === "plastika";
   const specs = [["Размер", hasSizes(cur) ? "по избор" : sizeLabel(cur)],
     sculpture ? null : [cur.cat === "pana" ? "Окачване" : "Рамка", cur.cat === "pana" ? "метална закопчалка-кобилица със спирала" : (cur.frame || "дървена")],
-    ["Материал", cur.material || (sculpture ? "стъкло" : "темперирано стъкло, цветни стъклени топчета, специализирани бои за стъкло „Marabu“")],
-    sculpture ? null : ["Техника", "фюзинг — две изпичания в пещ, над 760 °C"], ["Автор", "Лъки Михайлова"]].filter(Boolean);
+    ["Материал", cur.material || (sculpture ? "по запитване" : "темперирано стъкло, цветни стъклени топчета, специализирани бои за стъкло „Marabu“")],
+    sculpture ? cur.technique ? ["Техника", cur.technique] : null : ["Техника", "фюзинг — две изпичания в пещ, над 760 °C"],
+    cur.support ? ["Постамент", cur.support] : null,
+    cur.weight ? ["Тегло", cur.weight] : null,
+    cur.origin ? ["Произход", cur.origin] : null,
+    cur.author || !sculpture ? ["Автор", cur.author || "Лъки Михайлова"] : null].filter(Boolean);
   $("#wpSpecs").innerHTML = specs.map(([a, b]) => `<div><dt>${a}</dt><dd>${esc(b)}</dd></div>`).join("");
   const rel = WORKS.filter(w => w.cat === cur.cat && w.id !== cur.id && w.id !== "plodorodie");
   const start = Math.max(0, rel.findIndex(w => WORKS.indexOf(w) > WORKS.indexOf(cur)));
@@ -155,11 +178,14 @@ $("#wpThumbs").addEventListener("click", e => { const b = e.target.closest("[dat
 wpMain.addEventListener("pointermove", e => {
   if (e.pointerType === "touch") return;
   const r = wpMain.getBoundingClientRect(), ir = wpImg.getBoundingClientRect(), Z = 3;
-  const x = e.clientX - ir.left, y = e.clientY - ir.top; // relative to the photo itself (a hung frame is smaller than the box)
-  if (x < 0 || y < 0 || x > ir.width || y > ir.height) return wpMain.classList.remove("zooming");
+  const fit = cur.cat === "plastika" ? Math.min(ir.width / wpImg.naturalWidth, ir.height / wpImg.naturalHeight) : 1;
+  const photoWidth = cur.cat === "plastika" ? wpImg.naturalWidth * fit : ir.width;
+  const photoHeight = cur.cat === "plastika" ? wpImg.naturalHeight * fit : ir.height;
+  const x = e.clientX - ir.left - (ir.width - photoWidth) / 2, y = e.clientY - ir.top - (ir.height - photoHeight) / 2;
+  if (x < 0 || y < 0 || x > photoWidth || y > photoHeight) return wpMain.classList.remove("zooming");
   wpMain.classList.add("zooming");
   lens.style.left = `${e.clientX - r.left}px`; lens.style.top = `${e.clientY - r.top}px`;
-  lens.style.backgroundSize = `${ir.width * Z}px ${ir.height * Z}px`;
+  lens.style.backgroundSize = `${photoWidth * Z}px ${photoHeight * Z}px`;
   lens.style.backgroundPosition = `${-(x * Z - 95)}px ${-(y * Z - 95)}px`;
 });
 wpMain.addEventListener("pointerleave", () => wpMain.classList.remove("zooming"));
@@ -220,7 +246,13 @@ function route() {
   let view = "nachalo", section = null;
   if (h.startsWith("tvorba-")) view = renderWork(h.slice(7)) ? "tvorba" : "nachalo";
   else if (h === "poruchka") view = "poruchka";
-  else section = SECTIONS.includes(h) ? h : "kolekcia";
+  else {
+    section = SECTIONS.includes(h) ? h : "kolekcia";
+    if (h === "plastiki") {
+      if (curCat !== "plastika") renderGrid("plastika");
+      $$(".tabs button").forEach(t => t.setAttribute("aria-selected", t.dataset.cat === "plastika"));
+    }
+  }
   const navKey = view === "tvorba" ? "kolekcia" : view === "poruchka" ? "poruchka" : section;
   $$("[data-nav]").forEach(a => a.dataset.nav === navKey ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current"));
   const canon = $('link[rel="canonical"]'); if (canon) canon.href = "https://luckyglass.eu/" + (view === "tvorba" ? `tvorba/${cur.id}/` : "");
@@ -478,7 +510,8 @@ $$("[data-site]").forEach(el => { const v = SITE[el.dataset.site]; if (!v) retur
     const price = hasSizes(w) ? w.sizes.map(z => z.price) : hasPrice(w.price) ? [w.price] : [];
     const p = { "@type": "Product", name: fullName(w), description: w.text || CAT_NOTE[w.cat], url: `${base}tvorba/${w.id}/`,
       image: base + (w.image ? String(w.image).replace(/^\//, "") : `assets/products/${w.id}-wall.webp`),
-      brand: { "@type": "Brand", name: "Лъки Михайлова" }, material: "стъкло", category: w.cat === "pana" ? "Стъклено пано" : "Картина от стъкло" };
+      ...(w.author || w.cat !== "plastika" ? { brand: { "@type": "Brand", name: w.author || "Лъки Михайлова" } } : {}),
+      material: w.material || "стъкло", category: w.cat === "plastika" ? w.series : w.cat === "pana" ? "Стъклено пано" : "Картина от стъкло" };
     if (price.length) p.offers = { "@type": price.length > 1 ? "AggregateOffer" : "Offer", priceCurrency: "EUR",
       ...(price.length > 1 ? { lowPrice: Math.min(...price), highPrice: Math.max(...price) } : { price: price[0] }),
       availability: stockOf(w) ? "https://schema.org/InStock" : "https://schema.org/SoldOut", seller: { "@id": `${base}#gallery` } };
