@@ -177,6 +177,8 @@
       "name": "Развитие",
       "series": "Дърво на живота",
       "cat": "kartina",
+      "price": 24,
+      "size": "15 × 17 см",
       "sold": false,
       "id": "kartina-razvitie"
     },
