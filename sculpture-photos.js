@@ -34,12 +34,15 @@
           }
           if (!samples[0].length) { resolve(url); return; }
           const wall = samples.map(median);
+          const butterfly = url.includes("plastika-246014-");
           const mask = new Uint8Array(width * height), queue = new Int32Array(width * height);
           let head = 0, tail = 0;
           function background(p) {
             const i = p * 4, r = rgba[i], green = rgba[i + 1], b = rgba[i + 2];
-            return Math.min(r, green, b) > 170 && Math.max(r, green, b) - Math.min(r, green, b) < 42 &&
-              Math.max(Math.abs(r - wall[0]), Math.abs(green - wall[1]), Math.abs(b - wall[2])) < 65;
+            // This golden relief has neutral wall shadows, distinct from its warm metal.
+            return Math.min(r, green, b) > (butterfly ? 110 : 170) &&
+              Math.max(r, green, b) - Math.min(r, green, b) < (butterfly ? 35 : 42) &&
+              Math.max(Math.abs(r - wall[0]), Math.abs(green - wall[1]), Math.abs(b - wall[2])) < (butterfly ? 160 : 65);
           }
           function add(p) {
             if (!mask[p] && background(p)) { mask[p] = 1; queue[tail++] = p; }
@@ -47,6 +50,12 @@
           for (let x = 0; x < width; x++) { add(x); add((height - 1) * width + x); }
           for (let y = 0; y < height; y++) { add(y * width); add(y * width + width - 1); }
           const centaur = url.includes("plastika-245788-");
+          if (butterfly) {
+            // Enclosed photographed wall under the raised arms.
+            for (const [x, y] of [[.42, .35], [.56, .35]]) {
+              add(Math.floor(y * height) * width + Math.floor(x * width));
+            }
+          }
           if (centaur) {
             // The two enclosed openings are wall, not pale bronze highlights.
             for (const [x, y] of [[.557, .364], [.548, .462]]) {
