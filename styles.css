@@ -221,13 +221,15 @@ body.locked{overflow:hidden}
 /* Sculpture photographs share the page wall without a rectangular mat. */
 .work.sculpture .mat{aspect-ratio:5/6;overflow:visible;isolation:isolate;background:var(--sand)}
 .work.sculpture .mat::after,.wp-main.sculpture::after{display:none}
-.work.sculpture .mat img.main{inset:auto 0 0;margin:auto;width:100%;height:100%;object-fit:contain;object-position:center bottom;mix-blend-mode:multiply;filter:drop-shadow(0 9px 9px #33241b13);transition:transform .7s var(--ease),opacity .35s}
+.work.sculpture .mat img.main{inset:auto 0 0;margin:auto;width:100%;height:100%;object-fit:contain;object-position:center bottom;mix-blend-mode:multiply;filter:none;box-shadow:none;transition:transform .7s var(--ease),opacity .35s}
 .work.sculpture:hover .mat img.main{transform:translateY(-4px)}
 img[data-sculpture-ready="pending"]{opacity:0}
 .wp-main.sculpture{background:var(--sand);isolation:isolate}
-.wp-main.sculpture>img{position:absolute;inset:0;margin:auto;width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply;filter:drop-shadow(0 12px 12px #33241b16)}
+.wp-main.sculpture>img{position:absolute;inset:0;margin:auto;width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply;filter:none;box-shadow:none}
 .wp-main.sculpture .lens{background-color:var(--sand)}
 .wp-thumbs img[data-sculpture]{mix-blend-mode:multiply;object-fit:contain}
+.work.sculpture .mat img.main[src*="/cutouts/"],.wp-main.sculpture>img[src*="/cutouts/"],.wp-thumbs img[src*="/cutouts/"]{mix-blend-mode:normal;filter:none;box-shadow:none;mask-image:none}
+.work.sculpture .mat img.main[src*="/cutouts/"]{width:90%;height:90%;inset:auto 5% 0}
 img[data-sculpture-mode="blend"]{mask-image:linear-gradient(to right,transparent,#000 3%,#000 97%,transparent),linear-gradient(to bottom,transparent,#000 3%,#000 97%,transparent);mask-composite:intersect}
 .wp-main.sculpture+.wp-thumbs button{background:var(--sand)}
 #wpText{white-space:pre-line}

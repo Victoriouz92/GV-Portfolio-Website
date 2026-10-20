@@ -6,6 +6,9 @@
   const median = values => values.sort((a, b) => a - b)[Math.floor(values.length / 2)];
 
   async function source(url, maxSize = 1200, mode = "mask") {
+    // Reviewed transparent cutouts already contain an accurate silhouette,
+    // including enclosed openings and pale metal. Never colour-key them again.
+    if (url.includes("/cutouts/")) return url;
     const key = `${mode}:${maxSize}:${url}`;
     if (cache.has(key)) return cache.get(key);
     const result = new Promise(resolve => {
@@ -43,6 +46,13 @@
           }
           for (let x = 0; x < width; x++) { add(x); add((height - 1) * width + x); }
           for (let y = 0; y < height; y++) { add(y * width); add(y * width + width - 1); }
+          const centaur = url.includes("plastika-245788-");
+          if (centaur) {
+            // The two enclosed openings are wall, not pale bronze highlights.
+            for (const [x, y] of [[.557, .364], [.548, .462]]) {
+              add(Math.floor(y * height) * width + Math.floor(x * width));
+            }
+          }
           // Edge-connected masking keeps enclosed light marble and metal highlights.
           while (head < tail) {
             const p = queue[head++], x = p % width;
@@ -62,6 +72,9 @@
               rgba[p * 4 + 3] = Math.round(255 * protect);
             }
             if (x < 2 || x > width - 3 || y < 2 || y > height - 3) rgba[p * 4 + 3] = 0;
+            // Gallery plinth corners outside this photograph's wooden base.
+            if (centaur && ((x < width * .32 && y > height * .75) ||
+                (x > width * .78 && y > height * .72))) rgba[p * 4 + 3] = 0;
           }
           g.putImageData(photo, 0, 0);
           resolve(canvas.toDataURL("image/png"));

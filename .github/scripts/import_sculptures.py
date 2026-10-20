@@ -127,6 +127,9 @@ def main():
     original = json.loads((ROOT / 'data/works.json').read_text(encoding='utf-8'))
     original['works'] = [w for w in original['works'] if not w.get('sourceUrl', '').startswith('https://artgifts.bg/product/')]
     report = []
+    cutout_manifest = ROOT / '.github/imports/sculpture-cutouts.json'
+    cutouts = {item['source']: item['output'] for item in
+               json.loads(cutout_manifest.read_text(encoding='utf-8'))['entries']} if cutout_manifest.exists() else {}
     for p, copy in zip(source, COPY):
         name, text = copy.split('|', 1)
         short = p['shortDescription']
@@ -172,7 +175,11 @@ def main():
             target = ROOT / 'assets/products/sculptures' / f'{wid}-{image["order"]:02d}.jpg'
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(SOURCE / image['path'], target)
-            images.append({'src': target.relative_to(ROOT).as_posix(), 'label': image['role']})
+            original_src = target.relative_to(ROOT).as_posix()
+            display_src = cutouts.get(original_src, original_src)
+            if not (ROOT / display_src).is_file():
+                raise FileNotFoundError(f'Missing reviewed cutout: {display_src}')
+            images.append({'src': display_src, 'label': image['role']})
         record = {'id': wid, 'name': name, 'series': 'Металопластика' if author == 'Венелин Петров' else 'Бронзов аксесоар' if origin else 'Бронзова пластика',
                   'cat': 'plastika', 'price': p['priceEUR'], 'text': text, 'material': material[0].upper() + material[1:],
                   'image': images[0]['src'], 'photos': images, 'sold': False, 'sourceUrl': p['sourceUrl']}
