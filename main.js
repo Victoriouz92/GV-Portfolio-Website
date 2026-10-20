@@ -139,7 +139,8 @@ function renderWork(id) {
   $("#wpStock").innerHTML = stockOf(cur) ? `<span>${stockLabel(cur)}</span> Търсите повече бройки? <a href="#kontakti">Пишете ни</a>` : "<span>Продадена</span> Може да се изработи подобна — <a href=\"#poruchka\">по поръчка</a>";
   const specs = [["Размер", hasSizes(cur) ? "по избор" : sizeLabel(cur)],
     [cur.cat === "pana" ? "Окачване" : "Рамка", cur.cat === "pana" ? "метална закопчалка-кобилица със спирала" : (cur.frame || "дървена")],
-    ["Материал", "темперирано стъкло, цветни стъклени топчета, специализирани бои за стъкло „Marabu“"], ["Автор", "Лъки Михайлова"]];
+    ["Материал", "темперирано стъкло, цветни стъклени топчета, специализирани бои за стъкло „Marabu“"],
+    ["Техника", "фюзинг — две изпичания в пещ, над 760 °C"], ["Автор", "Лъки Михайлова"]];
   $("#wpSpecs").innerHTML = specs.map(([a, b]) => `<div><dt>${a}</dt><dd>${esc(b)}</dd></div>`).join("");
   const rel = WORKS.filter(w => w.cat === cur.cat && w.id !== cur.id && w.id !== "plodorodie");
   const start = Math.max(0, rel.findIndex(w => WORKS.indexOf(w) > WORKS.indexOf(cur)));

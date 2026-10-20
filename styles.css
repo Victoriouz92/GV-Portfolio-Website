@@ -477,6 +477,19 @@ textarea{resize:vertical}
 .author-text p{color:var(--bark);margin-bottom:16px;max-width:34em}
 .author-fig{margin-top:clamp(50px,7vw,90px)}
 .author-fig img{width:100%;height:auto}
+/* how a work is made: three numbered steps on hairlines */
+.process{margin-top:clamp(90px,11vw,160px)}
+.process-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:14px 40px;padding-bottom:26px;border-bottom:1px solid var(--line)}
+.process-head .eyebrow{color:var(--terracotta);order:2}
+.process-head h2 i{color:var(--terracotta)}
+.steps{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(28px,4vw,64px)}
+.steps li{padding-top:clamp(28px,3.5vw,44px)}
+.step-no{display:block;font:400 clamp(2.6rem,4.4vw,3.8rem)/1 var(--title);color:var(--clay);margin-bottom:18px;letter-spacing:-.02em}
+.steps h3{font:400 clamp(1.3rem,1.8vw,1.6rem)/1.2 var(--title);margin-bottom:12px}
+.steps p{color:var(--bark);max-width:26em}
+.process-note{margin-top:clamp(36px,4.5vw,60px);padding-top:24px;border-top:1px solid var(--line);font:italic 400 clamp(1.15rem,1.7vw,1.4rem)/1.5 var(--voice);color:var(--umber);max-width:40em}
+.process-note b{font-weight:500}
+@media (max-width:760px){.steps{grid-template-columns:minmax(0,1fr)}.steps li+li{border-top:1px solid var(--line)}}
 .contacts h2{margin:14px 0 clamp(36px,5vw,60px)}
 .contact-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px 40px;border-top:1px solid var(--line);padding-top:28px}
 .c-label{font-size:.66rem;letter-spacing:.24em;text-transform:uppercase;color:var(--bark)}
