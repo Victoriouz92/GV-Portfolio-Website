@@ -49,6 +49,8 @@ def main():
         sizes = w.get("sizes") or []
         prices = [z["price"] for z in sizes if z.get("price") not in (None, "")] or ([w["price"]] if w.get("price") not in (None, "") else [])
         price_txt = (f"от {min(prices)} €" if len(prices) > 1 else f"{prices[0]} €") if prices else "цена по запитване"
+        if w.get('sold'):
+            price_txt = 'Продадена · архив'
         size_txt = " · ".join(z["size"] for z in sizes) if sizes else w.get("size", "")
         desc = (w.get("text") or notes.get(w.get("cat"), "")).strip()
         attribution = f'Автор: {w["author"]}. ' if w.get('author') else '' if w.get('cat') == 'plastika' else 'Автор: Лъки Михайлова. '

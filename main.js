@@ -88,14 +88,22 @@ document.addEventListener("change", e => {
 });
 
 /* ---------- collection ---------- */
-let curCat = "kartina";
-function renderGrid(cat) {
+let curCat = "kartina", curSold = false;
+function renderGrid(cat, sold = false) {
   curCat = cat;
+  curSold = cat === "plastika" && sold;
   $("#collectionTitle").innerHTML = cat === "plastika" ? "Пластики" : 'Стъкло, което <i class="glow">свети</i>';
   const soon = cat === "soon" || !WORKS.some(w => w.cat === cat);  // a category with no works yet says it is coming
   $("#soon").hidden = !soon; $("#grid").hidden = soon;
   $("#catNote").textContent = soon ? "" : CAT_NOTE[cat];
-  if (!soon) $("#grid").innerHTML = WORKS.filter(w => w.cat === cat).sort((a, b) => (area(a) || Infinity) - (area(b) || Infinity)).map(card).join("");
+  $("#sculptureViews").hidden = cat !== "plastika";
+  $("#soldIntro").hidden = !curSold;
+  $$("[data-stock-view]").forEach(a => {
+    const archive = a.dataset.stockView === "sold";
+    a.querySelector("span").textContent = WORKS.filter(w => w.cat === "plastika" && !!w.sold === archive).length;
+    archive === curSold ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current");
+  });
+  if (!soon) $("#grid").innerHTML = WORKS.filter(w => w.cat === cat && (cat !== "plastika" || !!w.sold === curSold)).sort((a, b) => (area(a) || Infinity) - (area(b) || Infinity)).map(card).join("");
   observe($("#grid"));
 }
 $$(".tabs button").forEach(t => t.addEventListener("click", () => {
@@ -143,9 +151,10 @@ function renderWork(id) {
   window.SculpturePhotos?.prepare($("#wpThumbs"));
   $("#wpCat").textContent = cur.series + (cur.cat === "plastika" ? "" : cur.cat === "pana" ? " · без рамка" : " · стъклена картина с рамка");
   $("#wpName").textContent = cur.name;
+  $(".view[data-view=tvorba] .back").href = cur.cat === "plastika" ? cur.sold ? "#plastiki-prodadeni" : "#plastiki" : "#kolekcia";
   $("#wpHint").textContent = cur.cat === "plastika" ? "Посочете снимката, за да разгледате детайлите отблизо." : "Посочете снимката, за да видите стъклото отблизо.";
-  $("#wpEnquiry").textContent = cur.cat === "plastika" ? "Въпрос за творбата" : "Искам подобна по поръчка";
-  $("#wpEnquiry").href = cur.cat === "plastika" ? "#kontakti" : "#poruchka";
+  $("#wpEnquiry").textContent = cur.repeatInquiry ? cur.origin ? "Попитайте за бъдеща наличност" : "Попитайте за нова изработка" : cur.cat === "plastika" ? "Въпрос за творбата" : "Искам подобна по поръчка";
+  $("#wpEnquiry").href = cur.repeatInquiry ? `mailto:${ORDER_EMAIL}?subject=${encodeURIComponent(`Запитване за „${cur.name}“ — ${cur.author || cur.series}`)}&body=${encodeURIComponent(`Здравейте,\n\nИнтересувам се дали е възможна нова изработка или бъдеща наличност на „${cur.name}“. Моля за информация за възможностите, цена и срок.\n\nhttps://luckyglass.eu/tvorba/${cur.id}/`)}` : cur.cat === "plastika" ? "#kontakti" : "#poruchka";
   $("#wpVariationNote").textContent = cur.cat === "plastika" ? "Възможни са фини разлики в оттенъците спрямо снимките." : "Всяка творба е ръчно изработена. Възможни са фини разлики спрямо снимките.";
   $("#wpPrice").textContent = priceLabel(cur);
   $("#wpPerks").innerHTML = cur.cat === "pana" ? PANE_PERKS.map(t => `<li>${t}</li>`).join("") : "";
@@ -153,10 +162,15 @@ function renderWork(id) {
   $("#wpSizes").innerHTML = hasSizes(cur) ? sizeSelect(cur, "size-pick big") : "";
   if (cur.sold) $("#wpPrice").textContent = "Продадена";
   $("#wpAdd").hidden = !stockOf(cur);
+  $("#wpStock").classList.toggle("sold", !stockOf(cur));
   const cheapest = Math.min(...DELIV.filter(o => o.type !== "pickup" && o.price != null).map(o => o.price));
   $("#wpShip").innerHTML = stockOf(cur) ? [isFinite(cheapest) ? `Доставка от ${money(cheapest)} · 1–2 работни дни` : "", "Безплатно вземане от галерията в София",
     "Плащане с карта, наложен платеж или превод", "14 дни за връщане"].filter(Boolean).map(t => `<li>${t}</li>`).join("") : "";
-  $("#wpStock").innerHTML = stockOf(cur) ? `<span>${stockLabel(cur)}</span> Търсите повече бройки? <a href="#kontakti">Пишете ни</a>` : "<span>Продадена</span> Може да се изработи подобна — <a href=\"#poruchka\">по поръчка</a>";
+  $("#wpStock").innerHTML = stockOf(cur)
+    ? `<span>${stockLabel(cur)}</span>${cur.author === "Борислав Русинов" ? "" : ' Търсите повече бройки? <a href="#kontakti">Пишете ни</a>'}`
+    : cur.cat === "plastika"
+      ? '<span>Продадена · от архива</span> Възможността за нова изработка или бъдеща наличност се проверява индивидуално след запитване. Цена и срок се уточняват само при потвърдена възможност.'
+      : '<span>Продадена</span> Може да се изработи подобна — <a href="#poruchka">по поръчка</a>';
   const sculpture = cur.cat === "plastika";
   const specs = [["Размер", hasSizes(cur) ? "по избор" : sizeLabel(cur)],
     sculpture ? null : [cur.cat === "pana" ? "Окачване" : "Рамка", cur.cat === "pana" ? "метална закопчалка-кобилица със спирала" : (cur.frame || "дървена")],
@@ -167,7 +181,7 @@ function renderWork(id) {
     cur.origin ? ["Произход", cur.origin] : null,
     cur.author || !sculpture ? ["Автор", cur.author || "Лъки Михайлова"] : null].filter(Boolean);
   $("#wpSpecs").innerHTML = specs.map(([a, b]) => `<div><dt>${a}</dt><dd>${esc(b)}</dd></div>`).join("");
-  const rel = WORKS.filter(w => w.cat === cur.cat && w.id !== cur.id && w.id !== "plodorodie");
+  const rel = WORKS.filter(w => w.cat === cur.cat && (cur.cat !== "plastika" || !!w.sold === !!cur.sold) && w.id !== cur.id && w.id !== "plodorodie");
   const start = Math.max(0, rel.findIndex(w => WORKS.indexOf(w) > WORKS.indexOf(cur)));
   $("#related").innerHTML = [...rel.slice(start), ...rel.slice(0, start)].slice(0, 3).map(card).join("");
   observe($("#related"));
@@ -248,8 +262,9 @@ function route() {
   else if (h === "poruchka") view = "poruchka";
   else {
     section = SECTIONS.includes(h) ? h : "kolekcia";
-    if (h === "plastiki") {
-      if (curCat !== "plastika") renderGrid("plastika");
+    if (h === "plastiki" || h === "plastiki-prodadeni") {
+      const sold = h === "plastiki-prodadeni";
+      if (curCat !== "plastika" || curSold !== sold) renderGrid("plastika", sold);
       $$(".tabs button").forEach(t => t.setAttribute("aria-selected", t.dataset.cat === "plastika"));
     }
   }
@@ -289,7 +304,9 @@ $("#menuBtn").addEventListener("click", () => {
 });
 
 /* ---------- cart & checkout ---------- */
-let cart = store.get("cart2", []);
+// Withdrawn or sold catalogue items must also leave carts saved before this update.
+let cart = store.get("cart2", []).filter(c => !c.id || (byId(c.id) && stockOf(byId(c.id)) > 0));
+store.set("cart2", cart);
 const drawer = $("#drawer");
 // delivery: fixed prices from the admin panel, BOX NOW lockers from its own map
 const DELIV = (Array.isArray(SITE.delivery) && SITE.delivery.length ? SITE.delivery : [{ label: "От галерията", note: SITE.address || "", type: "pickup", price: 0 }])

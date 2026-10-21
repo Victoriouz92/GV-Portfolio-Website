@@ -1,0 +1,211 @@
+{
+  "tool": "Built-in image_gen",
+  "prompt": "Extract the exact photographed artwork and its attached base. Preserve viewpoint, orientation, patina, engraving, stone veins and plaques. Remove background wall/tabletop, horizon lines and all cast shadows, clear enclosed openings, no stray pixels or halo. Preserve the solid enamel background inside accessory discs and solid metal eyes. Keep existing crop for close-up details. Transparent PNG.",
+  "review": "All 34 gallery images visually reviewed against originals. Reworked the Roman horse orientation, St George cross margin, and elephant detail plaque. Identical source accessory-combination photograph shares one reviewed result.",
+  "entries": [
+    {
+      "key": "249620-01",
+      "source": "assets/products/sculptures/plastika-249620-01.jpg",
+      "output": "assets/products/sculptures/cutouts/plastika-249620-01.png",
+      "generated": "C:\\Users\\TONDEE\\.codex\\generated_images\\01a154e5-2b8d-7db1-b3f4-b3aabbbaf51a\\exec-ed5b2941-2d20-4529-b3a9-9b3b1998080d.png"
+    },
+    {
+      "key": "253297-01",
+      "source": "assets/products/sculptures/plastika-253297-01.jpg",
+      "output": "assets/products/sculptures/cutouts/plastika-253297-01.png",
+      "generated": "C:\\Users\\TONDEE\\.codex\\generated_images\\01a154e5-2b8d-7db1-b3f4-b3aabbbaf51a\\exec-61ec1f76-07cc-4e5c-b802-121c2c15cd59.png"
+    },
+    {
+      "key": "253266-01",
+      "source": "assets/products/sculptures/plastika-253266-01.jpg",
+      "output": "assets/products/sculptures/cutouts/plastika-253266-01.png",
+      "generated": "C:\\Users\\TONDEE\\.codex\\generated_images\\01a154e5-2b8d-7db1-b3f4-b3aabbbaf51a\\exec-fadc8267-ed60-4afd-8429-b50766516b4d.png"
+    },
+    {
+      "key": "252606-01",
+      "source": "assets/products/sculptures/plastika-252606-01.jpg",
+      "output": "assets/products/sculptures/cutouts/plastika-252606-01.png",
+      "generated": "C:\\Users\\TONDEE\\.codex\\generated_images\\01a154e5-2b8d-7db1-b3f4-b3aabbbaf51a\\exec-f8a87063-345d-4d32-bd95-0e5bcb7d3db7.png"
+    },
+    {
+      "key": "241737-01",
+      "source": "assets/products/sculptures/plastika-241737-01.jpg",
+      "output": "assets/products/sculptures/cutouts/plastika-241737-01.png",
+      "generated": "C:\\Users\\TONDEE\\.codex\\generated_images\\01a154e5-2b8d-7db1-b3f4-b3aabbbaf51a\\exec-fd482541-2cc3-420a-86dc-c08b264f968a.png"
+    },
+    {
+      "key": "241739-01",
+      "source": "assets/products/sculptures/plastika-241739-01.jpg",
+      "output": "assets/products/sculptures/cutouts/plastika-241739-01.png",
+      "generated": "C:\\Users\\TONDEE\\.codex\\generated_images\\01a154e5-2b8d-7db1-b3f4-b3aabbbaf51a\\exec-1cf0e677-f11c-455d-8632-5b174ff7df14.png"
+    },
+    {
+      "key": "252358-01",
+      "source": "assets/products/sculptures/plastika-252358-01.jpg",
+      "output": "assets/products/sculptures/cutouts/plastika-252358-01.png",
+      "generated": "C:\\Users\\TONDEE\\.codex\\generated_images\\01a154e5-2b8d-7db1-b3f4-b3aabbbaf51a\\exec-341887dd-b09f-48b5-a5d3-2c82a3a95531.png"
+    },
+    {
+      "key": "252358-02",
+      "source": "assets/products/sculptures/plastika-252358-02.jpg",
+      "output": "assets/products/sculptures/cutouts/plastika-252358-02.png",
+      "generated": "C:\\Users\\TONDEE\\.codex\\generated_images\\01a154e5-2b8d-7db1-b3f4-b3aabbbaf51a\\exec-838b69ed-ce62-48be-8c95-20d98429c801.png"
+    },
+    {
+      "key": "252356-01",
+      "source": "assets/products/sculptures/plastika-252356-01.jpg",
+      "output": "assets/products/sculptures/cutouts/plastika-252356-01.png",
+      "generated": "C:\\Users\\TONDEE\\.codex\\generated_images\\01a154e5-2b8d-7db1-b3f4-b3aabbbaf51a\\exec-5173e13a-2094-45e4-aad4-609204d642ba.png"
+    },
+    {
+      "key": "252356-02",
+      "source": "assets/products/sculptures/plastika-252356-02.jpg",
+      "output": "assets/products/sculptures/cutouts/plastika-252356-02.png",
+      "generated": "C:\\Users\\TONDEE\\.codex\\generated_images\\01a154e5-2b8d-7db1-b3f4-b3aabbbaf51a\\exec-838b69ed-ce62-48be-8c95-20d98429c801.png"
+    },
+    {
+      "key": "252199-01",
+      "source": "assets/products/sculptures/plastika-252199-01.jpg",
+      "output": "assets/products/sculptures/cutouts/plastika-252199-01.png",
+      "generated": "C:\\Users\\TONDEE\\.codex\\generated_images\\01a154e5-2b8d-7db1-b3f4-b3aabbbaf51a\\exec-4b274e68-aa9e-4a08-9772-e0b6446f2719.png"
+    },
+    {
+      "key": "252199-02",
+      "source": "assets/products/sculptures/plastika-252199-02.jpg",
+      "output": "assets/products/sculptures/cutouts/plastika-252199-02.png",
+      "generated": "C:\\Users\\TONDEE\\.codex\\generated_images\\01a154e5-2b8d-7db1-b3f4-b3aabbbaf51a\\exec-b36474de-e718-4568-adb1-50a6ac21bd17.png"
+    },
+    {
+      "key": "252199-03",
+      "source": "assets/products/sculptures/plastika-252199-03.jpg",
+      "output": "assets/products/sculptures/cutouts/plastika-252199-03.png",
+      "generated": "C:\\Users\\TONDEE\\.codex\\generated_images\\01a154e5-2b8d-7db1-b3f4-b3aabbbaf51a\\exec-2cd2d65e-cdee-4087-9f52-dd5df8ed5945.png"
+    },
+    {
+      "key": "252199-04",
+      "source": "assets/products/sculptures/plastika-252199-04.jpg",
+      "output": "assets/products/sculptures/cutouts/plastika-252199-04.png",
+      "generated": "C:\\Users\\TONDEE\\.codex\\generated_images\\01a154e5-2b8d-7db1-b3f4-b3aabbbaf51a\\exec-a6f36339-2af4-4e3a-9b38-08a432a7c9b7.png"
+    },
+    {
+      "key": "249851-01",
+      "source": "assets/products/sculptures/plastika-249851-01.jpg",
+      "output": "assets/products/sculptures/cutouts/plastika-249851-01.png",
+      "generated": "C:\\Users\\TONDEE\\.codex\\generated_images\\01a154e5-2b8d-7db1-b3f4-b3aabbbaf51a\\exec-268cfd9b-5146-4821-83a5-5ecf4a923c76.png"
+    },
+    {
+      "key": "249851-02",
+      "source": "assets/products/sculptures/plastika-249851-02.jpg",
+      "output": "assets/products/sculptures/cutouts/plastika-249851-02.png",
+      "generated": "C:\\Users\\TONDEE\\.codex\\generated_images\\01a154e5-2b8d-7db1-b3f4-b3aabbbaf51a\\exec-5e878332-e786-4afe-9b50-d811a0e42fd4.png"
+    },
+    {
+      "key": "249851-03",
+      "source": "assets/products/sculptures/plastika-249851-03.jpg",
+      "output": "assets/products/sculptures/cutouts/plastika-249851-03.png",
+      "generated": "C:\\Users\\TONDEE\\.codex\\generated_images\\01a154e5-2b8d-7db1-b3f4-b3aabbbaf51a\\exec-1eb852a9-2ef8-4ebc-a95f-05c666f91eb5.png"
+    },
+    {
+      "key": "249412-01",
+      "source": "assets/products/sculptures/plastika-249412-01.jpg",
+      "output": "assets/products/sculptures/cutouts/plastika-249412-01.png",
+      "generated": "C:\\Users\\TONDEE\\.codex\\generated_images\\01a154e5-2b8d-7db1-b3f4-b3aabbbaf51a\\exec-d770a24a-c83d-452e-a964-719f5de7a9a6.png"
+    },
+    {
+      "key": "249412-02",
+      "source": "assets/products/sculptures/plastika-249412-02.jpg",
+      "output": "assets/products/sculptures/cutouts/plastika-249412-02.png",
+      "generated": "C:\\Users\\TONDEE\\.codex\\generated_images\\01a154e5-2b8d-7db1-b3f4-b3aabbbaf51a\\exec-86dcc4a0-701f-4a30-ac0c-7251097a36e1.png"
+    },
+    {
+      "key": "249411-01",
+      "source": "assets/products/sculptures/plastika-249411-01.jpg",
+      "output": "assets/products/sculptures/cutouts/plastika-249411-01.png",
+      "generated": "C:\\Users\\TONDEE\\.codex\\generated_images\\01a154e5-2b8d-7db1-b3f4-b3aabbbaf51a\\exec-eeca043e-97a5-4e24-9c1c-8cde56b413cd.png"
+    },
+    {
+      "key": "249411-02",
+      "source": "assets/products/sculptures/plastika-249411-02.jpg",
+      "output": "assets/products/sculptures/cutouts/plastika-249411-02.png",
+      "generated": "C:\\Users\\TONDEE\\.codex\\generated_images\\01a154e5-2b8d-7db1-b3f4-b3aabbbaf51a\\exec-67604d76-652e-41ca-8b75-abcaffd90914.png"
+    },
+    {
+      "key": "249410-01",
+      "source": "assets/products/sculptures/plastika-249410-01.jpg",
+      "output": "assets/products/sculptures/cutouts/plastika-249410-01.png",
+      "generated": "C:\\Users\\TONDEE\\.codex\\generated_images\\01a154e5-2b8d-7db1-b3f4-b3aabbbaf51a\\exec-71f3ad5b-8c94-43fe-8ffc-bf0091bc3ecb.png"
+    },
+    {
+      "key": "249410-02",
+      "source": "assets/products/sculptures/plastika-249410-02.jpg",
+      "output": "assets/products/sculptures/cutouts/plastika-249410-02.png",
+      "generated": "C:\\Users\\TONDEE\\.codex\\generated_images\\01a154e5-2b8d-7db1-b3f4-b3aabbbaf51a\\exec-09b54cd5-ce05-473b-8d45-50c8b5f55911.png"
+    },
+    {
+      "key": "249409-01",
+      "source": "assets/products/sculptures/plastika-249409-01.jpg",
+      "output": "assets/products/sculptures/cutouts/plastika-249409-01.png",
+      "generated": "C:\\Users\\TONDEE\\.codex\\generated_images\\01a154e5-2b8d-7db1-b3f4-b3aabbbaf51a\\exec-0b619485-48ba-4e26-82d6-1808066db178.png"
+    },
+    {
+      "key": "249409-02",
+      "source": "assets/products/sculptures/plastika-249409-02.jpg",
+      "output": "assets/products/sculptures/cutouts/plastika-249409-02.png",
+      "generated": "C:\\Users\\TONDEE\\.codex\\generated_images\\01a154e5-2b8d-7db1-b3f4-b3aabbbaf51a\\exec-039402f9-d468-4928-99d6-8c2e4e0130e0.png"
+    },
+    {
+      "key": "249409-03",
+      "source": "assets/products/sculptures/plastika-249409-03.jpg",
+      "output": "assets/products/sculptures/cutouts/plastika-249409-03.png",
+      "generated": "C:\\Users\\TONDEE\\.codex\\generated_images\\01a154e5-2b8d-7db1-b3f4-b3aabbbaf51a\\exec-50705989-85f8-4b28-aed0-56dc66124d20.png"
+    },
+    {
+      "key": "246999-01",
+      "source": "assets/products/sculptures/plastika-246999-01.jpg",
+      "output": "assets/products/sculptures/cutouts/plastika-246999-01.png",
+      "generated": "C:\\Users\\TONDEE\\.codex\\generated_images\\01a154e5-2b8d-7db1-b3f4-b3aabbbaf51a\\exec-6e126b59-54ea-44a8-9fd1-da55807b38d0.png"
+    },
+    {
+      "key": "246020-01",
+      "source": "assets/products/sculptures/plastika-246020-01.jpg",
+      "output": "assets/products/sculptures/cutouts/plastika-246020-01.png",
+      "generated": "C:\\Users\\TONDEE\\.codex\\generated_images\\01a154e5-2b8d-7db1-b3f4-b3aabbbaf51a\\exec-516ce3df-1b8d-4d77-b91e-86d06da2cfce.png"
+    },
+    {
+      "key": "246018-01",
+      "source": "assets/products/sculptures/plastika-246018-01.jpg",
+      "output": "assets/products/sculptures/cutouts/plastika-246018-01.png",
+      "generated": "C:\\Users\\TONDEE\\.codex\\generated_images\\01a154e5-2b8d-7db1-b3f4-b3aabbbaf51a\\exec-7dbc62d5-5204-43de-a1d0-53dd6ff700d6.png"
+    },
+    {
+      "key": "246015-01",
+      "source": "assets/products/sculptures/plastika-246015-01.jpg",
+      "output": "assets/products/sculptures/cutouts/plastika-246015-01.png",
+      "generated": "C:\\Users\\TONDEE\\.codex\\generated_images\\01a154e5-2b8d-7db1-b3f4-b3aabbbaf51a\\exec-9dfa71b3-9104-4f72-9e79-e1bfe168b50f.png"
+    },
+    {
+      "key": "241723-01",
+      "source": "assets/products/sculptures/plastika-241723-01.jpg",
+      "output": "assets/products/sculptures/cutouts/plastika-241723-01.png",
+      "generated": "C:\\Users\\TONDEE\\.codex\\generated_images\\01a154e5-2b8d-7db1-b3f4-b3aabbbaf51a\\exec-80ce06f9-06d3-4001-a26d-4a15724a9d01.png"
+    },
+    {
+      "key": "241717-01",
+      "source": "assets/products/sculptures/plastika-241717-01.jpg",
+      "output": "assets/products/sculptures/cutouts/plastika-241717-01.png",
+      "generated": "C:\\Users\\TONDEE\\.codex\\generated_images\\01a154e5-2b8d-7db1-b3f4-b3aabbbaf51a\\exec-39f5d42e-aca2-42a4-878d-5ceb58d6cfc2.png"
+    },
+    {
+      "key": "241709-01",
+      "source": "assets/products/sculptures/plastika-241709-01.jpg",
+      "output": "assets/products/sculptures/cutouts/plastika-241709-01.png",
+      "generated": "C:\\Users\\TONDEE\\.codex\\generated_images\\01a154e5-2b8d-7db1-b3f4-b3aabbbaf51a\\exec-586e19da-d814-47fb-91ba-eca8dfc7787c.png"
+    },
+    {
+      "key": "241705-01",
+      "source": "assets/products/sculptures/plastika-241705-01.jpg",
+      "output": "assets/products/sculptures/cutouts/plastika-241705-01.png",
+      "generated": "C:\\Users\\TONDEE\\.codex\\generated_images\\01a154e5-2b8d-7db1-b3f4-b3aabbbaf51a\\exec-0cce47e9-9ba1-4c52-b321-7b9d61397d52.png"
+    }
+  ]
+}

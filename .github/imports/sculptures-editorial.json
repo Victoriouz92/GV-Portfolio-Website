@@ -1335,7 +1335,7 @@
       "author": "Андрей Москов",
       "size": "28 × 21,5 × 6 см",
       "weight": "3 кг",
-      "support": "Фасетиран и полиран мрамор",
+      "support": "Фасетиран и полиран гранит",
       "stock": 1
     }
   },
@@ -2133,61 +2133,6 @@
     }
   },
   {
-    "id": "plastika-246014",
-    "sourceTitle": "“Мома пеперуда” – Румяна Русинова",
-    "sourceUrl": "https://artgifts.bg/product/moma-peperuda-rumiyana-rusinova/",
-    "edited": {
-      "id": "plastika-246014",
-      "name": "Мома пеперуда",
-      "series": "Бронзова пластика",
-      "cat": "plastika",
-      "price": 536.0,
-      "text": "Бронзова женска фигура с разгърнати крила, вдъхновена от образа на пеперудата.",
-      "material": "Бронз",
-      "image": "assets/products/sculptures/plastika-246014-01.jpg",
-      "photos": [
-        {
-          "src": "assets/products/sculptures/plastika-246014-01.jpg",
-          "label": "Основна"
-        }
-      ],
-      "sold": false,
-      "sourceUrl": "https://artgifts.bg/product/moma-peperuda-rumiyana-rusinova/",
-      "author": "Румяна Русинова",
-      "size": "18 × 23 × 6 см",
-      "weight": "1,2 кг",
-      "support": "Фасетиран и полиран черен мрамор",
-      "stock": 1
-    }
-  },
-  {
-    "id": "plastika-245794",
-    "sourceTitle": "“Булка” – Румяна Русинова",
-    "sourceUrl": "https://artgifts.bg/product/bronzova-plastika-bulka-rumyana-rusinova/",
-    "edited": {
-      "id": "plastika-245794",
-      "name": "Булка",
-      "series": "Бронзова пластика",
-      "cat": "plastika",
-      "price": 1329.35,
-      "text": "Висока бронзова фигура на булка, завършена с патина.",
-      "material": "Бронз, патина",
-      "image": "assets/products/sculptures/plastika-245794-01.jpg",
-      "photos": [
-        {
-          "src": "assets/products/sculptures/plastika-245794-01.jpg",
-          "label": "Основна"
-        }
-      ],
-      "sold": false,
-      "sourceUrl": "https://artgifts.bg/product/bronzova-plastika-bulka-rumyana-rusinova/",
-      "author": "Румяна Русинова",
-      "size": "височина около 70 см",
-      "support": "Фасетиран и полиран черен мрамор",
-      "stock": 1
-    }
-  },
-  {
     "id": "plastika-245792",
     "sourceTitle": "“Нимфа” – Борислав Русинов",
     "sourceUrl": "https://artgifts.bg/product/bronzova-plastika-pregradka-borislav-rusinov/",
@@ -2242,166 +2187,6 @@
       "author": "Борислав Русинов",
       "size": "20 × 15 × 5 см",
       "support": "Фасетиран и полиран черен мрамор",
-      "stock": 1
-    }
-  },
-  {
-    "id": "plastika-245790",
-    "sourceTitle": "“Пламък” – Борислав Русинов",
-    "sourceUrl": "https://artgifts.bg/product/bronzova-plastika-plamak-borislav-rusinov/",
-    "edited": {
-      "id": "plastika-245790",
-      "name": "Пламък — висок",
-      "series": "Бронзова пластика",
-      "cat": "plastika",
-      "price": 1942.9,
-      "text": "Висока бронзова композиция с формата на пламък.",
-      "material": "Бронз",
-      "image": "assets/products/sculptures/cutouts/plastika-245790-01.png",
-      "photos": [
-        {
-          "src": "assets/products/sculptures/cutouts/plastika-245790-01.png",
-          "label": "Основна"
-        }
-      ],
-      "sold": false,
-      "sourceUrl": "https://artgifts.bg/product/bronzova-plastika-plamak-borislav-rusinov/",
-      "author": "Борислав Русинов",
-      "size": "височина около 60 см",
-      "support": "Фасетиран и полиран черен мрамор",
-      "stock": 1
-    }
-  },
-  {
-    "id": "plastika-245788",
-    "sourceTitle": "“Стрелец – Кентавър” – Борислав Русинов",
-    "sourceUrl": "https://artgifts.bg/product/bronzova-plastika-strelets-kentavar-borislav-rusinov/",
-    "edited": {
-      "id": "plastika-245788",
-      "name": "Стрелец – Кентавър",
-      "series": "Бронзова пластика",
-      "cat": "plastika",
-      "price": 1636.13,
-      "text": "Кентавър с лък, изработен от релефен бронз със зелена и черна патина.",
-      "material": "Релефен бронз, зелена и черна патина",
-      "image": "assets/products/sculptures/plastika-245788-01.jpg",
-      "photos": [
-        {
-          "src": "assets/products/sculptures/plastika-245788-01.jpg",
-          "label": "Основна"
-        }
-      ],
-      "sold": false,
-      "sourceUrl": "https://artgifts.bg/product/bronzova-plastika-strelets-kentavar-borislav-rusinov/",
-      "author": "Борислав Русинов",
-      "support": "Дърво",
-      "stock": 1
-    }
-  },
-  {
-    "id": "plastika-242515",
-    "sourceTitle": "“Да укротим Бика” Борислав Русинов",
-    "sourceUrl": "https://artgifts.bg/product/%d0%b4%d0%b0-%d1%83%d0%ba%d1%80%d0%be%d1%82%d0%b8%d0%bc-%d0%b1%d0%b8%d0%ba%d0%b0-%d0%b1%d0%be%d1%80%d0%b8%d1%81%d0%bb%d0%b0%d0%b2-%d1%80%d1%83%d1%81%d0%b8%d0%bd%d0%be%d0%b2-%d0%bf%d0%bb%d0%b0%d1%81/",
-    "edited": {
-      "id": "plastika-242515",
-      "name": "Да укротим бика",
-      "series": "Бронзова пластика",
-      "cat": "plastika",
-      "price": 1125.0,
-      "text": "Човешка фигура и бик се срещат в динамична бронзова композиция.",
-      "material": "Бронз",
-      "image": "assets/products/sculptures/plastika-242515-01.jpg",
-      "photos": [
-        {
-          "src": "assets/products/sculptures/plastika-242515-01.jpg",
-          "label": "Основна"
-        }
-      ],
-      "sold": false,
-      "sourceUrl": "https://artgifts.bg/product/%d0%b4%d0%b0-%d1%83%d0%ba%d1%80%d0%be%d1%82%d0%b8%d0%bc-%d0%b1%d0%b8%d0%ba%d0%b0-%d0%b1%d0%be%d1%80%d0%b8%d1%81%d0%bb%d0%b0%d0%b2-%d1%80%d1%83%d1%81%d0%b8%d0%bd%d0%be%d0%b2-%d0%bf%d0%bb%d0%b0%d1%81/",
-      "author": "Борислав Русинов",
-      "support": "Черен мрамор",
-      "stock": 1
-    }
-  },
-  {
-    "id": "plastika-242508",
-    "sourceTitle": "“Бик- сила, мощ и защита” – Борислав Русинов",
-    "sourceUrl": "https://artgifts.bg/product/plastika-bik-sila-mosht-i-zashtita-borislav-rusinov/",
-    "edited": {
-      "id": "plastika-242508",
-      "name": "Бик — сила, мощ и защита",
-      "series": "Бронзова пластика",
-      "cat": "plastika",
-      "price": 1080.0,
-      "text": "Плътна бронзова фигура на бик с релефна повърхност и зелена патина.",
-      "material": "Релефен бронз, зелена патина",
-      "image": "assets/products/sculptures/plastika-242508-01.jpg",
-      "photos": [
-        {
-          "src": "assets/products/sculptures/plastika-242508-01.jpg",
-          "label": "Основна"
-        }
-      ],
-      "sold": false,
-      "sourceUrl": "https://artgifts.bg/product/plastika-bik-sila-mosht-i-zashtita-borislav-rusinov/",
-      "author": "Борислав Русинов",
-      "support": "Черен мрамор",
-      "stock": 1
-    }
-  },
-  {
-    "id": "plastika-242504",
-    "sourceTitle": "“Музика” – Борислав Русинов",
-    "sourceUrl": "https://artgifts.bg/product/muzika-borislav-rusinov/",
-    "edited": {
-      "id": "plastika-242504",
-      "name": "Музика",
-      "series": "Бронзова пластика",
-      "cat": "plastika",
-      "price": 650.0,
-      "text": "Бронзова композиция, посветена на музиката, с релефна повърхност и черен мраморен постамент.",
-      "material": "Релефен бронз",
-      "image": "assets/products/sculptures/cutouts/plastika-242504-01.png",
-      "photos": [
-        {
-          "src": "assets/products/sculptures/cutouts/plastika-242504-01.png",
-          "label": "Основна"
-        }
-      ],
-      "sold": false,
-      "sourceUrl": "https://artgifts.bg/product/muzika-borislav-rusinov/",
-      "author": "Борислав Русинов",
-      "size": "30 см × 30 см",
-      "weight": "3 кг",
-      "support": "Черен мрамор",
-      "stock": 1
-    }
-  },
-  {
-    "id": "plastika-242473",
-    "sourceTitle": "“Икар” – Човекът птица Борислав Русинов",
-    "sourceUrl": "https://artgifts.bg/product/ikar-chovekat-ptitsa-borislav-rusinov/",
-    "edited": {
-      "id": "plastika-242473",
-      "name": "Икар — човекът птица",
-      "series": "Бронзова пластика",
-      "cat": "plastika",
-      "price": 1025.0,
-      "text": "Бронзова фигура с разперени криле и зелена патина — образ на човека птица.",
-      "material": "Релефен бронз, зелена патина",
-      "image": "assets/products/sculptures/cutouts/plastika-242473-01.png",
-      "photos": [
-        {
-          "src": "assets/products/sculptures/cutouts/plastika-242473-01.png",
-          "label": "Основна"
-        }
-      ],
-      "sold": false,
-      "sourceUrl": "https://artgifts.bg/product/ikar-chovekat-ptitsa-borislav-rusinov/",
-      "author": "Борислав Русинов",
-      "size": "30 см × 30 см",
-      "support": "Черен мрамор",
       "stock": 1
     }
   },
@@ -2849,6 +2634,664 @@
       "author": "Семейство Бондикови",
       "support": "Тъмнозелен мрамор с черна жилка",
       "stockUnknown": true
+    }
+  },
+  {
+    "id": "plastika-249620",
+    "sourceTitle": "Бронзова пластика “Попътен вятър”",
+    "sourceUrl": "https://artgifts.bg/product/bronzova-plastika-popaten-vyatar/",
+    "edited": {
+      "id": "plastika-249620",
+      "name": "Попътен вятър",
+      "series": "Бронзова пластика",
+      "cat": "plastika",
+      "price": null,
+      "text": "Стилизирана бронзова лодка с ажурно платно — образ на движението напред и новото начало.",
+      "material": "Плътен лят бронз без примеси",
+      "image": "assets/products/sculptures/cutouts/plastika-249620-01.png",
+      "photos": [
+        {
+          "src": "assets/products/sculptures/cutouts/plastika-249620-01.png",
+          "label": "Основна"
+        }
+      ],
+      "sold": true,
+      "sourceUrl": "https://artgifts.bg/product/bronzova-plastika-popaten-vyatar/",
+      "stock": 0,
+      "repeatInquiry": true,
+      "author": "Семейство Бондикови",
+      "size": "4 × 1,6 × 3 см",
+      "weight": "1 кг",
+      "support": "Фасетиран зелен мрамор"
+    }
+  },
+  {
+    "id": "plastika-253297",
+    "sourceTitle": "Бронзова пластика Риба",
+    "sourceUrl": "https://artgifts.bg/product/bronzova-plastika-riba/",
+    "edited": {
+      "id": "plastika-253297",
+      "name": "Риба",
+      "series": "Бронзова пластика",
+      "cat": "plastika",
+      "price": null,
+      "text": "Бронзова риба с изразителни плавници и релефна повърхност върху мраморен постамент.",
+      "material": "Плътен бронз без примеси",
+      "image": "assets/products/sculptures/cutouts/plastika-253297-01.png",
+      "photos": [
+        {
+          "src": "assets/products/sculptures/cutouts/plastika-253297-01.png",
+          "label": "Основна"
+        }
+      ],
+      "sold": true,
+      "sourceUrl": "https://artgifts.bg/product/bronzova-plastika-riba/",
+      "stock": 0,
+      "repeatInquiry": true,
+      "author": "Семейство Бондикови",
+      "size": "14,5 × 11 × 3 см",
+      "weight": "0,4 кг",
+      "support": "Фасетиран зелен мрамор"
+    }
+  },
+  {
+    "id": "plastika-253266",
+    "sourceTitle": "Бронзова пластика Свети Георги – голяма",
+    "sourceUrl": "https://artgifts.bg/product/bronzova-plastika-sveti-georgi-golyama/",
+    "edited": {
+      "id": "plastika-253266",
+      "name": "Свети Георги — голяма",
+      "series": "Бронзова пластика",
+      "cat": "plastika",
+      "price": null,
+      "text": "Бронзов образ на свети Георги на кон в битка с дракона — символ на смелостта и закрилата.",
+      "material": "Плътен бронз без примеси",
+      "image": "assets/products/sculptures/cutouts/plastika-253266-01.png",
+      "photos": [
+        {
+          "src": "assets/products/sculptures/cutouts/plastika-253266-01.png",
+          "label": "Основна"
+        }
+      ],
+      "sold": true,
+      "sourceUrl": "https://artgifts.bg/product/bronzova-plastika-sveti-georgi-golyama/",
+      "stock": 0,
+      "repeatInquiry": true,
+      "author": "Семейство Бондикови",
+      "size": "32 × 10 × 24 см"
+    }
+  },
+  {
+    "id": "plastika-252606",
+    "sourceTitle": "Пластика “Див кон” – Венелин Петров",
+    "sourceUrl": "https://artgifts.bg/product/metalo-plastika-div-kon-venelin-petrov/",
+    "edited": {
+      "id": "plastika-252606",
+      "name": "Див кон",
+      "series": "Металопластика",
+      "cat": "plastika",
+      "price": null,
+      "text": "Конска фигура от мед, метални сплави и тел, с отворена, въздушна композиция.",
+      "material": "Мед, метални сплави и тел",
+      "image": "assets/products/sculptures/cutouts/plastika-252606-01.png",
+      "photos": [
+        {
+          "src": "assets/products/sculptures/cutouts/plastika-252606-01.png",
+          "label": "Основна"
+        }
+      ],
+      "sold": true,
+      "sourceUrl": "https://artgifts.bg/product/metalo-plastika-div-kon-venelin-petrov/",
+      "stock": 0,
+      "repeatInquiry": true,
+      "author": "Венелин Петров",
+      "size": "33 × 28,5 × 12 см",
+      "technique": "Металопластика"
+    }
+  },
+  {
+    "id": "plastika-241737",
+    "sourceTitle": "Бронзова пластика “Римско конче”",
+    "sourceUrl": "https://artgifts.bg/product/bronzova-plastika-rimsko-konche/",
+    "edited": {
+      "id": "plastika-241737",
+      "name": "Римско конче",
+      "series": "Бронзова пластика",
+      "cat": "plastika",
+      "price": null,
+      "text": "Малка бронзова конска фигура с декоративни орнаменти върху зелен мрамор.",
+      "material": "Плътен лят бронз без примеси",
+      "image": "assets/products/sculptures/cutouts/plastika-241737-01.png",
+      "photos": [
+        {
+          "src": "assets/products/sculptures/cutouts/plastika-241737-01.png",
+          "label": "Основна"
+        }
+      ],
+      "sold": true,
+      "sourceUrl": "https://artgifts.bg/product/bronzova-plastika-rimsko-konche/",
+      "stock": 0,
+      "repeatInquiry": true,
+      "author": "Семейство Бондикови",
+      "size": "8,5 × 5 × 3 см",
+      "support": "Фасетиран зелен мрамор"
+    }
+  },
+  {
+    "id": "plastika-241739",
+    "sourceTitle": "Бронзова пластика “Римски кон”",
+    "sourceUrl": "https://artgifts.bg/product/bronzova-plastika-rimki-kon-golyam-bondikovi/",
+    "edited": {
+      "id": "plastika-241739",
+      "name": "Римски кон",
+      "series": "Бронзова пластика",
+      "cat": "plastika",
+      "price": null,
+      "text": "Стилизирана бронзова конска фигура с гравирани символи, посветени на вечността, силата, успеха и приятелството.",
+      "material": "Плътна отливка на бронз без примеси",
+      "image": "assets/products/sculptures/cutouts/plastika-241739-01.png",
+      "photos": [
+        {
+          "src": "assets/products/sculptures/cutouts/plastika-241739-01.png",
+          "label": "Основна"
+        }
+      ],
+      "sold": true,
+      "sourceUrl": "https://artgifts.bg/product/bronzova-plastika-rimki-kon-golyam-bondikovi/",
+      "stock": 0,
+      "repeatInquiry": true,
+      "author": "Семейство Бондикови",
+      "size": "13 × 9 × 4 см",
+      "weight": "0,4 кг",
+      "support": "Фасетиран зелен мрамор"
+    }
+  },
+  {
+    "id": "plastika-252358",
+    "sourceTitle": "Значка “Цветен Кон”",
+    "sourceUrl": "https://artgifts.bg/product/znachka-tsveten-kon/",
+    "edited": {
+      "id": "plastika-252358",
+      "name": "Цветен кон — значка",
+      "series": "Декоративен аксесоар",
+      "cat": "plastika",
+      "price": null,
+      "text": "Декоративна значка от метал и смола с цветен конски мотив.",
+      "material": "Метал, смола",
+      "image": "assets/products/sculptures/cutouts/plastika-252358-01.png",
+      "photos": [
+        {
+          "src": "assets/products/sculptures/cutouts/plastika-252358-01.png",
+          "label": "Основна"
+        },
+        {
+          "src": "assets/products/sculptures/cutouts/plastika-252358-02.png",
+          "label": "Допълнителна"
+        }
+      ],
+      "sold": true,
+      "sourceUrl": "https://artgifts.bg/product/znachka-tsveten-kon/",
+      "stock": 0,
+      "repeatInquiry": true,
+      "size": "3 см диаметър, 6,5 см дължина",
+      "origin": "Китай"
+    }
+  },
+  {
+    "id": "plastika-252356",
+    "sourceTitle": "Ключодържател “Цветен Кон”",
+    "sourceUrl": "https://artgifts.bg/product/klyuchodarjatel-tsveten-kon/",
+    "edited": {
+      "id": "plastika-252356",
+      "name": "Цветен кон — ключодържател",
+      "series": "Декоративен аксесоар",
+      "cat": "plastika",
+      "price": null,
+      "text": "Ключодържател от метал и смола с цветна декорация на кон.",
+      "material": "Метал, смола",
+      "image": "assets/products/sculptures/cutouts/plastika-252356-01.png",
+      "photos": [
+        {
+          "src": "assets/products/sculptures/cutouts/plastika-252356-01.png",
+          "label": "Основна"
+        },
+        {
+          "src": "assets/products/sculptures/cutouts/plastika-252356-02.png",
+          "label": "Допълнителна"
+        }
+      ],
+      "sold": true,
+      "sourceUrl": "https://artgifts.bg/product/klyuchodarjatel-tsveten-kon/",
+      "stock": 0,
+      "repeatInquiry": true,
+      "size": "3 см диаметър, 6,5 см дължина",
+      "origin": "Китай"
+    }
+  },
+  {
+    "id": "plastika-252199",
+    "sourceTitle": "Бронзова пластика Слон",
+    "sourceUrl": "https://artgifts.bg/product/bronzova-plastika-slon-andrey-moskov/",
+    "edited": {
+      "id": "plastika-252199",
+      "name": "Слон",
+      "series": "Бронзова пластика",
+      "cat": "plastika",
+      "price": null,
+      "text": "Бронзова фигура на слон със синя и зелена патина върху полиран мрамор.",
+      "material": "Плътна отливка от бронз и синя и зелена патина",
+      "image": "assets/products/sculptures/cutouts/plastika-252199-01.png",
+      "photos": [
+        {
+          "src": "assets/products/sculptures/cutouts/plastika-252199-01.png",
+          "label": "Основна"
+        },
+        {
+          "src": "assets/products/sculptures/cutouts/plastika-252199-02.png",
+          "label": "Допълнителна"
+        },
+        {
+          "src": "assets/products/sculptures/cutouts/plastika-252199-03.png",
+          "label": "Гръб"
+        },
+        {
+          "src": "assets/products/sculptures/cutouts/plastika-252199-04.png",
+          "label": "Допълнителна"
+        }
+      ],
+      "sold": true,
+      "sourceUrl": "https://artgifts.bg/product/bronzova-plastika-slon-andrey-moskov/",
+      "stock": 0,
+      "repeatInquiry": true,
+      "author": "Андрей Москов",
+      "size": "16 × 17 × 10 см",
+      "support": "Фасетиран и полиран мрамор"
+    }
+  },
+  {
+    "id": "plastika-249851",
+    "sourceTitle": "Бронзова пластика Гимнастичката",
+    "sourceUrl": "https://artgifts.bg/product/bronzova-plastika-gimnastichkata/",
+    "edited": {
+      "id": "plastika-249851",
+      "name": "Гимнастичката",
+      "series": "Бронзова пластика",
+      "cat": "plastika",
+      "price": null,
+      "text": "Изящна бронзова фигура на гимнастичка, уловена в движение, върху черен мраморен постамент.",
+      "material": "Бронз",
+      "image": "assets/products/sculptures/cutouts/plastika-249851-01.png",
+      "photos": [
+        {
+          "src": "assets/products/sculptures/cutouts/plastika-249851-01.png",
+          "label": "Основна"
+        },
+        {
+          "src": "assets/products/sculptures/cutouts/plastika-249851-02.png",
+          "label": "Детайл"
+        },
+        {
+          "src": "assets/products/sculptures/cutouts/plastika-249851-03.png",
+          "label": "Допълнителна"
+        }
+      ],
+      "sold": true,
+      "sourceUrl": "https://artgifts.bg/product/bronzova-plastika-gimnastichkata/",
+      "stock": 0,
+      "repeatInquiry": true,
+      "author": "Иван Куртев",
+      "size": "5 × 18 (височина) см",
+      "support": "Фасетиран черен мрамор"
+    }
+  },
+  {
+    "id": "plastika-249412",
+    "sourceTitle": "Бронзова пластика Скален орел",
+    "sourceUrl": "https://artgifts.bg/product/bronzowa-plastika-skalen-orel/",
+    "edited": {
+      "id": "plastika-249412",
+      "name": "Скален орел",
+      "series": "Бронзова пластика",
+      "cat": "plastika",
+      "price": null,
+      "text": "Полиран бронзов орел върху необработен камък. Контрастът между повърхностите подчертава формата на птицата.",
+      "material": "Бронз",
+      "image": "assets/products/sculptures/cutouts/plastika-249412-02.png",
+      "photos": [
+        {
+          "src": "assets/products/sculptures/cutouts/plastika-249412-02.png",
+          "label": "Основна"
+        },
+        {
+          "src": "assets/products/sculptures/cutouts/plastika-249412-01.png",
+          "label": "Детайл"
+        }
+      ],
+      "sold": true,
+      "sourceUrl": "https://artgifts.bg/product/bronzowa-plastika-skalen-orel/",
+      "stock": 0,
+      "repeatInquiry": true,
+      "author": "Иван Куртев",
+      "size": "13 × 12,5 см"
+    }
+  },
+  {
+    "id": "plastika-249411",
+    "sourceTitle": "Бронзова пластика Планинска мечка",
+    "sourceUrl": "https://artgifts.bg/product/bronzova-plastika-planinska-mechka/",
+    "edited": {
+      "id": "plastika-249411",
+      "name": "Планинска мечка",
+      "series": "Бронзова пластика",
+      "cat": "plastika",
+      "price": null,
+      "text": "Компактна бронзова фигура на мечка върху необработен камък.",
+      "material": "Бронз",
+      "image": "assets/products/sculptures/cutouts/plastika-249411-01.png",
+      "photos": [
+        {
+          "src": "assets/products/sculptures/cutouts/plastika-249411-01.png",
+          "label": "Основна"
+        },
+        {
+          "src": "assets/products/sculptures/cutouts/plastika-249411-02.png",
+          "label": "Допълнителна"
+        }
+      ],
+      "sold": true,
+      "sourceUrl": "https://artgifts.bg/product/bronzova-plastika-planinska-mechka/",
+      "stock": 0,
+      "repeatInquiry": true,
+      "author": "Иван Куртев",
+      "size": "7 × 5 × 7 см",
+      "weight": "0,4 кг"
+    }
+  },
+  {
+    "id": "plastika-249410",
+    "sourceTitle": "Бронзова пластика Рибка",
+    "sourceUrl": "https://artgifts.bg/product/bronzova-plastika-ribka/",
+    "edited": {
+      "id": "plastika-249410",
+      "name": "Рибка",
+      "series": "Бронзова пластика",
+      "cat": "plastika",
+      "price": null,
+      "text": "Малка плътна бронзова рибка с плавни линии и полирана повърхност.",
+      "material": "Бронз",
+      "image": "assets/products/sculptures/cutouts/plastika-249410-01.png",
+      "photos": [
+        {
+          "src": "assets/products/sculptures/cutouts/plastika-249410-01.png",
+          "label": "Основна"
+        },
+        {
+          "src": "assets/products/sculptures/cutouts/plastika-249410-02.png",
+          "label": "Допълнителна"
+        }
+      ],
+      "sold": true,
+      "sourceUrl": "https://artgifts.bg/product/bronzova-plastika-ribka/",
+      "stock": 0,
+      "repeatInquiry": true,
+      "author": "Иван Куртев",
+      "size": "5,5 × 4,5 × 2,5 см"
+    }
+  },
+  {
+    "id": "plastika-249409",
+    "sourceTitle": "Бронзова пластика Див кон",
+    "sourceUrl": "https://artgifts.bg/product/bronzova-plastika-div-kon/",
+    "edited": {
+      "id": "plastika-249409",
+      "name": "Див кон",
+      "series": "Бронзова пластика",
+      "cat": "plastika",
+      "price": null,
+      "text": "Бронзов кон в динамична поза върху необработен камък — съчетание на движение и устойчива форма.",
+      "material": "Бронз",
+      "image": "assets/products/sculptures/cutouts/plastika-249409-01.png",
+      "photos": [
+        {
+          "src": "assets/products/sculptures/cutouts/plastika-249409-01.png",
+          "label": "Основна"
+        },
+        {
+          "src": "assets/products/sculptures/cutouts/plastika-249409-02.png",
+          "label": "Допълнителна"
+        },
+        {
+          "src": "assets/products/sculptures/cutouts/plastika-249409-03.png",
+          "label": "Допълнителна"
+        }
+      ],
+      "sold": true,
+      "sourceUrl": "https://artgifts.bg/product/bronzova-plastika-div-kon/",
+      "stock": 0,
+      "repeatInquiry": true,
+      "author": "Иван Куртев",
+      "size": "10 × 8 × 7 см",
+      "weight": "0,4 кг"
+    }
+  },
+  {
+    "id": "plastika-246999",
+    "sourceTitle": "Бронзова пластика “Триумфиращата Нике”",
+    "sourceUrl": "https://artgifts.bg/product/bronzova-plastika-triumfirashtata-nike/",
+    "edited": {
+      "id": "plastika-246999",
+      "name": "Триумфиращата Нике",
+      "series": "Бронзова пластика",
+      "cat": "plastika",
+      "price": null,
+      "text": "Бронзова фигура на Нике — богинята на победата, в устремена нагоре композиция.",
+      "material": "Бронз без примеси",
+      "image": "assets/products/sculptures/cutouts/plastika-246999-01.png",
+      "photos": [
+        {
+          "src": "assets/products/sculptures/cutouts/plastika-246999-01.png",
+          "label": "Основна"
+        }
+      ],
+      "sold": true,
+      "sourceUrl": "https://artgifts.bg/product/bronzova-plastika-triumfirashtata-nike/",
+      "stock": 0,
+      "repeatInquiry": true,
+      "author": "Семейство Бондикови",
+      "size": "35 × 19 см",
+      "support": "Фасетиран зелен мрамор"
+    }
+  },
+  {
+    "id": "plastika-246020",
+    "sourceTitle": "“Стрелец” – Андрей Москов",
+    "sourceUrl": "https://artgifts.bg/product/strelets-andrey-moskov-bronzova-plastika/",
+    "edited": {
+      "id": "plastika-246020",
+      "name": "Стрелец",
+      "series": "Бронзова пластика",
+      "cat": "plastika",
+      "price": null,
+      "text": "Бронзова композиция на стрелец с лък, завършена със синя патина и полиран мраморен постамент.",
+      "material": "Бронз и синя патина",
+      "image": "assets/products/sculptures/cutouts/plastika-246020-01.png",
+      "photos": [
+        {
+          "src": "assets/products/sculptures/cutouts/plastika-246020-01.png",
+          "label": "Основна"
+        }
+      ],
+      "sold": true,
+      "sourceUrl": "https://artgifts.bg/product/strelets-andrey-moskov-bronzova-plastika/",
+      "stock": 0,
+      "repeatInquiry": true,
+      "author": "Андрей Москов",
+      "size": "16 × 15,5 × 5 см",
+      "support": "Фасетиран и полиран мрамор"
+    }
+  },
+  {
+    "id": "plastika-246018",
+    "sourceTitle": "“Дон Кихот” – Андрей Москов",
+    "sourceUrl": "https://artgifts.bg/product/don-kihot-andrey-moskov-bronzova-plastika/",
+    "edited": {
+      "id": "plastika-246018",
+      "name": "Дон Кихот",
+      "series": "Бронзова пластика",
+      "cat": "plastika",
+      "price": null,
+      "text": "Бронзов образ на Дон Кихот със синя патина върху мраморен постамент.",
+      "material": "Бронз и синя патина",
+      "image": "assets/products/sculptures/cutouts/plastika-246018-01.png",
+      "photos": [
+        {
+          "src": "assets/products/sculptures/cutouts/plastika-246018-01.png",
+          "label": "Основна"
+        }
+      ],
+      "sold": true,
+      "sourceUrl": "https://artgifts.bg/product/don-kihot-andrey-moskov-bronzova-plastika/",
+      "stock": 0,
+      "repeatInquiry": true,
+      "author": "Андрей Москов",
+      "size": "14 × 27 × 5 см",
+      "support": "Фасетиран и полиран мрамор"
+    }
+  },
+  {
+    "id": "plastika-246015",
+    "sourceTitle": "“Бик” – Кирил Матеев",
+    "sourceUrl": "https://artgifts.bg/product/bik-kiril-mateev-bronzova-plastika/",
+    "edited": {
+      "id": "plastika-246015",
+      "name": "Бик",
+      "series": "Бронзова пластика",
+      "cat": "plastika",
+      "price": null,
+      "text": "Обемна бронзова фигура на бик върху полиран гранитен постамент.",
+      "material": "Бронз",
+      "image": "assets/products/sculptures/cutouts/plastika-246015-01.png",
+      "photos": [
+        {
+          "src": "assets/products/sculptures/cutouts/plastika-246015-01.png",
+          "label": "Основна"
+        }
+      ],
+      "sold": true,
+      "sourceUrl": "https://artgifts.bg/product/bik-kiril-mateev-bronzova-plastika/",
+      "stock": 0,
+      "repeatInquiry": true,
+      "author": "Кирил Матеев",
+      "size": "16 × 24 × 15 см",
+      "support": "Фасетиран и полиран гранит"
+    }
+  },
+  {
+    "id": "plastika-241723",
+    "sourceTitle": "Бронзова пластика “Света Богородица”",
+    "sourceUrl": "https://artgifts.bg/product/%d0%bf%d0%bb%d0%b0%d1%81%d1%82%d0%b8%d0%ba%d0%b0-%d1%81%d0%b2%d0%b5%d1%82%d0%b0-%d0%b1%d0%be%d0%b3%d0%be%d1%80%d0%be%d0%b4%d0%b8%d1%86%d0%b0/",
+    "edited": {
+      "id": "plastika-241723",
+      "name": "Света Богородица",
+      "series": "Бронзова пластика",
+      "cat": "plastika",
+      "price": null,
+      "text": "Плътна бронзова композиция с образа на света Богородица върху тъмнозелен мрамор.",
+      "material": "Бронз без примеси",
+      "image": "assets/products/sculptures/cutouts/plastika-241723-01.png",
+      "photos": [
+        {
+          "src": "assets/products/sculptures/cutouts/plastika-241723-01.png",
+          "label": "Основна"
+        }
+      ],
+      "sold": true,
+      "sourceUrl": "https://artgifts.bg/product/%d0%bf%d0%bb%d0%b0%d1%81%d1%82%d0%b8%d0%ba%d0%b0-%d1%81%d0%b2%d0%b5%d1%82%d0%b0-%d0%b1%d0%be%d0%b3%d0%be%d1%80%d0%be%d0%b4%d0%b8%d1%86%d0%b0/",
+      "stock": 0,
+      "repeatInquiry": true,
+      "author": "Семейство Бондикови",
+      "support": "Тъмнозелен мрамор с черна жилка"
+    }
+  },
+  {
+    "id": "plastika-241717",
+    "sourceTitle": "пластика бронз “Бухал”",
+    "sourceUrl": "https://artgifts.bg/product/%d0%b1%d1%80%d0%be%d0%bd%d0%b7-%d0%b1%d1%83%d1%85%d0%b0%d0%bb-%d0%bf%d0%bb%d0%b0%d1%81%d1%82%d0%b8%d0%ba%d0%b0/",
+    "edited": {
+      "id": "plastika-241717",
+      "name": "Бухал",
+      "series": "Бронзова пластика",
+      "cat": "plastika",
+      "price": null,
+      "text": "Бронзов бухал с релефно оперение върху тъмнозелен мрамор с черна жилка.",
+      "material": "Бронз без примеси",
+      "image": "assets/products/sculptures/cutouts/plastika-241717-01.png",
+      "photos": [
+        {
+          "src": "assets/products/sculptures/cutouts/plastika-241717-01.png",
+          "label": "Основна"
+        }
+      ],
+      "sold": true,
+      "sourceUrl": "https://artgifts.bg/product/%d0%b1%d1%80%d0%be%d0%bd%d0%b7-%d0%b1%d1%83%d1%85%d0%b0%d0%bb-%d0%bf%d0%bb%d0%b0%d1%81%d1%82%d0%b8%d0%ba%d0%b0/",
+      "stock": 0,
+      "repeatInquiry": true,
+      "author": "Семейство Бондикови",
+      "support": "Тъмнозелен мрамор с черна жилка"
+    }
+  },
+  {
+    "id": "plastika-241709",
+    "sourceTitle": "пластика бронз “Овен”",
+    "sourceUrl": "https://artgifts.bg/product/plastika-oven-bronz/",
+    "edited": {
+      "id": "plastika-241709",
+      "name": "Овен",
+      "series": "Бронзова пластика",
+      "cat": "plastika",
+      "price": null,
+      "text": "Плътна бронзова фигура на овен върху тъмнозелен мраморен постамент.",
+      "material": "Бронз без примеси",
+      "image": "assets/products/sculptures/cutouts/plastika-241709-01.png",
+      "photos": [
+        {
+          "src": "assets/products/sculptures/cutouts/plastika-241709-01.png",
+          "label": "Основна"
+        }
+      ],
+      "sold": true,
+      "sourceUrl": "https://artgifts.bg/product/plastika-oven-bronz/",
+      "stock": 0,
+      "repeatInquiry": true,
+      "author": "Семейство Бондикови",
+      "support": "Тъмнозелен мрамор с черна жилка"
+    }
+  },
+  {
+    "id": "plastika-241705",
+    "sourceTitle": "бронз пластика “Жар птица”",
+    "sourceUrl": "https://artgifts.bg/product/%d0%b1%d1%80%d0%be%d0%bd%d0%b7-%d0%bf%d0%bb%d0%b0%d1%81%d1%82%d0%b8%d0%ba%d0%b0-%d0%b6%d0%b0%d1%80-%d0%bf%d1%82%d0%b8%d1%86%d0%b0/",
+    "edited": {
+      "id": "plastika-241705",
+      "name": "Жар-птица",
+      "series": "Бронзова пластика",
+      "cat": "plastika",
+      "price": null,
+      "text": "Бронзова птица с изразителен силует върху тъмнозелен мраморен постамент.",
+      "material": "Бронз без примеси",
+      "image": "assets/products/sculptures/cutouts/plastika-241705-01.png",
+      "photos": [
+        {
+          "src": "assets/products/sculptures/cutouts/plastika-241705-01.png",
+          "label": "Основна"
+        }
+      ],
+      "sold": true,
+      "sourceUrl": "https://artgifts.bg/product/%d0%b1%d1%80%d0%be%d0%bd%d0%b7-%d0%bf%d0%bb%d0%b0%d1%81%d1%82%d0%b8%d0%ba%d0%b0-%d0%b6%d0%b0%d1%80-%d0%bf%d1%82%d0%b8%d1%86%d0%b0/",
+      "stock": 0,
+      "repeatInquiry": true,
+      "author": "Семейство Бондикови",
+      "support": "Тъмнозелен мрамор с черна жилка"
     }
   }
 ]

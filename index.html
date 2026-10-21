@@ -38,7 +38,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prata&family=Cormorant+Garamond:ital,wght@0,400;1,400;1,500&family=Jost:wght@300;400;500&display=swap&subset=cyrillic" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=20">
+<link rel="stylesheet" href="styles.css?v=21">
 <link rel="stylesheet" href="atelier.css?v=9">
 <link rel="preload" as="image" href="assets/products/kartina-blagodat-wall.webp">
 </head>
@@ -111,6 +111,14 @@
       </div>
     </header>
     <p class="cat-note" id="catNote"></p>
+    <nav class="sculpture-views" id="sculptureViews" aria-label="Наличност на пластиките" hidden>
+      <a href="#plastiki" data-stock-view="available">Налични <span></span></a>
+      <a href="#plastiki-prodadeni" data-stock-view="sold">Продадени <span></span></a>
+    </nav>
+    <section class="sold-intro" id="soldIntro" aria-labelledby="soldTitle" hidden>
+      <div><p class="eyebrow">Архив на колекцията</p><h2 id="soldTitle">Намерили <i>своя дом.</i></h2></div>
+      <div class="sold-intro-copy"><p>Тези пластики вече са продадени. Ако някоя ви привлече, пишете ни — ще проверим дали е възможна нова изработка или бъдеща наличност.</p><p>Възможността, цената и срокът се уточняват индивидуално след потвърждение. Всяка нова отливка може да има фини различия в патината и постамента.</p><a class="link" href="#kontakti">Попитайте за творба ↗</a></div>
+    </section>
     <div class="grid" id="grid"></div>
     <p class="soon" id="soon" hidden>Тази колекция се подготвя. Ако търсите нещо конкретно, <a href="#kontakti">пишете ни</a>.</p>
   </section>
@@ -345,6 +353,6 @@
 
 <script src="atelier.js?v=8" defer></script>
 <script src="sculpture-photos.js?v=8" defer></script>
-<script src="boot.js?v=21" defer></script>
+<script src="boot.js?v=22" defer></script>
 </body>
 </html>

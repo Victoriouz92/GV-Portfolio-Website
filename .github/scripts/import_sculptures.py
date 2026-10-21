@@ -7,6 +7,15 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE = ROOT.parent / 'Lucky Images' / 'plastiki-artgifts'
+SOLD_SOURCE = ROOT.parent / 'Lucky Images' / 'plastiki-artgifts-prodadeni'
+# Owner-confirmed catalogue policy. Never restore withdrawn works on a re-import.
+BORISLAV_AVAILABLE = {'245792', '245791'}
+
+
+def publishable_author(author, source_id):
+    if author == 'Румяна Русинова':
+        return False
+    return author != 'Борислав Русинов' or source_id in BORISLAV_AVAILABLE
 
 # Edited display names and concise copy, reviewed against the source descriptions.
 # Authors are intentionally kept in their own field rather than repeated in copy.
@@ -124,13 +133,21 @@ def field(text, label):
 def main():
     source = json.loads((SOURCE / 'catalog.json').read_text(encoding='utf-8'))['products']
     assert len(source) == len(COPY) == 98
+    entries = [(p, copy, SOURCE, False) for p, copy in zip(source, COPY)]
+    sold_copy = json.loads((ROOT / '.github/imports/sculptures-sold-copy.json').read_text(encoding='utf-8'))
+    sold_products = json.loads((SOLD_SOURCE / 'catalog.json').read_text(encoding='utf-8'))['products']
+    entries.extend((p, sold_copy[p['sourceId']], SOLD_SOURCE, True) for p in sold_products)
     original = json.loads((ROOT / 'data/works.json').read_text(encoding='utf-8'))
     original['works'] = [w for w in original['works'] if not w.get('sourceUrl', '').startswith('https://artgifts.bg/product/')]
     report = []
     cutout_manifest = ROOT / '.github/imports/sculpture-cutouts.json'
     cutouts = {item['source']: item['output'] for item in
                json.loads(cutout_manifest.read_text(encoding='utf-8'))['entries']} if cutout_manifest.exists() else {}
-    for p, copy in zip(source, COPY):
+    sold_cutouts = ROOT / '.github/imports/sculptures-sold-cutouts.json'
+    if sold_cutouts.exists():
+        cutouts.update({item['source']: item['output'] for item in
+                        json.loads(sold_cutouts.read_text(encoding='utf-8'))['entries']})
+    for p, copy, source_root, sold in entries:
         name, text = copy.split('|', 1)
         short = p['shortDescription']
         author = field(short, 'Автор')
@@ -141,6 +158,10 @@ def main():
         # The source alternates Дана/Диана; the owner confirmed Диана Тончева.
         if p['sourceId'] == '252352':
             author = 'Диана Тончева'
+        if not publishable_author(author, p['sourceId']):
+            continue
+        if sold and author == 'Борислав Русинов':
+            raise ValueError('Borislav Rusinov must not appear in the sold archive')
         material = field(short, 'Материал(?:и| на пегаса)?')
         if not material:
             material = 'Релефен бронз, зелена патина' if 'Зелена патина' in short else 'Релефен бронз' if 'Релефен бронз' in short else 'Бронз без примеси' if 'бронз без примеси' in short else 'Бронз'
@@ -160,6 +181,8 @@ def main():
         if support:
             support_text = support.lower()
             support = ('Дърво' if 'дървен' in support_text else
+                       'Гранит' if 'гранит' in support_text else
+                       'Необработен камък' if 'необработен камък' in support_text else
                        'Бял мрамор' if 'бял' in support_text else
                        'Тъмнозелен мрамор с черна жилка' if 'тъмно зелен' in support_text else
                        'Зелен мрамор' if 'зелен' in support_text else
@@ -174,15 +197,29 @@ def main():
         for image in p['images']:
             target = ROOT / 'assets/products/sculptures' / f'{wid}-{image["order"]:02d}.jpg'
             target.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copy2(SOURCE / image['path'], target)
+            shutil.copy2(source_root / image['path'], target)
             original_src = target.relative_to(ROOT).as_posix()
             display_src = cutouts.get(original_src, original_src)
             if not (ROOT / display_src).is_file():
                 raise FileNotFoundError(f'Missing reviewed cutout: {display_src}')
             images.append({'src': display_src, 'label': image['role']})
+        # The source opens with a cropped detail; lead with its complete photograph.
+        if p['sourceId'] == '249412':
+            images[0]['label'] = 'Детайл'
+            images[1]['label'] = 'Основна'
+            images = [images[1], images[0]]
+        if p['sourceId'] == '249851':
+            images[1]['label'] = 'Детайл'
         record = {'id': wid, 'name': name, 'series': 'Металопластика' if author == 'Венелин Петров' else 'Бронзов аксесоар' if origin else 'Бронзова пластика',
                   'cat': 'plastika', 'price': p['priceEUR'], 'text': text, 'material': material[0].upper() + material[1:],
-                  'image': images[0]['src'], 'photos': images, 'sold': False, 'sourceUrl': p['sourceUrl']}
+                  'image': images[0]['src'], 'photos': images, 'sold': sold, 'sourceUrl': p['sourceUrl']}
+        if sold:
+            record['stock'] = 0
+            record['repeatInquiry'] = True
+            # Historic source prices are not current quotes for a future edition.
+            record['price'] = None
+            if origin:
+                record['series'] = 'Декоративен аксесоар'
         # Pale marble can share the wall's colour: retain that photography intact.
         if p['sourceId'] in {'252352', '249849', '249420', '249417', '246022'}:
             record['photoMode'] = 'blend'
@@ -199,7 +236,9 @@ def main():
         if author == 'Венелин Петров':
             record['technique'] = 'Металопластика'
         stock = re.search(r'Налични\s+(\d+)', ' '.join(s['text'] for s in p['stockEvidence']))
-        if stock:
+        if sold:
+            pass
+        elif stock:
             record['stock'] = int(stock.group(1))
         else:
             record['stockUnknown'] = True
@@ -209,7 +248,7 @@ def main():
     audit = ROOT / '.github/imports/sculptures-editorial.json'
     audit.parent.mkdir(exist_ok=True)
     audit.write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
-    print(f'Imported {len(source)} sculptures and {sum(len(p["images"]) for p in source)} original photographs.')
+    print(f'Imported {len(report)} sculptures ({sum(r["edited"]["sold"] for r in report)} sold).')
 
 
 if __name__ == '__main__':
