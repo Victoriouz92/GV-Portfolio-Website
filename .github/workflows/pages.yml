@@ -24,6 +24,11 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Check catalogue and checkout without sending orders
+        run: npm ci --prefix .github/tests && npm test --prefix .github/tests
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"

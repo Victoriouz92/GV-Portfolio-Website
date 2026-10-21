@@ -28,7 +28,7 @@ def main():
     index = open("index.html", encoding="utf-8").read()
     works = json.load(open("data/works.json", encoding="utf-8"))["works"]
     site = json.load(open("data/site.json", encoding="utf-8"))
-    rates = [d["price"] for d in site.get("delivery", []) if d.get("type") != "pickup" and d.get("price") not in (None, "")]
+    rates = [d["price"] for d in site.get("delivery", []) if not site.get("pickupOnly", True) and d.get("type") != "pickup" and d.get("price") not in (None, "")]
     shipping = {"@type": "OfferShippingDetails", "shippingDestination": {"@type": "DefinedRegion", "addressCountry": "BG"},
                 "shippingRate": {"@type": "MonetaryAmount", "value": min(rates), "currency": "EUR"},
                 "deliveryTime": {"@type": "ShippingDeliveryTime",

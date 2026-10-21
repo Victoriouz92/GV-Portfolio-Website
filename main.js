@@ -88,8 +88,58 @@ document.addEventListener("change", e => {
 });
 
 /* ---------- collection ---------- */
-let curCat = "kartina", curSold = false;
+let curCat = "kartina", curSold = false, catalogLimit = 24;
+const catalogAuthor = w => w.author || (w.cat === "plastika" ? "" : "Лъки Михайлова");
+const catalogMaterial = w => w.origin ? "Декоративни аксесоари" : w.technique === "Металопластика" ? "Металопластика" : w.cat === "plastika" ? "Бронз" : "Стъкло";
+const cataloguePrice = w => hasSizes(w) ? Math.min(...w.sizes.map(s => +s.price)) : hasPrice(w.price) ? +w.price : null;
+const catalogueScope = () => WORKS.filter(w => w.cat === curCat && (curCat !== "plastika" || !!w.sold === curSold));
+const normalizeSearch = value => String(value || "").normalize("NFKC").toLocaleLowerCase("bg").replace(/[„“”"'—–-]/g, " ").replace(/\s+/g, " ").trim();
+function renderCatalogue(reset = true) {
+  if (reset) catalogLimit = 24;
+  const query = normalizeSearch($("#catalogSearch").value).split(" ").filter(Boolean);
+  const author = $("#catalogAuthor").value, material = $("#catalogMaterial").value;
+  const min = $("#catalogMin").value === "" ? null : Number($("#catalogMin").value);
+  const max = $("#catalogMax").value === "" ? null : Number($("#catalogMax").value);
+  const list = catalogueScope().filter(w => {
+    const price = cataloguePrice(w);
+    const haystack = normalizeSearch([w.name, w.series, catalogAuthor(w), w.material, w.text, w.size].join(" "));
+    return query.every(word => haystack.includes(word)) && (!author || catalogAuthor(w) === author)
+      && (!material || catalogMaterial(w) === material)
+      && (curSold || ((min === null || (price !== null && price >= min)) && (max === null || (price !== null && price <= max))));
+  });
+  const sort = $("#catalogSort").value;
+  list.sort((a, b) => {
+    if (sort === "name") return a.name.localeCompare(b.name, "bg");
+    if (sort.startsWith("price")) {
+      const ap = cataloguePrice(a), bp = cataloguePrice(b);
+      if (ap === null || bp === null) return ap === bp ? 0 : ap === null ? 1 : -1;
+      return sort === "price-up" ? ap - bp : bp - ap;
+    }
+    return (area(a) || Infinity) - (area(b) || Infinity);
+  });
+  const shown = Math.min(catalogLimit, list.length);
+  if (reset) $("#grid").innerHTML = list.slice(0, shown).map(card).join("");
+  else $("#grid").insertAdjacentHTML("beforeend", list.slice(Math.max(0, catalogLimit - 24), shown).map(card).join(""));
+  $("#catalogResults").textContent = min !== null && max !== null && min > max && !curSold ? "Началната цена трябва да е по-малка от крайната." : `${list.length} ${list.length === 1 ? "творба" : "творби"}${list.length > shown ? ` · показани ${shown}` : ""}`;
+  $("#filterSummary").textContent = `${list.length}`;
+  $("#catalogEmpty").hidden = list.length > 0;
+  $("#catalogMore").hidden = shown >= list.length;
+  $("#catalogMore").textContent = `Покажи още ${Math.min(24, list.length - shown)}`;
+  observe($("#grid"));
+}
+function resetCatalogue() {
+  ["#catalogSearch", "#catalogAuthor", "#catalogMaterial", "#catalogMin", "#catalogMax"].forEach(s => $(s).value = "");
+  $("#catalogSort").value = "default";
+  renderCatalogue();
+}
+$("#catalogSearch").addEventListener("input", () => renderCatalogue());
+["#catalogAuthor", "#catalogMaterial", "#catalogSort", "#catalogMin", "#catalogMax"].forEach(s => $(s).addEventListener("change", () => renderCatalogue()));
+$("#catalogReset").addEventListener("click", resetCatalogue);
+$("#catalogEmptyReset").addEventListener("click", resetCatalogue);
+$("#catalogMore").addEventListener("click", () => { catalogLimit += 24; renderCatalogue(false); });
+if (matchMedia("(max-width: 640px)").matches) $("#catalogFilters").open = false;
 function renderGrid(cat, sold = false) {
+  const categoryChanged = curCat !== cat;
   curCat = cat;
   curSold = cat === "plastika" && sold;
   $("#collectionTitle").innerHTML = cat === "plastika" ? "Пластики" : 'Стъкло, което <i class="glow">свети</i>';
@@ -103,8 +153,20 @@ function renderGrid(cat, sold = false) {
     a.querySelector("span").textContent = WORKS.filter(w => w.cat === "plastika" && !!w.sold === archive).length;
     archive === curSold ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current");
   });
-  if (!soon) $("#grid").innerHTML = WORKS.filter(w => w.cat === cat && (cat !== "plastika" || !!w.sold === curSold)).sort((a, b) => (area(a) || Infinity) - (area(b) || Infinity)).map(card).join("");
-  observe($("#grid"));
+  $("#catalogFilters").hidden = soon;
+  $("#catalogResults").hidden = soon;
+  $("#catalogPrice").hidden = curSold;
+  $$("#catalogSort option[value^=price]").forEach(o => o.disabled = curSold);
+  if (curSold && $("#catalogSort").value.startsWith("price")) $("#catalogSort").value = "default";
+  const populate = (selector, values, label) => {
+    const el = $(selector), previous = el.value;
+    el.innerHTML = `<option value="">${label}</option>` + [...new Set(values.filter(Boolean))].sort((a, b) => a.localeCompare(b, "bg")).map(v => `<option value="${esc(v)}">${esc(v)}</option>`).join("");
+    if ([...el.options].some(o => o.value === previous)) el.value = previous;
+  };
+  populate("#catalogAuthor", catalogueScope().map(catalogAuthor), "Всички автори");
+  populate("#catalogMaterial", catalogueScope().map(catalogMaterial), "Всички материали");
+  if (!soon) categoryChanged ? resetCatalogue() : renderCatalogue();
+  else { $("#grid").innerHTML = ""; $("#catalogMore").hidden = true; $("#catalogEmpty").hidden = true; }
 }
 $$(".tabs button").forEach(t => t.addEventListener("click", () => {
   $$(".tabs button").forEach(x => x.setAttribute("aria-selected", x === t));
@@ -164,8 +226,9 @@ function renderWork(id) {
   $("#wpAdd").hidden = !stockOf(cur);
   $("#wpStock").classList.toggle("sold", !stockOf(cur));
   const cheapest = Math.min(...DELIV.filter(o => o.type !== "pickup" && o.price != null).map(o => o.price));
-  $("#wpShip").innerHTML = stockOf(cur) ? [isFinite(cheapest) ? `Доставка от ${money(cheapest)} · 1–2 работни дни` : "", "Безплатно вземане от галерията в София",
-    "Плащане с карта, наложен платеж или превод", "14 дни за връщане"].filter(Boolean).map(t => `<li>${t}</li>`).join("") : "";
+  $("#wpShip").innerHTML = stockOf(cur) ? (PICKUP_ONLY
+    ? ["Безплатно вземане от галерията в София", "Плащане при вземане · след потвърждение", "Куриерска доставка · предстои скоро"]
+    : [isFinite(cheapest) ? `Доставка от ${money(cheapest)} · 1–2 работни дни` : "", "Безплатно вземане от галерията в София", "Плащане с карта, наложен платеж или превод", "14 дни за връщане"]).filter(Boolean).map(t => `<li>${t}</li>`).join("") : "";
   $("#wpStock").innerHTML = stockOf(cur)
     ? `<span>${stockLabel(cur)}</span>${cur.author === "Борислав Русинов" ? "" : ' Търсите повече бройки? <a href="#kontakti">Пишете ни</a>'}`
     : cur.cat === "plastika"
@@ -308,9 +371,12 @@ $("#menuBtn").addEventListener("click", () => {
 let cart = store.get("cart2", []).filter(c => !c.id || (byId(c.id) && stockOf(byId(c.id)) > 0));
 store.set("cart2", cart);
 const drawer = $("#drawer");
+// Launch mode: only pickup and payment in the gallery are ready for customers.
+const PICKUP_ONLY = SITE.pickupOnly !== false;
 // delivery: fixed prices from the admin panel, BOX NOW lockers from its own map
 const DELIV = (Array.isArray(SITE.delivery) && SITE.delivery.length ? SITE.delivery : [{ label: "От галерията", note: SITE.address || "", type: "pickup", price: 0 }])
-  .map(o => ({ ...o, price: hasPrice(o.price) ? +o.price : null }));
+  .map(o => ({ ...o, price: hasPrice(o.price) ? +o.price : null, available: !PICKUP_ONLY || o.type === "pickup" }));
+if (!DELIV.some(o => o.available)) DELIV.unshift({ label: "От галерията", note: SITE.address || "", type: "pickup", price: 0, available: true });
 const WHERE = { office: "Град и офис на куриера", address: "Град и адрес за доставка", boxnow: "Автомат BOX NOW" };
 const shipLabel = p => p === 0 ? "безплатно" : p != null ? money(p) : "по тарифа";
 // card payments: Stripe's own secure field, switched on once the key and the small payment server are set in site.json.
@@ -324,19 +390,24 @@ const PAY = [
   { id: "cod", label: "При получаване", note: "с карта, по линк от BOX NOW преди отварянето на автомата", ok: t => t === "boxnow" },
   { id: "gallery", label: "При вземане от галерията", note: "в брой или с карта", ok: t => t === "pickup" },
   { id: "bank", label: "Банков превод", note: "изпращаме данните за превода с потвърждението", ok: () => true }];
-const opt = (name, i, o, right, on) => `<label class="opt"><input type="radio" name="${name}" value="${i}"${on ? " checked" : ""}>
+const paymentAvailable = m => (!PICKUP_ONLY || m.id === "gallery") && m.ok(deliv().type || "pickup");
+const opt = (name, i, o, right, on) => `<label class="opt${o.available === false ? " unavailable" : ""}"><input type="radio" name="${name}" value="${i}"${on ? " checked" : ""}${o.available === false ? " disabled" : ""}>
   <span class="dot" aria-hidden="true"></span><span class="ot"><b>${esc(o.label)}</b>${o.note ? `<small>${esc(o.note)}</small>` : ""}</span>${right ? `<em>${right}</em>` : ""}</label>`;
-$("#delivList").innerHTML = DELIV.map((o, i) => opt("delivery", i, o, shipLabel(o.price), !i)).join("");
-const deliv = () => DELIV[+(($("input[name=delivery]:checked") || {}).value || 0)];
-const payM = () => { const t = deliv().type || "pickup", v = ($("input[name=pay]:checked") || {}).value; return PAY.find(m => m.id === v && m.ok(t)) || PAY[PAY.length - 1]; };
+$("#delivList").innerHTML = DELIV.map((o, i) => opt("delivery", i, o.available ? o : { ...o, note: "Тази доставка все още не е активна." }, o.available ? shipLabel(o.price) : "Предстои скоро", i === DELIV.findIndex(d => d.available))).join("");
+const deliv = () => {
+  const selected = DELIV[+$("input[name=delivery]:checked")?.value];
+  return selected?.available ? selected : DELIV.find(o => o.available);
+};
+const payM = () => { const v = $("input[name=pay]:checked")?.value; return PAY.find(m => m.id === v && paymentAvailable(m)) || PAY.find(paymentAvailable); };
 const totals = () => {
   const known = cart.filter(c => c.price != null), items = known.reduce((s, c) => s + c.price, 0), ship = deliv().price;
   return { items, ship, sum: items + (ship || 0), exact: known.length === cart.length && ship != null, any: known.length > 0 };
 };
 function renderPay() {
   const t = deliv().type || "pickup", was = ($("input[name=pay]:checked") || {}).value;
-  const list = PAY.filter(m => m.ok(t)), keep = list.some(m => m.id === was) ? was : list[0].id;
-  $("#payList").innerHTML = list.map(m => opt("pay", m.id, m, "", m.id === keep)).join("");
+  const list = PAY.filter(m => m.ok(t) || (PICKUP_ONLY && ["card", "bank"].includes(m.id)));
+  const keep = list.some(m => m.id === was && paymentAvailable(m)) ? was : list.find(paymentAvailable).id;
+  $("#payList").innerHTML = list.map(m => opt("pay", m.id, { ...m, available: paymentAvailable(m), note: paymentAvailable(m) ? m.note : "Този начин на плащане все още не е активен." }, paymentAvailable(m) ? "" : "Предстои скоро", m.id === keep)).join("");
   updatePay();
 }
 function updatePay() {
@@ -418,13 +489,52 @@ function renderList() {
   $("#sumShip").textContent = shipLabel(t.ship);
   $("#cartTotal").textContent = t.any ? money(t.sum) + (t.exact ? "" : " + …") : "по запитване";
   const m = payM().id;
-  $("#payBtn").textContent = m === "card" ? `Плати ${t.exact ? money(t.sum) : ""}`.trim() : `Поръчай и плати${t.exact ? " · " + money(t.sum) : ""}`;
+  $("#payBtn").textContent = m === "card" ? `Плати ${t.exact ? money(t.sum) : ""}`.trim() : "Изпрати поръчката";
   if (elements && t.exact) elements.update({ amount: Math.max(50, cents(t.sum)) });
+  renderCheckoutReview();
 }
-function addToList(item) { cart.push(item); store.set("cart2", cart); $("#orderDone").hidden = true; $("#cartNote").textContent = ""; renderList(); openDrawer(); }
+let checkoutStep = 0, submittingOrder = false;
+function checkoutError(message, el) {
+  $("#orderNote").textContent = message;
+  $("#orderNote").dataset.auto = "";
+  if (el) { el.setAttribute("aria-invalid", "true"); el.focus(); }
+  return false;
+}
+function validateCheckoutStep(step) {
+  if (!cart.length) return checkoutError("Добавете творба в количката.");
+  if (step === 0) {
+    if (!deliv()?.available) return checkoutError("Изберете активен начин на получаване.");
+    return true;
+  }
+  if ($("#oName").value.trim().length < 2) return checkoutError("Моля, въведете име и фамилия.", $("#oName"));
+  const phone = $("#oPhone").value.replace(/\D/g, "");
+  if (phone.length < 7 || phone.length > 15) return checkoutError("Моля, въведете валиден телефон за връзка.", $("#oPhone"));
+  if (!/^\S+@\S+\.\S+$/.test($("#oEmail").value.trim())) return checkoutError("Моля, въведете валиден имейл.", $("#oEmail"));
+  return true;
+}
+function renderCheckoutReview() {
+  const rows = [["Получаване", `${deliv().label} · ${deliv().note || SITE.address || ""}`],
+    ["Име", $("#oName").value.trim()], ["Телефон", $("#oPhone").value.trim()], ["Имейл", $("#oEmail").value.trim()]];
+  $("#checkoutReview").innerHTML = rows.map(([label, value]) => `<div><dt>${esc(label)}</dt><dd>${esc(value || "—")}</dd></div>`).join("");
+}
+function setCheckoutStep(step, focus = true) {
+  checkoutStep = Math.max(0, Math.min(2, step));
+  $$("[data-checkout-step]").forEach(el => el.hidden = +el.dataset.checkoutStep !== checkoutStep);
+  $$(".checkout-progress li").forEach((el, i) => i === checkoutStep ? el.setAttribute("aria-current", "step") : el.removeAttribute("aria-current"));
+  $("#checkoutBack").hidden = checkoutStep === 0;
+  $("#checkoutNext").hidden = checkoutStep === 2;
+  $("#checkoutNext").textContent = checkoutStep === 0 ? "Продължи към данните →" : "Прегледай поръчката →";
+  $("#orderNote").textContent = "";
+  renderCheckoutReview();
+  if (focus) $(`[data-checkout-step="${checkoutStep}"] h3`).focus();
+}
+$("#checkoutNext").addEventListener("click", () => { if (validateCheckoutStep(checkoutStep)) setCheckoutStep(checkoutStep + 1); });
+$("#checkoutBack").addEventListener("click", () => setCheckoutStep(checkoutStep - 1));
+$("#orderForm").addEventListener("input", e => e.target.removeAttribute("aria-invalid"));
+function addToList(item) { cart.push(item); store.set("cart2", cart); $("#orderDone").hidden = true; $("#cartNote").textContent = ""; setCheckoutStep(0, false); renderList(); openDrawer(); }
 $("#cartList").addEventListener("click", e => {
   const b = e.target.closest("[data-rm]"); if (!b) return;
-  cart.splice(+b.dataset.rm, 1); store.set("cart2", cart); $("#cartNote").textContent = ""; renderList();
+  cart.splice(+b.dataset.rm, 1); store.set("cart2", cart); $("#cartNote").textContent = ""; $("#orderOut").hidden = true; renderList();
 });
 let lastFocus = null;
 function openDrawer() { if (drawer.hidden) lastFocus = document.activeElement; drawer.hidden = false; document.body.style.overflow = "hidden"; $("#drawer .x").focus({ preventScroll: true }); }
@@ -432,7 +542,16 @@ function closeDrawer() { drawer.hidden = true; document.body.style.overflow = ""
 $("#cartBtn").addEventListener("click", openDrawer);
 $$("[data-close-drawer]").forEach(b => b.addEventListener("click", closeDrawer));
 $("#drawer").addEventListener("click", e => { if (e.target.closest(".panel a[href^='#']")) closeDrawer(); });
-addEventListener("keydown", e => { if (e.key === "Escape" && !drawer.hidden) closeDrawer(); });
+addEventListener("keydown", e => {
+  if (drawer.hidden) return;
+  if (e.key === "Escape") return closeDrawer();
+  if (e.key !== "Tab") return;
+  const focusable = $$("button, a[href], input, select, textarea, [tabindex]", drawer)
+    .filter(el => !el.disabled && el.tabIndex >= 0 && !el.closest("[hidden]") && el.getClientRects().length);
+  const first = focusable[0], last = focusable[focusable.length - 1];
+  if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last?.focus(); }
+  else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first?.focus(); }
+});
 const orderNo = () => "LG-" + Date.now().toString(36).slice(-6).toUpperCase();
 function orderDone(no, text) {
   cart.length = 0; store.set("cart2", cart); renderList();
@@ -442,18 +561,22 @@ function orderDone(no, text) {
 const DONE = {
   card: "Плащането е успешно. Ще получите потвърждение по имейл и ще ви се обадим за доставката.",
   cod: "Поръчката е приета. Ще ви се обадим до един работен ден, за да я потвърдим, и я изпращаме. Плащате при получаване.",
-  gallery: "Поръчката е приета. Ще ви се обадим до един работен ден, когато творбата ви чака в галерията.",
+  gallery: "Поръчката е изпратена. Ще се свържем с вас до един работен ден, за да потвърдим наличността и да уточним вземането от галерията. Плащате при вземане.",
   bank: "Поръчката е приета. До един работен ден ще ви изпратим данните за банковия превод на имейла ви." };
 $("#orderForm").addEventListener("submit", async e => {
   e.preventDefault();
+  if (submittingOrder) return;
+  if (checkoutStep < 2) { if (validateCheckoutStep(checkoutStep)) setCheckoutStep(checkoutStep + 1); return; }
+  if (!validateCheckoutStep(0)) { const error = $("#orderNote").textContent; setCheckoutStep(0); checkoutError(error); return; }
+  if (!validateCheckoutStep(1)) { const error = $("#orderNote").textContent; setCheckoutStep(1, false); checkoutError(error, $("#orderForm [aria-invalid=true]")); return; }
+  if (cart.some(c => c.id && (!byId(c.id) || stockOf(byId(c.id)) < cart.filter(item => item.id === c.id).length))) return checkoutError("Наличността е променена. Презаредете страницата, преди да изпратите поръчката.");
   const f = e.target, d = Object.fromEntries(new FormData(f)), note = $("#orderNote"), btn = $("#payBtn"), m = payM(), t = totals();
+  ["name", "email", "phone"].forEach(key => d[key] = d[key].trim());
   const fail = (msg, el) => { note.textContent = msg; note.dataset.auto = ""; if (el) el.focus(); };
   const dv = deliv();
   if (dv.type !== "pickup" && !d.where.trim()) return fail(dv.type === "boxnow" ? "Моля, изберете автомат BOX NOW." : "Моля, напишете къде да доставим.", $("#oWhere"));
-  if (!d.name.trim()) return fail("Моля, въведете име и фамилия.", $("#oName"));
-  if (!/\d{6,}/.test(d.phone.replace(/\D/g, ""))) return fail("Моля, въведете телефон за връзка.", $("#oPhone"));
-  if (!/^\S+@\S+\.\S+$/.test(d.email.trim())) return fail("Моля, въведете имейл — там ще получите потвърждението.", $("#oEmail"));
-  if (!f.consent.checked) return fail("Моля, приемете Общите условия.");
+  const consent = f.elements.namedItem("consent");
+  if (!consent?.checked) return fail("Моля, приемете Общите условия.", consent);
   if (d._honey) return;                                  // filled only by spam bots
   if (m.id === "card" && !t.exact) return fail("Някоя цена е „по запитване“ — изберете друг начин на плащане.");
   const no = orderNo();
@@ -462,12 +585,21 @@ $("#orderForm").addEventListener("submit", async e => {
   const lines = cart.map((c, i) => `${i + 1}. ${c.name} — ${c.detail} — ${c.price != null ? money(c.price) : "цена по запитване"}`);
   const fields = { "Поръчка": no, "Плащане": m.label, "Име": d.name, "Телефон": d.phone, "Имейл": d.email, "Доставка": delivery,
     "Фактура": d.invoice ? "да" : "не", "Творби": lines.join("\n"), "Общо": $("#cartTotal").textContent };
-  const send = extra => fetch(SITE.formEndpoint || `https://formsubmit.co/ajax/${ORDER_EMAIL}`, {
-    method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" },
-    body: JSON.stringify({ _subject: `Поръчка ${no} от сайта — ${d.name}`, _template: "table", _captcha: "false", email: d.email,
-      _autoresponse: `Благодарим за поръчката! Номерът ѝ е ${no}. Ще се свържем с вас до един работен ден, за да я потвърдим. Лъки Михайлова · luckyglass.eu · ${SITE.phone || ""}`,
-      ...fields, ...extra }) })
-    .then(async r => { const o = await r.json().catch(() => ({})); if (!r.ok || String(o.success) === "false") throw new Error(o.message || r.status); });
+  const send = async extra => {
+    const controller = new AbortController(), timer = setTimeout(() => controller.abort(), 20000);
+    try {
+      const response = await fetch(SITE.formEndpoint || `https://formsubmit.co/ajax/${ORDER_EMAIL}`, {
+        method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" },
+        signal: controller.signal,
+        body: JSON.stringify({ _subject: `Поръчка ${no} от сайта — ${d.name}`, _template: "table", _captcha: "false", email: d.email,
+          _autoresponse: `Благодарим за поръчката! Номерът ѝ е ${no}. Ще се свържем с вас до един работен ден, за да я потвърдим. Лъки Михайлова · luckyglass.eu · ${SITE.phone || ""}`,
+          ...fields, ...extra }) });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok || ![true, "true"].includes(result.success)) throw new Error("Order delivery was not confirmed");
+    } finally { clearTimeout(timer); }
+  };
+  submittingOrder = true;
+  $("#orderOut").hidden = true;
   btn.disabled = true;
   try {
     if (m.id === "card") {
@@ -495,9 +627,9 @@ $("#orderForm").addEventListener("submit", async e => {
     // the form service is unreachable: hand the visitor a ready e-mail and the text to copy
     const body = [`Поръчка ${no}`, "", ...Object.entries(fields).map(([k, v]) => `${k}: ${v}`)].join("\n");
     $("#orderText").value = body; $("#orderMail").textContent = ORDER_EMAIL; $("#orderOut").hidden = false;
-    fail("Не успяхме да изпратим автоматично. Отваряме имейл с готовата поръчка.");
-    location.href = `mailto:${ORDER_EMAIL}?subject=${encodeURIComponent(`Поръчка ${no} от сайта`)}&body=${encodeURIComponent(body)}`;
-  } finally { btn.disabled = false; }
+    fail("Не получихме потвърждение за изпращането. Можете да опитате отново или да изпратите подготвения текст по имейл. Количката ви е запазена.");
+    $("#orderMailLink").href = `mailto:${ORDER_EMAIL}?subject=${encodeURIComponent(`Поръчка ${no} от сайта`)}&body=${encodeURIComponent(body)}`;
+  } finally { submittingOrder = false; btn.disabled = false; }
 });
 $("#copyOrder").addEventListener("click", async () => {
   try { await navigator.clipboard.writeText($("#orderText").value); $("#copyOrder").textContent = "Копирано"; }

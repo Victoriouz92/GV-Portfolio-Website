@@ -6,6 +6,7 @@
   "hours": "понеделник – събота, 11:00 – 18:00 · неделя почивен ден",
   "website": "https://artgifts.bg",
   "viber": "+359 899 160 166",
+  "pickupOnly": true,
   "delivery": [
     {
       "label": "От галерията",

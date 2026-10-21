@@ -1,0 +1,6 @@
+{
+  "name": "luckyglass-checkout-checks",
+  "private": true,
+  "scripts": { "test": "node --test catalog-checkout.cjs" },
+  "devDependencies": { "jsdom": "30.1.3" }
+}

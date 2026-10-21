@@ -38,7 +38,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prata&family=Cormorant+Garamond:ital,wght@0,400;1,400;1,500&family=Jost:wght@300;400;500&display=swap&subset=cyrillic" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=21">
+<link rel="stylesheet" href="styles.css?v=22">
 <link rel="stylesheet" href="atelier.css?v=9">
 <link rel="preload" as="image" href="assets/products/kartina-blagodat-wall.webp">
 </head>
@@ -119,7 +119,21 @@
       <div><p class="eyebrow">Архив на колекцията</p><h2 id="soldTitle">Намерили <i>своя дом.</i></h2></div>
       <div class="sold-intro-copy"><p>Тези пластики вече са продадени. Ако някоя ви привлече, пишете ни — ще проверим дали е възможна нова изработка или бъдеща наличност.</p><p>Възможността, цената и срокът се уточняват индивидуално след потвърждение. Всяка нова отливка може да има фини различия в патината и постамента.</p><a class="link" href="#kontakti">Попитайте за творба ↗</a></div>
     </section>
+    <details class="catalog-filters" id="catalogFilters" open>
+      <summary>Търсене и филтри <span id="filterSummary"></span></summary>
+      <div class="filter-fields">
+        <label class="filter-search">Търсене<input type="search" id="catalogSearch" placeholder="Име на творба, автор, материал…" autocomplete="off"></label>
+        <label>Автор<select id="catalogAuthor"><option value="">Всички автори</option></select></label>
+        <label>Подреждане<select id="catalogSort"><option value="default">По размер</option><option value="name">По име · А–Я</option><option value="price-up">Цена · възходящо</option><option value="price-down">Цена · низходящо</option></select></label>
+        <fieldset class="filter-price" id="catalogPrice"><legend>Цена в евро</legend><label><span class="vh">Минимална цена в евро</span><input type="number" id="catalogMin" min="0" step="any" placeholder="От"></label><span aria-hidden="true">—</span><label><span class="vh">Максимална цена в евро</span><input type="number" id="catalogMax" min="0" step="any" placeholder="До"></label></fieldset>
+        <label>Материал<select id="catalogMaterial"><option value="">Всички материали</option></select></label>
+        <button type="button" class="link filter-reset" id="catalogReset">Изчисти филтрите</button>
+      </div>
+    </details>
+    <p class="catalog-results" id="catalogResults" role="status" aria-live="polite"></p>
     <div class="grid" id="grid"></div>
+    <div class="catalog-empty" id="catalogEmpty" hidden><p>Няма творби с тези условия.</p><button type="button" class="link" id="catalogEmptyReset">Покажи цялата колекция</button></div>
+    <button type="button" class="btn catalog-more" id="catalogMore" hidden>Покажи още</button>
     <p class="soon" id="soon" hidden>Тази колекция се подготвя. Ако търсите нещо конкретно, <a href="#kontakti">пишете ни</a>.</p>
   </section>
 
@@ -295,8 +309,10 @@
     <p class="fine cart-note" id="cartNote" role="status"></p>
     <p class="fine" id="cartEmpty">Количката е празна.</p>
     <form id="orderForm" class="order checkout" novalidate>
-      <section class="co-step">
-        <h3><span>1</span>Доставка</h3>
+      <ol class="checkout-progress" aria-label="Стъпки на поръчката"><li aria-current="step">1. Получаване</li><li>2. Контакт</li><li>3. Преглед</li></ol>
+      <section class="co-step" data-checkout-step="0">
+        <h3 tabindex="-1"><span>1</span>Получаване</h3>
+        <p class="fine">В момента приемаме поръчки с безплатно вземане от галерията. Куриерските доставки се подготвят.</p>
         <div class="opts" id="delivList"></div>
         <div class="where" id="delivWhere" hidden>
           <div class="bn" id="bnBox" hidden>
@@ -306,23 +322,25 @@
           <label class="fld"><span id="whereLabel">Адрес за доставка</span><textarea name="where" id="oWhere" rows="2" autocomplete="street-address"></textarea></label>
         </div>
       </section>
-      <section class="co-step">
-        <h3><span>2</span>Вашите данни</h3>
-        <label class="fld"><span>Име и фамилия</span><input name="name" id="oName" autocomplete="name"></label>
+      <section class="co-step" data-checkout-step="1" hidden>
+        <h3 tabindex="-1"><span>2</span>Вашите данни</h3>
+        <p class="fine">Ще се свържем с вас, за да потвърдим наличността и часа за вземане.</p>
+        <label class="fld"><span>Име и фамилия</span><input name="name" id="oName" autocomplete="name" required maxlength="120"></label>
         <div class="fld-row">
-          <label class="fld"><span>Телефон</span><input name="phone" id="oPhone" type="tel" autocomplete="tel" inputmode="tel"></label>
-          <label class="fld"><span>Имейл</span><input name="email" id="oEmail" type="email" autocomplete="email"></label>
+          <label class="fld"><span>Телефон</span><input name="phone" id="oPhone" type="tel" autocomplete="tel" inputmode="tel" required maxlength="30"></label>
+          <label class="fld"><span>Имейл</span><input name="email" id="oEmail" type="email" autocomplete="email" required maxlength="200"></label>
         </div>
         <label class="check"><input type="checkbox" name="invoice"><span>Нужна ми е фактура <small>— данните на фирмата ще поискаме при потвърждението</small></span></label>
       </section>
-      <section class="co-step">
-        <h3><span>3</span>Плащане</h3>
+      <section class="co-step" data-checkout-step="2" hidden>
+        <h3 tabindex="-1"><span>3</span>Преглед и потвърждение</h3>
+        <dl class="checkout-review" id="checkoutReview"></dl>
+        <p class="fine">Не плащате онлайн. Плащането е при вземане от галерията, след потвърждение от нашия екип.</p>
         <div class="opts" id="payList"></div>
         <div class="card-box" id="cardBox" hidden>
           <div id="cardEl" class="card-el"><p class="fine">Зареждаме защитеното поле за карта…</p></div>
           <p class="secure"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>Плащането е защитено и се обработва от Stripe. Ние не виждаме данните на картата ви.</p>
         </div>
-      </section>
       <div class="sum">
         <p><span>Творби</span><span id="sumItems">—</span></p>
         <p><span>Доставка</span><span id="sumShip">—</span></p>
@@ -331,9 +349,12 @@
       <input class="hp" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true">
       <label class="check"><input type="checkbox" name="consent" required><span>Приемам <a href="usloviya.html" target="_blank" rel="noopener">Общите условия</a> и <a href="poveritelnost.html" target="_blank" rel="noopener">Политиката за поверителност</a>.</span></label>
       <button type="submit" class="btn pay-btn" id="payBtn">Поръчай</button>
+      </section>
+      <div class="checkout-navigation"><button type="button" class="link" id="checkoutBack" hidden>← Назад</button><button type="button" class="btn" id="checkoutNext">Продължи към данните →</button></div>
       <p class="fine" id="orderNote" role="status"></p>
       <div class="order-out" id="orderOut" hidden>
-        <p class="fine">Ако имейлът не се отвори, копирайте текста и го изпратете на <b id="orderMail"></b>.</p>
+        <p class="fine">Отворете готовия имейл или копирайте текста и го изпратете на <b id="orderMail"></b>.</p>
+        <a class="btn" id="orderMailLink" href="mailto:artgifts.bg@gmail.com">Отвори готовия имейл</a>
         <textarea id="orderText" rows="6" readonly></textarea>
         <button type="button" class="link" id="copyOrder">Копирай текста</button>
       </div>
@@ -353,6 +374,6 @@
 
 <script src="atelier.js?v=8" defer></script>
 <script src="sculpture-photos.js?v=8" defer></script>
-<script src="boot.js?v=22" defer></script>
+<script src="boot.js?v=23" defer></script>
 </body>
 </html>
