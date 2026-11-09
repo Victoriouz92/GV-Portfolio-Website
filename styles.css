@@ -558,6 +558,7 @@ body:has(.view[data-view="nachalo"]:not([hidden])) .foot{margin-top:clamp(40px,5
 .contacts .contact-invitation i{color:var(--terracotta);font-size:1em;line-height:1.1}
 .contact-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px 40px;border-top:1px solid var(--line);padding-top:28px}
 .contact-order{margin-top:22px;max-width:100%;text-align:center;line-height:1.6}
+[data-site="hours"]{white-space:pre-line}
 .c-label{font-size:.66rem;letter-spacing:.24em;text-transform:uppercase;color:var(--bark)}
 .c-val{font:400 clamp(1.3rem,2vw,1.7rem) var(--title);margin:8px 0 4px}
 .c-val a{text-decoration:none}
