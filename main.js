@@ -123,8 +123,14 @@ function renderCatalogue(reset = true) {
   $("#catalogResults").textContent = min !== null && max !== null && min > max && !curSold ? "Началната цена трябва да е по-малка от крайната." : `${list.length} ${list.length === 1 ? "творба" : "творби"}${list.length > shown ? ` · показани ${shown}` : ""}`;
   $("#filterSummary").textContent = `${list.length}`;
   $("#catalogEmpty").hidden = list.length > 0;
-  $("#catalogMore").hidden = shown >= list.length;
+  $("#catalogLoader").hidden = shown >= list.length;
+  $("#catalogMore").hidden = shown >= list.length || !!catalogLoadObserver;
+  $("#catalogLoadStatus").hidden = !catalogLoadObserver;
   $("#catalogMore").textContent = `Покажи още ${Math.min(24, list.length - shown)}`;
+  if (catalogLoadObserver) {
+    catalogLoadObserver.unobserve($("#catalogLoader"));
+    if (shown < list.length) catalogLoadObserver.observe($("#catalogLoader"));
+  }
   observe($("#grid"));
 }
 function resetCatalogue() {
@@ -136,13 +142,25 @@ $("#catalogSearch").addEventListener("input", () => renderCatalogue());
 ["#catalogAuthor", "#catalogMaterial", "#catalogSort", "#catalogMin", "#catalogMax"].forEach(s => $(s).addEventListener("change", () => renderCatalogue()));
 $("#catalogReset").addEventListener("click", resetCatalogue);
 $("#catalogEmptyReset").addEventListener("click", resetCatalogue);
-$("#catalogMore").addEventListener("click", () => { catalogLimit += 24; renderCatalogue(false); });
+function loadNextCatalogueBatch() {
+  if ($("#catalogLoader").hidden || $(".view[data-view=nachalo]").hidden) return;
+  // Section links must reach their destination without newly appended rows moving it.
+  if (!["", "#main", "#kolekcia", "#plastiki", "#plastiki-prodadeni"].includes(location.hash)) return;
+  catalogLimit += 24;
+  renderCatalogue(false);
+}
+// Load the next batch shortly before the visitor reaches the end of the grid.
+// Keep the button as a fallback for browsers without IntersectionObserver.
+const catalogLoadObserver = "IntersectionObserver" in window ? new IntersectionObserver(entries => {
+  if (entries.some(entry => entry.isIntersecting)) loadNextCatalogueBatch();
+}, { rootMargin: "360px 0px" }) : null;
+$("#catalogMore").addEventListener("click", loadNextCatalogueBatch);
 if (matchMedia("(max-width: 640px)").matches) $("#catalogFilters").open = false;
 function renderGrid(cat, sold = false) {
   const categoryChanged = curCat !== cat;
   curCat = cat;
   curSold = cat === "plastika" && sold;
-  $("#collectionTitle").innerHTML = cat === "plastika" ? "Пластики" : 'Стъкло, което <i class="glow">свети</i>';
+  $("#collectionTitle").textContent = { kartina: "Картини", pana: "Пана", plastika: "Пластики", soon: "Бижута" }[cat] || "Колекция";
   const soon = cat === "soon" || !WORKS.some(w => w.cat === cat);  // a category with no works yet says it is coming
   $("#soon").hidden = !soon; $("#grid").hidden = soon;
   $("#catNote").textContent = soon ? "" : CAT_NOTE[cat];
@@ -166,7 +184,7 @@ function renderGrid(cat, sold = false) {
   populate("#catalogAuthor", catalogueScope().map(catalogAuthor), "Всички автори");
   populate("#catalogMaterial", catalogueScope().map(catalogMaterial), "Всички материали");
   if (!soon) categoryChanged ? resetCatalogue() : renderCatalogue();
-  else { $("#grid").innerHTML = ""; $("#catalogMore").hidden = true; $("#catalogEmpty").hidden = true; }
+  else { $("#grid").innerHTML = ""; $("#catalogLoader").hidden = true; $("#catalogMore").hidden = true; $("#catalogEmpty").hidden = true; catalogLoadObserver?.unobserve($("#catalogLoader")); }
 }
 $$(".tabs button").forEach(t => t.addEventListener("click", () => {
   $$(".tabs button").forEach(x => x.setAttribute("aria-selected", x === t));

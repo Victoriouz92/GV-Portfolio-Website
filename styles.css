@@ -314,6 +314,8 @@ img[data-sculpture-mode="blend"]{mask-image:linear-gradient(to right,transparent
 .catalog-empty{padding:50px 0 70px;font:400 1.6rem var(--voice)}
 .catalog-empty button{display:block;margin-top:20px;font:400 .9rem var(--text);background:none;border:0;cursor:pointer}
 .catalog-more{display:block;margin:50px auto 0;cursor:pointer}
+.catalog-loader{padding:24px 0;text-align:center;color:var(--bark)}
+.catalog-loader .catalog-more{margin:0 auto}
 .checkout-progress{display:flex;gap:8px;justify-content:space-between;list-style:none;padding:0;font-size:.76rem;color:var(--bark);font-weight:400}
 .checkout-progress li[aria-current]{color:var(--terracotta);font-weight:500}
 .checkout-navigation{display:flex;gap:20px;align-items:center;justify-content:space-between}
@@ -403,6 +405,7 @@ textarea{resize:vertical}
 
 /* footer with giant wordmark */
 .foot{margin-top:clamp(100px,13vw,180px);background:var(--linen);padding:clamp(60px,8vw,100px) var(--gutter) calc(28px + env(safe-area-inset-bottom,0px));overflow:hidden}
+body:has(.view[data-view="nachalo"]:not([hidden])) .foot{margin-top:clamp(40px,5vw,72px)}
 .foot-top{max-width:var(--max);margin:0 auto}
 .mf-sm{font:italic 400 clamp(1.3rem,2.2vw,1.8rem)/1.3 var(--voice);max-width:18em}
 .giant{font-size:clamp(2.2rem,10.2vw,11rem);line-height:.95;white-space:nowrap;text-align:center;margin:clamp(50px,7vw,90px) 0 clamp(56px,5vw,70px);color:var(--terracotta);letter-spacing:-.03em}
@@ -554,6 +557,7 @@ textarea{resize:vertical}
 .contact-invitation span,.contact-invitation i{display:block}
 .contacts .contact-invitation i{color:var(--terracotta);font-size:1em;line-height:1.1}
 .contact-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px 40px;border-top:1px solid var(--line);padding-top:28px}
+.contact-order{margin-top:22px;max-width:100%;text-align:center;line-height:1.6}
 .c-label{font-size:.66rem;letter-spacing:.24em;text-transform:uppercase;color:var(--bark)}
 .c-val{font:400 clamp(1.3rem,2vw,1.7rem) var(--title);margin:8px 0 4px}
 .c-val a{text-decoration:none}

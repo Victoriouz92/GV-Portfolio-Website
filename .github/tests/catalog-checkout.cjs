@@ -9,13 +9,19 @@ const works = JSON.parse(fs.readFileSync(path.join(root, 'data/works.json'), 'ut
 const site = JSON.parse(fs.readFileSync(path.join(root, 'data/site.json'), 'utf8'));
 const code = fs.readFileSync(path.join(root, 'main.js'), 'utf8');
 const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
-function setup(t, hash = '#plastiki', response = async () => ({ ok: true, json: async () => ({ success: true }) })) {
+function setup(t, hash = '#plastiki', response = async () => ({ ok: true, json: async () => ({ success: true }) }), autoLoad = false) {
   const dom = new JSDOM(html, { url: 'https://local.invalid/' + hash, runScripts: 'outside-only' });
   const w = dom.window, calls = [];
   w.WORKS_DATA = works;
   w.SITE = site;
   w.matchMedia = () => ({ matches: false });
   w.scrollTo = () => {};
+  const observers = [];
+  if (autoLoad) w.IntersectionObserver = class {
+    constructor(callback) { this.callback = callback; this.targets = new Set(); observers.push(this); }
+    observe(target) { this.targets.add(target); }
+    unobserve(target) { this.targets.delete(target); }
+  };
   w.fetch = async (url, options) => { calls.push({ url, body: JSON.parse(options.body) }); return response(); };
   w.eval(code);
   t.after(() => dom.window.close());
@@ -23,7 +29,7 @@ function setup(t, hash = '#plastiki', response = async () => ({ ok: true, json: 
   const change = (selector, value, event = 'change') => { $(selector).value = value; $(selector).dispatchEvent(new w.Event(event, { bubbles: true })); };
   const click = selector => $(selector).click();
   const submit = () => $('#orderForm').dispatchEvent(new w.Event('submit', { bubbles: true, cancelable: true }));
-  return { w, $, calls, change, click, submit };
+  return { w, $, calls, change, click, submit, observers };
 }
 function readyToReview(app) {
   app.w.eval('renderWork("plastika-245792")');
@@ -35,6 +41,43 @@ function readyToReview(app) {
   app.click('#checkoutNext');
 }
 const settled = () => new Promise(resolve => setImmediate(resolve));
+
+test('every category displays its own name below Collection', t => {
+  const a = setup(t);
+  for (const [cat, title] of [['kartina', 'Картини'], ['pana', 'Пана'], ['plastika', 'Пластики'], ['soon', 'Бижута']]) {
+    a.click(`.tabs [data-cat="${cat}"]`);
+    assert.equal(a.$('#collectionTitle').textContent, title);
+  }
+});
+test('scroll intersection loads batches of 24, stops at the end and resets after filtering', t => {
+  const a = setup(t, '#plastiki', undefined, true);
+  const loader = a.$('#catalogLoader');
+  const observer = a.observers.find(o => o.targets.has(loader));
+  assert.ok(observer);
+  assert.equal(a.$('#catalogMore').hidden, true);
+  for (const expected of [48, 72, 90]) {
+    observer.callback([{ target: loader, isIntersecting: true }]);
+    const links = [...a.w.document.querySelectorAll('#grid .mat')].map(el => el.href);
+    assert.equal(links.length, expected);
+    assert.equal(new Set(links).size, expected);
+  }
+  assert.equal(loader.hidden, true);
+  observer.callback([{ target: loader, isIntersecting: true }]);
+  assert.equal(a.w.document.querySelectorAll('#grid article').length, 90);
+  a.change('#catalogAuthor', 'Борислав Русинов');
+  assert.equal(a.w.document.querySelectorAll('#grid article').length, 2);
+  assert.equal(loader.hidden, true);
+  a.click('#catalogReset');
+  assert.equal(a.w.document.querySelectorAll('#grid article').length, 24);
+  assert.equal(loader.hidden, false);
+  a.w.history.pushState(null, '', '/#kontakti');
+  observer.callback([{ target: loader, isIntersecting: true }]);
+  assert.equal(a.w.document.querySelectorAll('#grid article').length, 24);
+  a.w.history.pushState(null, '', '/tvorba/plastika-245792/');
+  a.w.eval('route()');
+  observer.callback([{ target: loader, isIntersecting: true }]);
+  assert.equal(a.w.document.querySelectorAll('#grid article').length, 24);
+});
 
 test('filters search all works, combine author and query, reset and paginate without duplicates', t => {
   const a = setup(t);
